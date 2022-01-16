@@ -1,4 +1,5 @@
 from django.db import models
+from simple_history.models import HistoricalRecords
 
 # Create your models here.
 
@@ -53,9 +54,7 @@ class Employee(models.Model):
     emp_date_joined = models.DateField
     emp_date_exited = models.DateField
     emp_date_created = models.DateField(auto_now_add=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.emp_name
-
-
-

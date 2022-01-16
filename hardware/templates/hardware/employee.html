@@ -43,5 +43,29 @@
             </div>
         </div>
     </div>
+    <div class="container my-4">
+      <div class="card card-body">
+        <div class="card-title h5">History</div>
+        <ul class="list-group">
+          {% for change in changes %}
+            <ul class="list-group">
+              {% for edit in edit_history %}
+                <li class="list-group-item">{{edit.history_date}}
+                  {{edit.history_user}}
+                  changed
+                  {% for change_by_id in change.changes %}
+                   <b>{{ change_by_id.field|title }}</b>
+                   from
+                   {{ change_by_id.old }}
+                   to
+                   {{ change_by_id.new }}
+                  {% endfor %}
+                </li>
+              {% endfor %}
+            </ul>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
     
 {% endblock %}

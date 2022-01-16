@@ -26,7 +26,25 @@ def employees(request):
 def employee(request, pk):
     employee_info = Employee.objects.get(emp_id=pk)
 
-    context = {'employee_info': employee_info}
+    qry = employee_info.history.all()
+
+    def historical_changes(qry):
+        changes = []
+        if qry is not None:
+            latest_edit= qry.first()
+            for all_changes in range(qry.count()):
+                new_record, old_record = latest_edit, latest_edit.prev_record
+                if old_record is not None:
+                    delta = new_record.diff_against(old_record)
+                    changes.append(delta)
+                latest_edit = new_record
+                return changes
+
+    edit_history = employee_info.history.all()
+
+    changes = historical_changes(qry)
+
+    context = {'employee_info': employee_info, 'changes':changes, 'edit_history':edit_history}
     return render(request, 'hardware/employee.html', context)
 
 def employee_add(request):
