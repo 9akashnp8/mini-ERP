@@ -1,0 +1,18 @@
+{% extends 'hardware/main.html' %}
+
+{% block content %}
+<br>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card card-body">
+            <p>Are you sure you wanna delete "{{employee}}"</p>
+            <form action="{% url 'employee_del' employee.emp_id %}" method="POST">
+                {% csrf_token %}
+                <a class="btn btn-warning" href="{% url 'dash_employees' %}">Cancel</a>
+                <input class="btn btn-danger" type="submit" name="Confirm">
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

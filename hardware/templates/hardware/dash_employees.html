@@ -1,0 +1,68 @@
+{% extends 'hardware/main.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-sm-6">
+                  <div class="card">
+                    <div class="card-body">
+                      <h5 class="card-title">Active Employees</h5>
+                      <h5>{{active_emps}}</h5>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="card">
+                    <div class="card-body">
+                      <h5 class="card-title">InActive Employees</h5>
+                      <h5>{{inactive_emps}}</h5>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <div class="card-text">
+                <a class="btn btn-primary" href="{% url 'employee_add' %}">Add New Employee</a>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <div class="row my-4">
+        <div class="col">
+            <div class="card card-body">
+                <h5 class="card-title">Employee List</h5>
+                <table class="table table-stripped">
+                    <thead>
+                      <tr>
+                        <th scope="col">Employee ID</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Location</th>
+                        <th scope="col">Department</th>
+                        <th scope="col">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for employee in employees %}
+                      <tr>
+                        <td>{{employee.emp_id}}</td>
+                        <td><a href="{% url 'employee' pk=employee.emp_id %}">{{employee.emp_name}}</a></td>
+                        <td>{{employee.loc_id}}</td>
+                        <td>{{employee.dept_id}}</td>
+                        <td><a class="btn btn-primary btn-sm" href="{% url 'employee_edit' pk=employee.emp_id %}">Edit</a> <a href="{% url 'employee_del' pk=employee.emp_id %}" class="btn btn-danger btn-sm">Delete</a></td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                </table>
+                
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
