@@ -14,10 +14,13 @@
             </ul>
           </li>
           <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="{% url 'home' %}">Dashboard</a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" aria-current="page" href="{% url 'dash_employees' %}">Employees</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="#">Laptops</a>
+            <a class="nav-link" aria-current="page" href="{% url 'dash_laptops' %}">Laptops</a>
           </li>
         </ul>
       </div>

@@ -59,6 +59,9 @@ def employee_del(request, pk):
     if request.method == "POST":
         employee.delete()
         return redirect('/dash_employees')
-        
+
     context = {'employee':employee}
     return render(request, 'hardware/employee_del.html', context)
+
+def laptops(request):
+    return render(request, 'hardware/dash_laptops.html')
