@@ -1,0 +1,7 @@
+asgiref==3.4.1
+Django==4.0.1
+django-extensions==3.1.5
+django-simple-history==3.0.0
+Pillow==9.0.0
+sqlparse==0.4.2
+tzdata==2021.5
