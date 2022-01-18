@@ -6,72 +6,93 @@
         <div class="col-md-6">
             <div class="row row-cols-1 row-cols-md-2 g-4">
                 <div class="col">
-                    <div class="card">
+                    <div class="card bg-secondary text-white">
                         <div class="card-header">
                           Laptops in Use
                         </div>
                         <div class="card-body">
-                          <h5 class="card-title">X</h5>
+                          <h5 class="card-title">{{laps_in_use.count}}</h5>
                         </div>
                     </div>
                 </div>
                 <div class="col">
-                    <div class="card">
+                    <div class="card bg-secondary text-white">
                         <div class="card-header">
                           Available Laptops
                         </div>
                         <div class="card-body">
-                          <h5 class="card-title">X</h5>
+                          <h5 class="card-title">{{available_laps.count}}</h5>
                         </div>
                     </div>
                 </div>
-                <div class="col">
-                    <div class="card">
+                <div class="col-md-4">
+                    <div class="card text-white bg-success">
                         <div class="card-header">
                           Free to assign
                         </div>
                         <div class="card-body">
-                          <h5 class="card-title">X</h5>
+                          <h5 class="card-title">{{assignable_laps.count}}</h5>
                         </div>
                     </div>
                 </div>
-                <div class="col">
-                    <div class="card">
+                <div class="col-md-4">
+                    <div class="card bg-warning">
                         <div class="card-header">
                           Need to Repair
                         </div>
                         <div class="card-body">
-                          <h5 class="card-title">X</h5>
+                          <h5 class="card-title">{{repairable_laps.count}}</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-danger text-white">
+                        <div class="card-header">
+                          Need to replace
+                        </div>
+                        <div class="card-body">
+                          <h5 class="card-title">{{replaceable_laps.count}}</h5>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-md-6">
-            <div>
-                <canvas id="myChart"></canvas>
-              </div>
+            <div class="card bg-secondary text-white">
+                <div class="card-header">
+                  Actions
+                </div>
+                <div class="card-body">
+                    <button type="button" class="btn btn-primary btn-block">Add New Laptop</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="row my-4">
         <div class="col-md-6">
             <div class="card card-body">
-                <h5 class="card-title">Free Laptops</h5>
+                <h5 class="card-title">Available Laptops</h5>
                 <table class="table table-stripped">
                     <thead>
                     <tr>
                         <th scope="col">Sr No</th>
-                        <th scope="col">Location</th>
+                        <th scope="col">Staus</th>
                         <th scope="col">Age</th>
+                        <th scope="col">Actions</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                    </tr>
+                        {% for lap in available_laps %}
+                            <tr>
+                                <td>{{lap.laptop_sr_no}}</td>
+                                <td>{{lap.laptop_status}}</td>
+                                <td>{{lap.laptop_age}}</td>
+                                <td><button type="button" class="btn btn-primary btn-sm">Edit</button> 
+                                    <button type="button" class="btn btn-danger btn-sm">Delete</button>
+                                </td>
+                            </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
                 
@@ -79,21 +100,27 @@
         </div>
         <div class="col-md-6">
             <div class="card card-body">
-                <h5 class="card-title">Total Laptops</h5>
+                <h5 class="card-title">Laps in Use</h5>
                 <table class="table table-stripped">
                     <thead>
                     <tr>
                         <th scope="col">Sr No</th>
-                        <th scope="col">Location</th>
+                        <th scope="col">Status</th>
                         <th scope="col">Age</th>
+                        <th scope="col">Actions</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                    </tr>
+                        {% for lap in laps_in_use %}
+                            <tr>
+                                <td>{{lap.laptop_sr_no}}</td>
+                                <td>{{lap.laptop_status}}</td>
+                                <td>{{lap.laptop_age}}</td>
+                                <td><button type="button" class="btn btn-primary btn-sm">Edit</button> 
+                                    <button type="button" class="btn btn-danger btn-sm">Delete</button>
+                                </td>
+                            </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
                 

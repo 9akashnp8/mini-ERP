@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect
 from .models import *
 from .forms import EmployeeForm
@@ -82,4 +83,18 @@ def employee_del(request, pk):
     return render(request, 'hardware/employee_del.html', context)
 
 def laptops(request):
-    return render(request, 'hardware/dash_laptops.html')
+    available_laps = Laptop.objects.filter(hardware=None)
+    assignable_laps = available_laps.filter(laptop_status='Working')
+    repairable_laps = available_laps.filter(laptop_status='Repair')
+    replaceable_laps = available_laps.filter(laptop_status='Replace')
+    laps_in_use = Laptop.objects.filter(hardware__isnull=False)
+    laps_for_repair = Laptop.objects.all().filter(laptop_status='Repair').count()
+    laps_for_replace = Laptop.objects.all().filter(laptop_status='Replace').count()
+    working_laps = Laptop.objects.all().filter(laptop_status='Working').count()
+    
+
+
+    context = {'laps_for_repair':laps_for_repair, 'laps_for_replace':laps_for_replace, 
+    'working_laps':working_laps, 'available_laps':available_laps, 'laps_in_use':laps_in_use,
+    'assignable_laps':assignable_laps, 'repairable_laps':repairable_laps, 'replaceable_laps':replaceable_laps }
+    return render(request, 'hardware/dash_laptops.html', context)

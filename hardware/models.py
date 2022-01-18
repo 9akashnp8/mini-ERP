@@ -1,6 +1,6 @@
 from django.db import models
 from simple_history.models import HistoricalRecords
-from django.db.models import Max
+from datetime import date
 
 #Models for Employee side of the app
 class Department(models.Model):
@@ -105,6 +105,13 @@ class Laptop(models.Model):
             id = Laptop.objects.count()+1
             self.hardware_id = prefix+'-'+'{0:04d}'.format(id)
         super(Laptop, self).save(*args, **kwargs)
+
+    @property
+    def laptop_age(self):
+        today = date.today()
+        age = today - self.laptop_date_purchased
+        age_stripped = str(age).split(",", 1)[0]
+        return age_stripped
 
 #Model linking the Employee to the various hardwares (Eg: Laptops, Tablets)
 class Hardware(models.Model):
