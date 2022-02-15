@@ -1,0 +1,70 @@
+{% extends 'hardware/main.html' %}
+
+{% block content %}
+    <div class="container">
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+            <h5 class="card-title"> Hardware ID: {{laptop_info.hardware_id}}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Age: {{laptop_info.laptop_age}}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Media: {{laptop_info.media}}</h6>
+            </div>
+        </div>
+    </div>
+    <div class="container my-4">
+        <div class="row">
+            <div class="col">
+                <div class="card card-body">
+                    <h5 class="card-title">Employe Assigned</h5>
+                    <table class="table table-stripped">
+                        <thead>
+                          <tr>
+                            <th scope="col">Employee ID</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Location</th>
+                            <th scope="col">Department</th>
+                            <th scope="col">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for employee in employees %}
+                          <tr>
+                            <td>{{employee.emp_id}}</td>
+                            <td>{{employee.emp_name}}</td>
+                            <td>{{employee.loc_id}}</td>
+                            <td>{{employee.dept_id}}</td>
+                            <td><a href="#">Edit</a></td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                    </table>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container my-4">
+      <div class="card card-body">
+        <div class="card-title h5">History</div>
+        <ul class="list-group">
+          {% for change in changes %}
+            <ul class="list-group">
+              {% for edit in edit_history %}
+                <li class="list-group-item">{{edit.history_date}}
+                  {{edit.history_user}}
+                  changed
+                  {% for change_by_id in change.changes %}
+                   <b>{{ change_by_id.field|title }}</b>
+                   from
+                   {{ change_by_id.old }}
+                   to
+                   {{ change_by_id.new }}
+                  {% endfor %}
+                </li>
+              {% endfor %}
+            </ul>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    
+{% endblock %}

@@ -63,7 +63,9 @@
                   Actions
                 </div>
                 <div class="card-body">
-                    <button type="button" class="btn btn-primary btn-block">Add New Laptop</button>
+                    <div class="card-text">
+                        <a class="btn btn-primary" href="{% url 'laptop_add' %}">Add New Laptop</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -85,11 +87,12 @@
                     <tbody>
                         {% for lap in available_laps %}
                             <tr>
-                                <td>{{lap.laptop_sr_no}}</td>
+                                <td><a href="{% url 'laptop' lap.id %}">{{lap.laptop_sr_no}}</a></td>
                                 <td>{{lap.laptop_status}}</td>
                                 <td>{{lap.laptop_age}}</td>
-                                <td><button type="button" class="btn btn-primary btn-sm">Edit</button> 
-                                    <button type="button" class="btn btn-danger btn-sm">Delete</button>
+                                <td>
+                                    <a href="{% url 'laptop_edit' lap.id %}" class="btn btn-primary btn-sm">Edit</a> 
+                                    <a href="{% url 'laptop_del' lap.id %}" class="btn btn-danger btn-sm">Delete</a>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -113,7 +116,7 @@
                     <tbody>
                         {% for lap in laps_in_use %}
                             <tr>
-                                <td>{{lap.laptop_sr_no}}</td>
+                                <td><a href="{% url 'laptop' lap.id %}">{{lap.laptop_sr_no}}</a></td>
                                 <td>{{lap.laptop_status}}</td>
                                 <td>{{lap.laptop_age}}</td>
                                 <td><button type="button" class="btn btn-primary btn-sm">Edit</button> 

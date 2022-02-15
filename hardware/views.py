@@ -1,7 +1,6 @@
-from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect
 from .models import *
-from .forms import EmployeeForm
+from .forms import EmployeeForm, LaptopForm
 
 def home(request):
     return render(request, 'hardware/dashboard.html')
@@ -91,10 +90,48 @@ def laptops(request):
     laps_for_repair = Laptop.objects.all().filter(laptop_status='Repair').count()
     laps_for_replace = Laptop.objects.all().filter(laptop_status='Replace').count()
     working_laps = Laptop.objects.all().filter(laptop_status='Working').count()
-    
-
 
     context = {'laps_for_repair':laps_for_repair, 'laps_for_replace':laps_for_replace, 
     'working_laps':working_laps, 'available_laps':available_laps, 'laps_in_use':laps_in_use,
     'assignable_laps':assignable_laps, 'repairable_laps':repairable_laps, 'replaceable_laps':replaceable_laps }
     return render(request, 'hardware/dash_laptops.html', context)
+
+def laptop(request, pk):
+    laptop_info = Laptop.objects.get(id=pk)
+
+    context = {'laptop_info': laptop_info}
+    return render(request, 'hardware/laptop.html', context)
+
+def laptop_add(request):
+    form = LaptopForm()
+
+    if request.method == 'POST':
+        form = LaptopForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/dash_laptops')
+    
+    context = {'form' : form}
+    return render(request, 'hardware/laptop_add.html', context)
+
+def laptop_edit(request, pk):
+    laptop = Laptop.objects.get(id=pk)
+    form = LaptopForm(instance=laptop)
+
+    if request.method == 'POST':
+        form = LaptopForm(request.POST, instance=laptop)
+        if form.is_valid():
+            form.save()
+            return redirect('/dash_laptops')
+
+    context = {'form':form}
+    return render(request, 'hardware/laptop_add.html', context)
+
+def laptop_del(request, pk):
+    laptop = Laptop.objects.get(id=pk)
+    if request.method == 'POST':
+        laptop.delete()
+        return redirect('/dash_laptops')
+    
+    context = {'laptop':laptop}
+    return render(request, 'hardware/laptop_del.html', context)
