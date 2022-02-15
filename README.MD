@@ -1,0 +1,1 @@
+miniERP, a personal #django project to build a ERP/Inventory Management Webapp to Onboard Employees, Assign them Laptops, Manage company laptops & process Exit of employees. 
