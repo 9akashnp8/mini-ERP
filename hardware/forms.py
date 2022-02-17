@@ -1,5 +1,5 @@
 from django.forms import DateInput, ModelForm
-from .models import Employee, Laptop
+from .models import Employee, Hardware, Laptop
 
 class EmployeeForm(ModelForm):
     class Meta:
@@ -14,3 +14,8 @@ class LaptopForm(ModelForm):
             'laptop_date_purchased': DateInput(),
             'laptop_date_sold': DateInput()
         }
+
+class HardwareAssignmentForm(ModelForm):
+    class Meta:
+        model = Hardware
+        fields = '__all__'

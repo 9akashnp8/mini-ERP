@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 
     #3rd party
     'simple_history',
+    'django_filters',
 ]
 
 MIDDLEWARE = [

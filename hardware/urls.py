@@ -22,4 +22,8 @@ urlpatterns = [
     path('laptop_edit/<str:pk>', views.laptop_edit, name='laptop_edit'),
     path('laptop_del/<str:pk>', views.laptop_del, name='laptop_del'),
 
+    #Onboarding
+    path('onbrd_emp_add', views.onbrd_emp_add, name='onbrd_emp_add'),
+    path('onbrd_hw_assign/<str:pk>', views.onbrd_hw_assign, name='onbrd_hw_assign'),
+
 ]

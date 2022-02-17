@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import *
-from .forms import EmployeeForm, LaptopForm
+from .forms import EmployeeForm, HardwareAssignmentForm, LaptopForm
+from .filters import EmployeeFilter
 
 def home(request):
     return render(request, 'hardware/dashboard.html')
@@ -19,13 +20,18 @@ def employees(request):
     active_emps = Employee.objects.filter(emp_status = 'Active').count()
     inactive_emps = Employee.objects.filter(emp_status = 'InActive').count()
 
-    context = {'active_emps': active_emps, 'inactive_emps': inactive_emps, 'employees': employees}
+    myFilter = EmployeeFilter(request.GET, queryset=employees)
+    employees = myFilter.qs
+
+    context = {'active_emps': active_emps, 'inactive_emps': inactive_emps, 'employees': employees,
+    'myFilter':myFilter}
 
     return render(request, 'hardware/dash_employees.html', context)
 
 def employee(request, pk):
     employee_info = Employee.objects.get(emp_id=pk)
-
+    hardwares_assigned = Hardware.objects.filter(emp_id=pk)
+    hardware_type = Hardware._meta.get_field('hardware_id').remote_field.model.__name__
     qry = employee_info.history.all()
 
     def historical_changes(qry):
@@ -44,7 +50,7 @@ def employee(request, pk):
 
     changes = historical_changes(qry)
 
-    context = {'employee_info': employee_info, 'changes':changes, 'edit_history':edit_history}
+    context = {'employee_info': employee_info, 'hardwares_assigned':hardwares_assigned, 'hardware_type':hardware_type, 'changes':changes, 'edit_history':edit_history}
     return render(request, 'hardware/employee.html', context)
 
 def employee_add(request):
@@ -135,3 +141,26 @@ def laptop_del(request, pk):
     
     context = {'laptop':laptop}
     return render(request, 'hardware/laptop_del.html', context)
+
+def onbrd_emp_add(request):
+    form = EmployeeForm()
+    if request.method == "POST":
+        #print(request.POST)
+        form = EmployeeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/onbrd_hw_assign')
+    context = {'form':form}
+    return render(request, 'hardware/onbrd_emp_add.html', context)
+
+def onbrd_hw_assign(request, pk):
+    employee = Employee.objects.get(emp_id=pk)
+    form = HardwareAssignmentForm(initial={'emp_id':employee})
+    if request.method == "POST":
+        form = HardwareAssignmentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/dash_employees')
+    
+    context = {'form':form}
+    return render(request, 'hardware/onbrd_hw_assign.html', context)

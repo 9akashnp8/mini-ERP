@@ -57,6 +57,8 @@ class Employee(models.Model):
     history = HistoricalRecords()
 
     def __str__(self):
+        if self.emp_name == None:
+            return "NAME IS NULL"
         return self.emp_name
 
 #Models for the Laptop side of the app
@@ -92,6 +94,7 @@ class Laptop(models.Model):
     model = models.ForeignKey(LaptopModel, null=True, on_delete=models.SET_NULL)
     media = models.ForeignKey(LaptopMedia, null=True, on_delete=models.SET_NULL)
     laptop_status = models.CharField(max_length=20, null=True, choices=LAPTOP_STATUSES)
+    laptop_location = models.ForeignKey(Location, null=True, blank=False, on_delete=models.SET_NULL)
     laptop_date_purchased = models.DateField(null=True)
     laptop_date_sold = models.DateField(null=True, blank=True)
     laptop_date_created = models.DateField(auto_now_add=True)
@@ -111,7 +114,8 @@ class Laptop(models.Model):
         today = date.today()
         age = today - self.laptop_date_purchased
         age_stripped = str(age).split(",", 1)[0]
-        return age_stripped
+        return
+
 
 #Model linking the Employee to the various hardwares (Eg: Laptops, Tablets)
 class Hardware(models.Model):

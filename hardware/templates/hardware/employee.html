@@ -15,25 +15,22 @@
         <div class="row">
             <div class="col">
                 <div class="card card-body">
-                    <h5 class="card-title">Hardware Assigned</h5>
+                    <h5 class="card-title">Hardware(s) Assigned</h5>
+                    <h6><a href="{% url 'onbrd_hw_assign' 1 %}" class="btn btn-info btn-sm">Assign new hardware</a></h6>
                     <table class="table table-stripped">
                         <thead>
                           <tr>
-                            <th scope="col">Employee ID</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Location</th>
-                            <th scope="col">Department</th>
-                            <th scope="col">Actions</th>
+                            <th scope="col">Hardware Type</th>
+                            <th scope="col">Hardware ID</th>
+                            <th scope="col">Hardware Sr No</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {% for employee in employees %}
+                          {% for hardware in hardwares_assigned %}
                           <tr>
-                            <td>{{employee.emp_id}}</td>
-                            <td>{{employee.emp_name}}</td>
-                            <td>{{employee.loc_id}}</td>
-                            <td>{{employee.dept_id}}</td>
-                            <td><a href="#">Edit</a></td>
+                            <td>{{hardware_type}}</td>
+                            <td>{{hardware.hardware_id}}</td>
+                            <td><a href="{% url 'laptop' hardware.hardware_id.id %}">{{hardware.hardware_id.laptop_sr_no}}</a></td>
                           </tr>
                           {% endfor %}
                         </tbody>
