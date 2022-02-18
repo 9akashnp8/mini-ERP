@@ -1,5 +1,6 @@
 from django.db import models
 from simple_history.models import HistoricalRecords
+from django.contrib.auth.models import User
 from datetime import date
 
 #Models for Employee side of the app
@@ -18,7 +19,8 @@ class Designation(models.Model):
     def __str__(self):
         return self.designation
 
-class User(models.Model):
+class Userz(models.Model):
+    #Delete this
     USER_TYPES = (
         ('User', 'User'),
         ('Staff', 'Staff'),
@@ -42,10 +44,11 @@ class Employee(models.Model):
         ('Active', 'Active'),
         ('InActive', 'Inactive'),
     )
+    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
     emp_id = models.AutoField(primary_key=True, editable=False)
     dept_id = models.ForeignKey(Department, null=True, on_delete=models.SET_NULL)
     desig_id = models.ForeignKey(Designation, null=True, on_delete=models.SET_NULL)
-    username = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    #username = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='custom_username')
     emp_name = models.CharField(max_length=100, null=True)
     emp_email = models.CharField(max_length=100, null=True)
     emp_phone = models.IntegerField(null=True)

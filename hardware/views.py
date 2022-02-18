@@ -1,4 +1,8 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.contrib.auth.models import Group
+
+from .decorators import unauthenticated_user, allowed_users, admin_only
 from .models import *
 from .forms import EmployeeForm, HardwareAssignmentForm, LaptopForm, CreateUserForm
 from .filters import EmployeeFilter
@@ -6,63 +10,73 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
+@unauthenticated_user
 def register(request):
-    if request.user.is_authenticated:
-        return redirect('home')
-    else:
-        form = CreateUserForm()
-        if request.method == "POST":
-            form = CreateUserForm(request.POST)
-            if form.is_valid():
-                form.save()
-                user = form.cleaned_data.get('username')
-                messages.success(request, "Account was created for " + user)
-
-                return redirect('login')
-                
-        context = {'form':form}
-        return render(request, 'hardware/register.html', context)
-
-def loginPage(request):
-    if request.user.is_authenticated:
-        return redirect('home')
-    else:
-        if request.method == "POST":
-            username = request.POST.get('username')
-            password = request.POST.get('password')
-
-            user = authenticate(request, username=username, password=password)
+    '''
+    Register a new user. This view uses a custom UserCreationForm where in an additional
+    email field is added and all other decorators are removed.
+    '''
+    form1 = CreateUserForm()
+    if request.method == "POST":
+        form1 = CreateUserForm(request.POST)
+        if form1.is_valid():
+            user = form1.save()
+            group = Group.objects.get(name='employee')
+            user.groups.add(group)
+            Employee.objects.create(
+                user=user,
+                emp_email = user.email,
+            )
+            username = form1.cleaned_data.get('username')
+            messages.success(request, "Account was created for " + username)
+            return redirect('login')
             
-            if user is not None:
-                login(request, user)
-                return redirect('home')
-            else:
-                messages.info(request, "username OR password is Incorrect.")
+    context = {'form1':form1, 'form2':form2}
+    return render(request, 'hardware/register.html', context)
 
-        context = {}
-        return render(request, 'hardware/login.html', context)
+@unauthenticated_user
+def loginPage(request):
+    if request.method == "POST":
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
+            messages.info(request, "username OR password is Incorrect.")
+
+    context = {}
+    return render(request, 'hardware/login.html', context)
 
 def logoutPage(request):
     logout(request)
     return redirect('login')
 
 @login_required(login_url='login')
+@admin_only
 def home(request):
     return render(request, 'hardware/dashboard.html')
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def onboading(request):
     return render(request, 'hardware/onboard.html')
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def replace(request):
     return render(request, 'hardware/replace.html')
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def exit_return(request):
     return render(request, 'hardware/exit.html')
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def employees(request):
     employees = Employee.objects.all()
     active_emps = Employee.objects.filter(emp_status = 'Active').count()
@@ -77,6 +91,7 @@ def employees(request):
     return render(request, 'hardware/dash_employees.html', context)
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def employee(request, pk):
     employee_info = Employee.objects.get(emp_id=pk)
     hardwares_assigned = Hardware.objects.filter(emp_id=pk)
@@ -103,6 +118,7 @@ def employee(request, pk):
     return render(request, 'hardware/employee.html', context)
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def employee_add(request):
     form = EmployeeForm()
     if request.method == "POST":
@@ -116,6 +132,7 @@ def employee_add(request):
     return render(request, 'hardware/employee_add.html', context)
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def employee_edit(request, pk):
     employee = Employee.objects.get(emp_id=pk)
     form = EmployeeForm(instance=employee)
@@ -130,6 +147,7 @@ def employee_edit(request, pk):
     return render(request, 'hardware/employee_add.html', context)
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def employee_del(request, pk):
     employee = Employee.objects.get(emp_id=pk)
     if request.method == "POST":
@@ -140,6 +158,7 @@ def employee_del(request, pk):
     return render(request, 'hardware/employee_del.html', context)
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def laptops(request):
     available_laps = Laptop.objects.filter(hardware=None)
     assignable_laps = available_laps.filter(laptop_status='Working')
@@ -156,6 +175,7 @@ def laptops(request):
     return render(request, 'hardware/dash_laptops.html', context)
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def laptop(request, pk):
     laptop_info = Laptop.objects.get(id=pk)
 
@@ -163,6 +183,7 @@ def laptop(request, pk):
     return render(request, 'hardware/laptop.html', context)
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def laptop_add(request):
     form = LaptopForm()
 
@@ -176,6 +197,7 @@ def laptop_add(request):
     return render(request, 'hardware/laptop_add.html', context)
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def laptop_edit(request, pk):
     laptop = Laptop.objects.get(id=pk)
     form = LaptopForm(instance=laptop)
@@ -190,6 +212,7 @@ def laptop_edit(request, pk):
     return render(request, 'hardware/laptop_add.html', context)
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def laptop_del(request, pk):
     laptop = Laptop.objects.get(id=pk)
     if request.method == 'POST':
@@ -200,6 +223,7 @@ def laptop_del(request, pk):
     return render(request, 'hardware/laptop_del.html', context)
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def onbrd_emp_add(request):
     form = EmployeeForm()
     if request.method == "POST":
@@ -212,6 +236,7 @@ def onbrd_emp_add(request):
     return render(request, 'hardware/onbrd_emp_add.html', context)
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def onbrd_hw_assign(request, pk):
     employee = Employee.objects.get(emp_id=pk)
     form = HardwareAssignmentForm(initial={'emp_id':employee})
@@ -223,3 +248,15 @@ def onbrd_hw_assign(request, pk):
     
     context = {'form':form}
     return render(request, 'hardware/onbrd_hw_assign.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['employee', 'admin'])
+def employeeProfile(request):
+    '''
+    An 'employee self service' page where the employee can view all the hardware
+    that have been assigned to him/her.
+    '''
+    hardwares = request.user.employee.hardware_set.all()
+    hardwareType = Hardware._meta.get_field('hardware_id').remote_field.model.__name__
+    context = {'hardwares':hardwares, 'hardwareType':hardwareType}
+    return render(request, 'hardware/empprofile.html', context)

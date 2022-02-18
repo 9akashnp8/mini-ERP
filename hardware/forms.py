@@ -22,7 +22,7 @@ class HardwareAssignmentForm(ModelForm):
         model = Hardware
         fields = '__all__'
 
-class CreateUserForm(UserCreationForm):
+class CreateUserForm(UserCreationForm, EmployeeForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2']

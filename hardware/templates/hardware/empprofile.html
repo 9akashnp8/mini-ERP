@@ -1,0 +1,33 @@
+{% extends 'hardware/main.html' %}
+{% load to_class_name %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="row">
+        <div class="col">
+            <div class="card card-body">
+                <h5 class="card-title">Hardware(s) Assigned To You</h5>
+                <table class="table table-stripped">
+                    <thead>
+                      <tr>
+                        <th scope="col">Hardware Type</th>
+                        <th scope="col">Hardware ID</th>
+                        <th scope="col">Hardware Sr No</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for hardware in hardwares %}
+                      <tr>
+                        <td>{{hardwareType }}</td>
+                        <td>{{hardware.hardware_id}}</td>
+                        <td><a href="{% url 'laptop' hardware.hardware_id.id %}">{{hardware.hardware_id.laptop_sr_no}}</a></td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                </table>
+                
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
