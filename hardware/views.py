@@ -1,20 +1,68 @@
 from django.shortcuts import render, redirect
 from .models import *
-from .forms import EmployeeForm, HardwareAssignmentForm, LaptopForm
+from .forms import EmployeeForm, HardwareAssignmentForm, LaptopForm, CreateUserForm
 from .filters import EmployeeFilter
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
+def register(request):
+    if request.user.is_authenticated:
+        return redirect('home')
+    else:
+        form = CreateUserForm()
+        if request.method == "POST":
+            form = CreateUserForm(request.POST)
+            if form.is_valid():
+                form.save()
+                user = form.cleaned_data.get('username')
+                messages.success(request, "Account was created for " + user)
+
+                return redirect('login')
+                
+        context = {'form':form}
+        return render(request, 'hardware/register.html', context)
+
+def loginPage(request):
+    if request.user.is_authenticated:
+        return redirect('home')
+    else:
+        if request.method == "POST":
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+
+            user = authenticate(request, username=username, password=password)
+            
+            if user is not None:
+                login(request, user)
+                return redirect('home')
+            else:
+                messages.info(request, "username OR password is Incorrect.")
+
+        context = {}
+        return render(request, 'hardware/login.html', context)
+
+def logoutPage(request):
+    logout(request)
+    return redirect('login')
+
+@login_required(login_url='login')
 def home(request):
     return render(request, 'hardware/dashboard.html')
 
+@login_required(login_url='login')
 def onboading(request):
     return render(request, 'hardware/onboard.html')
 
+@login_required(login_url='login')
 def replace(request):
     return render(request, 'hardware/replace.html')
 
+@login_required(login_url='login')
 def exit_return(request):
     return render(request, 'hardware/exit.html')
 
+@login_required(login_url='login')
 def employees(request):
     employees = Employee.objects.all()
     active_emps = Employee.objects.filter(emp_status = 'Active').count()
@@ -28,6 +76,7 @@ def employees(request):
 
     return render(request, 'hardware/dash_employees.html', context)
 
+@login_required(login_url='login')
 def employee(request, pk):
     employee_info = Employee.objects.get(emp_id=pk)
     hardwares_assigned = Hardware.objects.filter(emp_id=pk)
@@ -53,6 +102,7 @@ def employee(request, pk):
     context = {'employee_info': employee_info, 'hardwares_assigned':hardwares_assigned, 'hardware_type':hardware_type, 'changes':changes, 'edit_history':edit_history}
     return render(request, 'hardware/employee.html', context)
 
+@login_required(login_url='login')
 def employee_add(request):
     form = EmployeeForm()
     if request.method == "POST":
@@ -65,6 +115,7 @@ def employee_add(request):
     context = {'form':form}
     return render(request, 'hardware/employee_add.html', context)
 
+@login_required(login_url='login')
 def employee_edit(request, pk):
     employee = Employee.objects.get(emp_id=pk)
     form = EmployeeForm(instance=employee)
@@ -78,6 +129,7 @@ def employee_edit(request, pk):
     context = {'form':form}
     return render(request, 'hardware/employee_add.html', context)
 
+@login_required(login_url='login')
 def employee_del(request, pk):
     employee = Employee.objects.get(emp_id=pk)
     if request.method == "POST":
@@ -87,6 +139,7 @@ def employee_del(request, pk):
     context = {'employee':employee}
     return render(request, 'hardware/employee_del.html', context)
 
+@login_required(login_url='login')
 def laptops(request):
     available_laps = Laptop.objects.filter(hardware=None)
     assignable_laps = available_laps.filter(laptop_status='Working')
@@ -102,12 +155,14 @@ def laptops(request):
     'assignable_laps':assignable_laps, 'repairable_laps':repairable_laps, 'replaceable_laps':replaceable_laps }
     return render(request, 'hardware/dash_laptops.html', context)
 
+@login_required(login_url='login')
 def laptop(request, pk):
     laptop_info = Laptop.objects.get(id=pk)
 
     context = {'laptop_info': laptop_info}
     return render(request, 'hardware/laptop.html', context)
 
+@login_required(login_url='login')
 def laptop_add(request):
     form = LaptopForm()
 
@@ -120,6 +175,7 @@ def laptop_add(request):
     context = {'form' : form}
     return render(request, 'hardware/laptop_add.html', context)
 
+@login_required(login_url='login')
 def laptop_edit(request, pk):
     laptop = Laptop.objects.get(id=pk)
     form = LaptopForm(instance=laptop)
@@ -133,6 +189,7 @@ def laptop_edit(request, pk):
     context = {'form':form}
     return render(request, 'hardware/laptop_add.html', context)
 
+@login_required(login_url='login')
 def laptop_del(request, pk):
     laptop = Laptop.objects.get(id=pk)
     if request.method == 'POST':
@@ -142,6 +199,7 @@ def laptop_del(request, pk):
     context = {'laptop':laptop}
     return render(request, 'hardware/laptop_del.html', context)
 
+@login_required(login_url='login')
 def onbrd_emp_add(request):
     form = EmployeeForm()
     if request.method == "POST":
@@ -153,6 +211,7 @@ def onbrd_emp_add(request):
     context = {'form':form}
     return render(request, 'hardware/onbrd_emp_add.html', context)
 
+@login_required(login_url='login')
 def onbrd_hw_assign(request, pk):
     employee = Employee.objects.get(emp_id=pk)
     form = HardwareAssignmentForm(initial={'emp_id':employee})
