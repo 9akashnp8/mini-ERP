@@ -49,6 +49,7 @@ class Employee(models.Model):
     dept_id = models.ForeignKey(Department, null=True, on_delete=models.SET_NULL)
     desig_id = models.ForeignKey(Designation, null=True, on_delete=models.SET_NULL)
     #username = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='custom_username')
+    profilePic = models.ImageField(null=True, blank=True)
     emp_name = models.CharField(max_length=100, null=True)
     emp_email = models.CharField(max_length=100, null=True)
     emp_phone = models.IntegerField(null=True)
@@ -102,10 +103,11 @@ class Laptop(models.Model):
     laptop_date_sold = models.DateField(null=True, blank=True)
     laptop_date_created = models.DateField(auto_now_add=True)
 
+    
     def __str__(self):
         return self.hardware_id
 
-    def save(self,*args, **kwargs):   
+    def save(self,*args, **kwargs):  
         if not self.hardware_id:
             prefix = 'LAK-LAP'
             id = Laptop.objects.count()+1

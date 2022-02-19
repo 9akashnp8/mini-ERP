@@ -21,17 +21,11 @@ def register(request):
         form1 = CreateUserForm(request.POST)
         if form1.is_valid():
             user = form1.save()
-            group = Group.objects.get(name='employee')
-            user.groups.add(group)
-            Employee.objects.create(
-                user=user,
-                emp_email = user.email,
-            )
             username = form1.cleaned_data.get('username')
             messages.success(request, "Account was created for " + username)
             return redirect('login')
             
-    context = {'form1':form1, 'form2':form2}
+    context = {'form1':form1}
     return render(request, 'hardware/register.html', context)
 
 @unauthenticated_user
@@ -260,3 +254,17 @@ def employeeProfile(request):
     hardwareType = Hardware._meta.get_field('hardware_id').remote_field.model.__name__
     context = {'hardwares':hardwares, 'hardwareType':hardwareType}
     return render(request, 'hardware/empprofile.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['employee',])
+def empSettingsPage(request):
+    employee = request.user.employee
+    form = EmployeeForm(instance=employee)
+
+    if request.method == "POST":
+        form = EmployeeForm(request.POST, request.FILES, instance=employee)
+        if form.is_valid():
+            form.save()
+
+    context = {'form':form}
+    return render(request, 'hardware/empSettingsPage.html', context)
