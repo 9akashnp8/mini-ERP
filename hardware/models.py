@@ -39,32 +39,6 @@ class Location(models.Model):
     def __str__(self):
         return self.location
 
-class Employee(models.Model):
-    EMPLOYEE_STATUS = (
-        ('Active', 'Active'),
-        ('InActive', 'Inactive'),
-    )
-    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
-    emp_id = models.AutoField(primary_key=True, editable=False)
-    dept_id = models.ForeignKey(Department, null=True, on_delete=models.SET_NULL)
-    desig_id = models.ForeignKey(Designation, null=True, on_delete=models.SET_NULL)
-    #username = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='custom_username')
-    profilePic = models.ImageField(null=True, blank=True)
-    emp_name = models.CharField(max_length=100, null=True)
-    emp_email = models.CharField(max_length=100, null=True)
-    emp_phone = models.IntegerField(null=True)
-    emp_status = models.CharField(max_length=10, null=True, choices=EMPLOYEE_STATUS)
-    loc_id = models.ForeignKey(Location, null=True, blank=False, on_delete=models.SET_NULL)
-    emp_date_joined = models.DateField
-    emp_date_exited = models.DateField
-    emp_date_created = models.DateField(auto_now_add=True)
-    history = HistoricalRecords()
-
-    def __str__(self):
-        if self.emp_name == None:
-            return "NAME IS NULL"
-        return self.emp_name
-
 #Models for the Laptop side of the app
 class LaptopBrand(models.Model):
     id = models.AutoField(primary_key=True, editable=False)
@@ -93,6 +67,7 @@ class Laptop(models.Model):
     )
     id = models.AutoField(primary_key=True, editable=False)
     hardware_id = models.CharField(max_length=50, null=True, default=None, blank=True, unique=True)
+    #emp_id = models.ForeignKey(Employee, null=True, blank=False, on_delete=models.SET_NULL)
     laptop_sr_no = models.CharField(max_length=100, unique=True)
     brand = models.ForeignKey(LaptopBrand, null=True, on_delete=models.SET_NULL)
     model = models.ForeignKey(LaptopModel, null=True, on_delete=models.SET_NULL)
@@ -102,6 +77,7 @@ class Laptop(models.Model):
     laptop_date_purchased = models.DateField(null=True)
     laptop_date_sold = models.DateField(null=True, blank=True)
     laptop_date_created = models.DateField(auto_now_add=True)
+    history = HistoricalRecords()
 
     
     def __str__(self):
@@ -121,6 +97,32 @@ class Laptop(models.Model):
         age_stripped = str(age).split(",", 1)[0]
         return
 
+class Employee(models.Model):
+    EMPLOYEE_STATUS = (
+        ('Active', 'Active'),
+        ('InActive', 'Inactive'),
+    )
+    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
+    emp_id = models.AutoField(primary_key=True, editable=False)
+    dept_id = models.ForeignKey(Department, null=True, on_delete=models.SET_NULL)
+    desig_id = models.ForeignKey(Designation, null=True, on_delete=models.SET_NULL)
+    laptop_assiged = models.ForeignKey(Laptop, null=True, blank=True, on_delete=models.SET_NULL)
+    #username = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='custom_username')
+    profilePic = models.ImageField(null=True, blank=True)
+    emp_name = models.CharField(max_length=100, null=True)
+    emp_email = models.CharField(max_length=100, null=True)
+    emp_phone = models.IntegerField(null=True)
+    emp_status = models.CharField(max_length=10, null=True, choices=EMPLOYEE_STATUS)
+    loc_id = models.ForeignKey(Location, null=True, blank=False, on_delete=models.SET_NULL)
+    emp_date_joined = models.DateField
+    emp_date_exited = models.DateField
+    emp_date_created = models.DateField(auto_now_add=True)
+    history = HistoricalRecords()
+
+    def __str__(self):
+        if self.emp_name == None:
+            return "NAME IS NULL"
+        return self.emp_name
 
 #Model linking the Employee to the various hardwares (Eg: Laptops, Tablets)
 class Hardware(models.Model):

@@ -88,27 +88,26 @@ def employees(request):
 @allowed_users(allowed_roles=['admin'])
 def employee(request, pk):
     employee_info = Employee.objects.get(emp_id=pk)
-    hardwares_assigned = Hardware.objects.filter(emp_id=pk)
+    #hlaptops_assigned = Laptop.objects.filter(emp_id=pk)
     hardware_type = Hardware._meta.get_field('hardware_id').remote_field.model.__name__
     qry = employee_info.history.all()
 
     def historical_changes(qry):
         changes = []
-        if qry is not None:
-            latest_edit= qry.first()
+        if qry is not None and id:
+            last = qry.first()
             for all_changes in range(qry.count()):
-                new_record, old_record = latest_edit, latest_edit.prev_record
+                new_record, old_record = last, last.prev_record
                 if old_record is not None:
                     delta = new_record.diff_against(old_record)
                     changes.append(delta)
-                latest_edit = new_record
-                return changes
-
-    edit_history = employee_info.history.all()
-
+                last = old_record
+        return changes
+    
     changes = historical_changes(qry)
 
-    context = {'employee_info': employee_info, 'hardwares_assigned':hardwares_assigned, 'hardware_type':hardware_type, 'changes':changes, 'edit_history':edit_history}
+    context = {'employee_info': employee_info, 
+    'hardware_type':hardware_type, 'changes':changes}
     return render(request, 'hardware/employee.html', context)
 
 @login_required(login_url='login')
@@ -225,15 +224,16 @@ def onbrd_emp_add(request):
         form = EmployeeForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('/onbrd_hw_assign')
+            request.session['emp_id'] = form.cleaned_data['emp_id']
+            return onbrd_hw_assign(request)
     context = {'form':form}
     return render(request, 'hardware/onbrd_emp_add.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
-def onbrd_hw_assign(request, pk):
-    employee = Employee.objects.get(emp_id=pk)
-    form = HardwareAssignmentForm(initial={'emp_id':employee})
+def onbrd_hw_assign(request):
+    form = HardwareAssignmentForm()
+
     if request.method == "POST":
         form = HardwareAssignmentForm(request.POST)
         if form.is_valid():
