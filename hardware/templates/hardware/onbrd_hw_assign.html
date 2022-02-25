@@ -1,15 +1,49 @@
 {% extends 'hardware/main.html' %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-6">
-        <div class="card card-body">
-            <form action="" type="submit" method="POST" name="submit">
-                {% csrf_token %}
-                {{form.as_p}}
-                <input type="submit" name="Submit">
-            </form>
-        <div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card card-body">
+                <h4>Assign Laptop for: {{latest_emp.emp_name}}</h4>
+                <h6>Location: {{latest_emp.loc_id}}</h6>
+                <form action="" type="submit" method="POST" name="submit">
+                    {% csrf_token %}
+                    {{form.as_p}}
+                    <input type="submit" name="Submit">
+                </form>
+            <div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col">
+            <div class="card card-body">
+                <table class="table table-stripped">
+                    <thead>
+                    <tr>
+                        <th scope="col">Hardware ID</th>
+                        <th scope="col">Sr No</th>
+                        <th scope="col">Staus</th>
+                        <th scope="col">Age</th>
+                        <th scope="col">Location</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for lap in free_laptops %}
+                            <tr>
+                                <td>{{lap.hardware_id}}</td>
+                                <td>{{lap.laptop_sr_no}}</td>
+                                <td>{{lap.laptop_status}}</td>
+                                <td>{{lap.laptop_age}}</td>
+                                <td>{{lap.laptop_location}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            <div>
+        </div>
     </div>
 </div>
+
 {% endblock %}

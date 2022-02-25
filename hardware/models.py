@@ -95,7 +95,7 @@ class Laptop(models.Model):
         today = date.today()
         age = today - self.laptop_date_purchased
         age_stripped = str(age).split(",", 1)[0]
-        return
+        return age_stripped
 
 class Employee(models.Model):
     EMPLOYEE_STATUS = (

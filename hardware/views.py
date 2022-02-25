@@ -1,14 +1,15 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import Group
-
+from django.core import serializers
 from .decorators import unauthenticated_user, allowed_users, admin_only
 from .models import *
-from .forms import EmployeeForm, HardwareAssignmentForm, LaptopForm, CreateUserForm
+from .forms import EmployeeForm, LaptopAssignmentForm, LaptopForm, CreateUserForm
 from .filters import EmployeeFilter
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 
 @unauthenticated_user
 def register(request):
@@ -220,27 +221,26 @@ def laptop_del(request, pk):
 def onbrd_emp_add(request):
     form = EmployeeForm()
     if request.method == "POST":
-        #print(request.POST)
         form = EmployeeForm(request.POST)
         if form.is_valid():
             form.save()
-            request.session['emp_id'] = form.cleaned_data['emp_id']
-            return onbrd_hw_assign(request)
+            return redirect('onbrd_hw_assign')
     context = {'form':form}
     return render(request, 'hardware/onbrd_emp_add.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def onbrd_hw_assign(request):
-    form = HardwareAssignmentForm()
+    form = LaptopAssignmentForm()
+    latest_emp = Employee.objects.last()
+    free_laptops = Laptop.objects.filter(laptop_location=latest_emp.loc_id)
 
     if request.method == "POST":
-        form = HardwareAssignmentForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('/dash_employees')
+        form = LaptopAssignmentForm(request.POST, instance=latest_emp)
+        form.save()
+        return redirect('/dash_employees')
     
-    context = {'form':form}
+    context = {'form':form, 'latest_emp':latest_emp, 'free_laptops':free_laptops}
     return render(request, 'hardware/onbrd_hw_assign.html', context)
 
 @login_required(login_url='login')

@@ -1,13 +1,17 @@
 from django.forms import DateInput, ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Employee, Hardware, Laptop
+from .models import Designation, Employee, Hardware, Laptop
 
 class EmployeeForm(ModelForm):
     class Meta:
         model = Employee
         fields = '__all__'
-        exclude = ['user']
+        exclude = ['user', 'laptop_assiged',]
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['desig_id'].queryset = Designation.objects.all()
 
 class LaptopForm(ModelForm):
     class Meta:
@@ -18,10 +22,15 @@ class LaptopForm(ModelForm):
             'laptop_date_sold': DateInput()
         }
 
-class HardwareAssignmentForm(ModelForm):
+class LaptopAssignmentForm(ModelForm):
     class Meta:
-        model = Hardware
-        fields = '__all__'
+        model = Employee
+        fields = ['laptop_assiged',]
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        added_emp = Employee.objects.last()
+        self.fields['laptop_assiged'].queryset = Laptop.objects.filter(laptop_location=added_emp.loc_id)
 
 class CreateUserForm(UserCreationForm, EmployeeForm):
     class Meta:
