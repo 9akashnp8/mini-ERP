@@ -7,7 +7,7 @@ class EmployeeForm(ModelForm):
     class Meta:
         model = Employee
         fields = '__all__'
-        exclude = ['user', 'laptop_assiged',]
+        exclude = ['user',]
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -30,7 +30,13 @@ class LaptopAssignmentForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         added_emp = Employee.objects.last()
-        self.fields['laptop_assiged'].queryset = Laptop.objects.filter(laptop_location=added_emp.loc_id)
+        self.fields['laptop_assiged'].queryset = Laptop.objects.filter(laptop_location=added_emp.loc_id, employee__laptop_assiged__isnull=True)
+
+class OnboardEmployeeAddForm(ModelForm):
+    class Meta:
+        model = Employee
+        fields = '__all__'
+        exclude = ['user', 'laptop_assiged',]
 
 class CreateUserForm(UserCreationForm, EmployeeForm):
     class Meta:

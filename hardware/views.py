@@ -4,7 +4,7 @@ from django.contrib.auth.models import Group
 from django.core import serializers
 from .decorators import unauthenticated_user, allowed_users, admin_only
 from .models import *
-from .forms import EmployeeForm, LaptopAssignmentForm, LaptopForm, CreateUserForm
+from .forms import EmployeeForm, LaptopAssignmentForm, LaptopForm, CreateUserForm, OnboardEmployeeAddForm
 from .filters import EmployeeFilter
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -219,9 +219,9 @@ def laptop_del(request, pk):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def onbrd_emp_add(request):
-    form = EmployeeForm()
+    form = OnboardEmployeeAddForm()
     if request.method == "POST":
-        form = EmployeeForm(request.POST)
+        form = OnboardEmployeeAddForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('onbrd_hw_assign')
@@ -238,7 +238,7 @@ def onbrd_hw_assign(request):
     if request.method == "POST":
         form = LaptopAssignmentForm(request.POST, instance=latest_emp)
         form.save()
-        return redirect('/dash_employees')
+        return redirect('employee', latest_emp.emp_id)
     
     context = {'form':form, 'latest_emp':latest_emp, 'free_laptops':free_laptops}
     return render(request, 'hardware/onbrd_hw_assign.html', context)

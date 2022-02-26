@@ -26,9 +26,15 @@
                         </thead>
                         <tbody>
                           <tr>
+                            {% if employee_info.laptop_assiged.id %}
                             <td>{{hardware_type}}</td>
                             <td>{{employee_info.laptop_assiged}}</td>
                             <td><a href="{% url 'laptop' employee_info.laptop_assiged.id %}">{{employee_info.laptop_assiged.laptop_sr_no}}</a></td>
+                            {% else %}
+                            <td>Not Assigned</td>
+                            <td>Not Assigned</td>
+                            <td>Not Assigned</td>
+                            {% endif %}
                           </tr>
                         </tbody>
                     </table>
