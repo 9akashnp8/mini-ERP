@@ -10,6 +10,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from django.contrib import messages
 
 @unauthenticated_user
 def register(request):
@@ -107,8 +108,10 @@ def employee(request, pk):
     
     changes = historical_changes(qry)
 
+    messages.success(request, f"{employee_info.emp_name} onboarded succesfully!")
+
     context = {'employee_info': employee_info, 
-    'hardware_type':hardware_type, 'changes':changes}
+    'hardware_type':hardware_type, 'changes':changes,}
     return render(request, 'hardware/employee.html', context)
 
 @login_required(login_url='login')
@@ -224,6 +227,7 @@ def onbrd_emp_add(request):
         form = OnboardEmployeeAddForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, "Added New Employee")
             return redirect('onbrd_hw_assign')
     context = {'form':form}
     return render(request, 'hardware/onbrd_emp_add.html', context)
@@ -234,11 +238,14 @@ def onbrd_hw_assign(request):
     form = LaptopAssignmentForm()
     latest_emp = Employee.objects.last()
     free_laptops = Laptop.objects.filter(laptop_location=latest_emp.loc_id)
-
+    
     if request.method == "POST":
         form = LaptopAssignmentForm(request.POST, instance=latest_emp)
-        form.save()
-        return redirect('employee', latest_emp.emp_id)
+        if form.is_valid():
+            form.save()
+            return redirect('employee', latest_emp.emp_id)
+    
+    
     
     context = {'form':form, 'latest_emp':latest_emp, 'free_laptops':free_laptops}
     return render(request, 'hardware/onbrd_hw_assign.html', context)
