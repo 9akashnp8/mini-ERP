@@ -108,8 +108,6 @@ def employee(request, pk):
     
     changes = historical_changes(qry)
 
-    messages.success(request, f"{employee_info.emp_name} onboarded succesfully!")
-
     context = {'employee_info': employee_info, 
     'hardware_type':hardware_type, 'changes':changes,}
     return render(request, 'hardware/employee.html', context)
@@ -243,6 +241,7 @@ def onbrd_hw_assign(request):
         form = LaptopAssignmentForm(request.POST, instance=latest_emp)
         if form.is_valid():
             form.save()
+            messages.success(request, f"{latest_emp.emp_name} onboarded succesfully!")
             return redirect('employee', latest_emp.emp_id)
     
     
