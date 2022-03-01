@@ -31,4 +31,9 @@ urlpatterns = [
     path('onbrd_emp_add', views.onbrd_emp_add, name='onbrd_emp_add'),
     path('onbrd_hw_assign', views.onbrd_hw_assign, name='onbrd_hw_assign'),
 
+    #Exit
+    path('emp_exit/', views.emp_exit, name='emp_exit'),
+    path('emp_exit_confirm/<str:pk>', views.emp_exit_confirm, name='emp_exit_confirm'),
+    path('emp_exit_complete/<str:pk>', views.emp_exit_complete, name='emp_exit_complete'),
+
 ]

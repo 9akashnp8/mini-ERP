@@ -1,11 +1,12 @@
+from pickle import EMPTY_DICT
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import Group
 from django.core import serializers
 from .decorators import unauthenticated_user, allowed_users, admin_only
 from .models import *
-from .forms import EmployeeForm, LaptopAssignmentForm, LaptopForm, CreateUserForm, OnboardEmployeeAddForm
-from .filters import EmployeeFilter
+from .forms import EmployeeForm, ExitEmployeeForm, LaptopAssignmentForm, LaptopForm, CreateUserForm, OnboardEmployeeAddForm
+from .filters import EmployeeFilter, ExitEmployeeFilter
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -173,8 +174,23 @@ def laptops(request):
 @allowed_users(allowed_roles=['admin'])
 def laptop(request, pk):
     laptop_info = Laptop.objects.get(id=pk)
+    qry = laptop_info.history.all()
 
-    context = {'laptop_info': laptop_info}
+    def historical_changes(qry):
+        changes = []
+        if qry is not None and id:
+            last = qry.first()
+            for all_changes in range(qry.count()):
+                new_record, old_record = last, last.prev_record
+                if old_record is not None:
+                    delta = new_record.diff_against(old_record)
+                    changes.append(delta)
+                last = old_record
+        return changes
+    
+    changes = historical_changes(qry)
+
+    context = {'laptop_info': laptop_info, 'changes':changes}
     return render(request, 'hardware/laptop.html', context)
 
 @login_required(login_url='login')
@@ -274,3 +290,28 @@ def empSettingsPage(request):
 
     context = {'form':form}
     return render(request, 'hardware/empSettingsPage.html', context)
+
+def emp_exit(request):
+    employees = Employee.objects.filter(emp_status='Active')
+    myExitFilter = ExitEmployeeFilter(request.GET, queryset=employees)
+    employees = myExitFilter.qs
+
+    context = {'myExitFilter':myExitFilter, 'employees':employees}
+    return render(request, 'hardware/emp_exit.html', context)
+
+def emp_exit_confirm(request, pk):
+    employee_info = Employee.objects.get(emp_id=pk)
+    hardware_type = Hardware._meta.get_field('hardware_id').remote_field.model.__name__
+
+    context = {'employee_info':employee_info, 'hardware_type':hardware_type}
+    return render(request, 'hardware/emp_exit_confirm.html', context)
+
+def emp_exit_complete(request, pk):
+    employee = Employee.objects.get(emp_id=pk)
+    employee.laptop_assiged = None
+    employee.emp_status = 'Inactive'
+    employee.save()
+
+    messages.success(request, f"{employee.emp_name}'s Exit succesfully processed.")
+
+    return redirect('employee', employee.emp_id)

@@ -9,3 +9,8 @@ class EmployeeFilter(django_filters.FilterSet):
         fields = '__all__'
         exclude = ['username', 'emp_date_created', 'emp_name', 'profilePic']
 
+class ExitEmployeeFilter(django_filters.FilterSet):
+    class Meta:
+        model = Employee
+        fields = ['lk_emp_id',]
+

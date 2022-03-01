@@ -104,6 +104,7 @@ class Employee(models.Model):
     )
     user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
     emp_id = models.AutoField(primary_key=True, editable=False)
+    lk_emp_id = models.CharField(null=True, blank=True, max_length=8)
     dept_id = models.ForeignKey(Department, null=True, on_delete=models.SET_NULL)
     desig_id = models.ForeignKey(Designation, null=True, on_delete=models.SET_NULL)
     laptop_assiged = models.ForeignKey(Laptop, null=True, blank=True, on_delete=models.SET_NULL)
@@ -123,6 +124,13 @@ class Employee(models.Model):
         if self.emp_name == None:
             return "NAME IS NULL"
         return self.emp_name
+    
+    def save(self,*args, **kwargs):  
+        if not self.lk_emp_id:
+            prefix = 'LAK-IND'
+            id = Employee.objects.count()+1
+            self.lk_emp_id = prefix+'-'+'{0:01d}'.format(id)
+        super(Employee, self).save(*args, **kwargs)
 
 #Model linking the Employee to the various hardwares (Eg: Laptops, Tablets)
 class Hardware(models.Model):

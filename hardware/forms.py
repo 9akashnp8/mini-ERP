@@ -37,6 +37,11 @@ class OnboardEmployeeAddForm(ModelForm):
         model = Employee
         fields = '__all__'
         exclude = ['user', 'laptop_assiged',]
+    
+class ExitEmployeeForm(ModelForm):
+    class Meta:
+        model = Employee
+        fields = ['lk_emp_id',]
 
 class CreateUserForm(UserCreationForm, EmployeeForm):
     class Meta:
