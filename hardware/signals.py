@@ -5,13 +5,14 @@ from .models import Employee, Hardware, Laptop
 def createEmployee(sender, instance, created, **kwargs):
     if created:
         group = Group.objects.get(name='employee')
-        instance.groups.add(group)
-        Employee.objects.create(
-            user=instance,
-            emp_email = instance.email,
-        )
+        User.objects.create_user(username=instance.emp_email, email=instance.emp_email, password='lakshya123',).groups.add(group)
+        #User.objects.get(username=instance.emp_email)
+        usercreated = User.objects.get(username=instance.emp_email)
+        instance.user = User.objects.get(username=instance.emp_email)
+        instance.save()
+        print(instance.user)
 
-post_save.connect(createEmployee, sender=User)
+post_save.connect(createEmployee, sender=Employee)
 
 '''
 def autoIncrementingHardwareID(sender, instance, created, **kwargs):

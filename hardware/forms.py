@@ -7,7 +7,7 @@ class EmployeeForm(ModelForm):
     class Meta:
         model = Employee
         fields = '__all__'
-        exclude = ['user',]
+        exclude = ['user', 'laptop_assiged']
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

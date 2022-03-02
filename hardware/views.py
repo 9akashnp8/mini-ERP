@@ -309,7 +309,7 @@ def emp_exit_confirm(request, pk):
 def emp_exit_complete(request, pk):
     employee = Employee.objects.get(emp_id=pk)
     employee.laptop_assiged = None
-    employee.emp_status = 'Inactive'
+    employee.emp_status = 'InActive'
     employee.save()
 
     messages.success(request, f"{employee.emp_name}'s Exit succesfully processed.")
