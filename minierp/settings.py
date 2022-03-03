@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'simple_history',
     'django_filters',
     'import_export',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -134,3 +135,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/uploads/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads/')
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'

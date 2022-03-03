@@ -1,3 +1,4 @@
+from tkinter.tix import Select
 from django.forms import DateInput, ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -7,7 +8,7 @@ class EmployeeForm(ModelForm):
     class Meta:
         model = Employee
         fields = '__all__'
-        exclude = ['user', 'laptop_assiged']
+        exclude = ['user',]
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -24,24 +25,22 @@ class LaptopForm(ModelForm):
 
 class LaptopAssignmentForm(ModelForm):
     class Meta:
-        model = Employee
-        fields = ['laptop_assiged',]
-    
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        added_emp = Employee.objects.last()
-        self.fields['laptop_assiged'].queryset = Laptop.objects.filter(laptop_location=added_emp.loc_id, employee__laptop_assiged__isnull=True)
+        model = Laptop
+        fields = ['emp_id', 'laptop_sr_no']
 
 class OnboardEmployeeAddForm(ModelForm):
     class Meta:
         model = Employee
         fields = '__all__'
-        exclude = ['user', 'laptop_assiged',]
+        exclude = ['user',]
     
 class ExitEmployeeForm(ModelForm):
     class Meta:
-        model = Employee
-        fields = ['lk_emp_id',]
+        model = Laptop
+        fields = ['media', 'laptop_date_returned', 'laptop_return_remarks',]
+        widgets = {
+            'laptop_date_returned': DateInput(),
+        }
 
 class CreateUserForm(UserCreationForm, EmployeeForm):
     class Meta:

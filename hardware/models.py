@@ -59,44 +59,6 @@ class LaptopMedia(models.Model):
     id = models.AutoField(primary_key=True, editable=False)
     media = models.ImageField(upload_to='uploads/')
 
-class Laptop(models.Model):
-    LAPTOP_STATUSES = (
-        ('Working', 'Working'),
-        ('Repair', 'Repair'),
-        ('Replace', 'Replace'),
-    )
-    id = models.AutoField(primary_key=True, editable=False)
-    hardware_id = models.CharField(max_length=50, null=True, default=None, blank=True, unique=True)
-    #emp_id = models.ForeignKey(Employee, null=True, blank=False, on_delete=models.SET_NULL)
-    laptop_sr_no = models.CharField(max_length=100, unique=True)
-    brand = models.ForeignKey(LaptopBrand, null=True, on_delete=models.SET_NULL)
-    model = models.ForeignKey(LaptopModel, null=True, on_delete=models.SET_NULL)
-    media = models.ForeignKey(LaptopMedia, null=True, on_delete=models.SET_NULL)
-    laptop_status = models.CharField(max_length=20, null=True, choices=LAPTOP_STATUSES)
-    laptop_location = models.ForeignKey(Location, null=True, blank=False, on_delete=models.SET_NULL)
-    laptop_date_purchased = models.DateField(null=True)
-    laptop_date_sold = models.DateField(null=True, blank=True)
-    laptop_date_created = models.DateField(auto_now_add=True)
-    history = HistoricalRecords()
-
-    
-    def __str__(self):
-        return self.hardware_id
-
-    def save(self,*args, **kwargs):  
-        if not self.hardware_id:
-            prefix = 'LAK-LAP'
-            id = Laptop.objects.count()+1
-            self.hardware_id = prefix+'-'+'{0:04d}'.format(id)
-        super(Laptop, self).save(*args, **kwargs)
-
-    @property
-    def laptop_age(self):
-        today = date.today()
-        age = today - self.laptop_date_purchased
-        age_stripped = str(age).split(",", 1)[0]
-        return age_stripped
-
 class Employee(models.Model):
     EMPLOYEE_STATUS = (
         ('Active', 'Active'),
@@ -104,10 +66,10 @@ class Employee(models.Model):
     )
     user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
     emp_id = models.AutoField(primary_key=True, editable=False)
-    lk_emp_id = models.CharField(null=True, blank=True, max_length=8)
+    lk_emp_id = models.CharField(null=True, blank=True, max_length=15)
     dept_id = models.ForeignKey(Department, null=True, on_delete=models.SET_NULL)
     desig_id = models.ForeignKey(Designation, null=True, on_delete=models.SET_NULL)
-    laptop_assiged = models.ForeignKey(Laptop, null=True, blank=True, on_delete=models.SET_NULL)
+    #laptop_assiged = models.ForeignKey(Laptop, null=True, blank=True, on_delete=models.SET_NULL)
     #username = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='custom_username')
     profilePic = models.ImageField(null=True, blank=True)
     emp_name = models.CharField(max_length=100, null=True)
@@ -131,6 +93,46 @@ class Employee(models.Model):
             id = Employee.objects.count()+1
             self.lk_emp_id = prefix+'-'+'{0:01d}'.format(id)
         super(Employee, self).save(*args, **kwargs)
+
+class Laptop(models.Model):
+    LAPTOP_STATUSES = (
+        ('Working', 'Working'),
+        ('Repair', 'Repair'),
+        ('Replace', 'Replace'),
+    )
+    id = models.AutoField(primary_key=True, editable=False)
+    hardware_id = models.CharField(max_length=50, null=True, default=None, blank=True, unique=True)
+    emp_id = models.ForeignKey(Employee, null=True, blank=True, on_delete=models.SET_NULL)
+    laptop_sr_no = models.CharField(max_length=100, unique=True)
+    brand = models.ForeignKey(LaptopBrand, null=True, on_delete=models.SET_NULL)
+    model = models.ForeignKey(LaptopModel, null=True, on_delete=models.SET_NULL)
+    media = models.ForeignKey(LaptopMedia, null=True, on_delete=models.SET_NULL)
+    laptop_status = models.CharField(max_length=20, null=True, choices=LAPTOP_STATUSES)
+    laptop_location = models.ForeignKey(Location, null=True, blank=False, on_delete=models.SET_NULL)
+    laptop_date_purchased = models.DateField(null=True)
+    laptop_date_sold = models.DateField(null=True, blank=True)
+    laptop_date_created = models.DateField(auto_now_add=True)
+    laptop_date_returned = models.DateField(null=True, blank=True)
+    laptop_return_remarks = models.TextField(max_length=500, null=True, blank=True)
+    history = HistoricalRecords()
+
+    
+    def __str__(self):
+        return self.hardware_id
+
+    def save(self,*args, **kwargs):  
+        if not self.hardware_id:
+            prefix = 'LAK-LAP'
+            id = Laptop.objects.count()+1
+            self.hardware_id = prefix+'-'+'{0:04d}'.format(id)
+        super(Laptop, self).save(*args, **kwargs)
+
+    @property
+    def laptop_age(self):
+        today = date.today()
+        age = today - self.laptop_date_purchased
+        age_stripped = str(age).split(",", 1)[0]
+        return age_stripped
 
 #Model linking the Employee to the various hardwares (Eg: Laptops, Tablets)
 class Hardware(models.Model):

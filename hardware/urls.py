@@ -30,6 +30,7 @@ urlpatterns = [
     #Onboarding
     path('onbrd_emp_add', views.onbrd_emp_add, name='onbrd_emp_add'),
     path('onbrd_hw_assign', views.onbrd_hw_assign, name='onbrd_hw_assign'),
+    path('onbrd_complete/<str:pk>', views.onbrd_complete, name='onbrd_complete'),
 
     #Exit
     path('emp_exit/', views.emp_exit, name='emp_exit'),

@@ -91,7 +91,11 @@ def employees(request):
 @allowed_users(allowed_roles=['admin'])
 def employee(request, pk):
     employee_info = Employee.objects.get(emp_id=pk)
-    #hlaptops_assigned = Laptop.objects.filter(emp_id=pk)
+    laptop_assigned = None
+    try:
+        laptop_assigned = Laptop.objects.get(emp_id=pk)
+    except:
+        pass
     hardware_type = Hardware._meta.get_field('hardware_id').remote_field.model.__name__
     qry = employee_info.history.all()
 
@@ -109,7 +113,7 @@ def employee(request, pk):
     
     changes = historical_changes(qry)
 
-    context = {'employee_info': employee_info, 
+    context = {'employee_info': employee_info, 'laptop_assigned': laptop_assigned,
     'hardware_type':hardware_type, 'changes':changes,}
     return render(request, 'hardware/employee.html', context)
 
@@ -249,21 +253,22 @@ def onbrd_emp_add(request):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def onbrd_hw_assign(request):
-    form = LaptopAssignmentForm()
+    
     latest_emp = Employee.objects.last()
-    free_laptops = Laptop.objects.filter(laptop_location=latest_emp.loc_id)
+    free_laptops = Laptop.objects.filter(laptop_location=latest_emp.loc_id, laptop_status='Working', emp_id=None)
     
-    if request.method == "POST":
-        form = LaptopAssignmentForm(request.POST, instance=latest_emp)
-        if form.is_valid():
-            form.save()
-            messages.success(request, f"{latest_emp.emp_name} onboarded succesfully!")
-            return redirect('employee', latest_emp.emp_id)
-    
-    
-    
-    context = {'form':form, 'latest_emp':latest_emp, 'free_laptops':free_laptops}
+    context = {'latest_emp':latest_emp, 'free_laptops':free_laptops}
     return render(request, 'hardware/onbrd_hw_assign.html', context)
+
+def onbrd_complete(request, pk):
+    laptop_assigned = Laptop.objects.get(id=pk)
+    employee_to_assign = Employee.objects.last()
+    print(employee_to_assign.emp_id)
+    laptop_assigned.emp_id = employee_to_assign
+    laptop_assigned.save()
+    messages.success(request, f"{employee_to_assign} succesfully onboarded!")
+
+    return redirect('employee', employee_to_assign.emp_id)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['employee', 'admin'])
@@ -301,16 +306,29 @@ def emp_exit(request):
 
 def emp_exit_confirm(request, pk):
     employee_info = Employee.objects.get(emp_id=pk)
+    laptop_assigned = Laptop.objects.get(emp_id=pk)
     hardware_type = Hardware._meta.get_field('hardware_id').remote_field.model.__name__
 
-    context = {'employee_info':employee_info, 'hardware_type':hardware_type}
+    form = ExitEmployeeForm(instance=laptop_assigned)
+
+    if request.method == "POST":
+        form = ExitEmployeeForm(request.POST, instance=laptop_assigned)
+        if form.is_valid():
+            form.save()
+            return redirect('emp_exit_complete', employee_info.emp_id)
+
+    context = {'employee_info':employee_info, 'hardware_type':hardware_type,
+    'laptop_assigned':laptop_assigned, 'form':form}
     return render(request, 'hardware/emp_exit_confirm.html', context)
 
 def emp_exit_complete(request, pk):
     employee = Employee.objects.get(emp_id=pk)
-    employee.laptop_assiged = None
+    laptop_assigned = Laptop.objects.get(emp_id=pk)
     employee.emp_status = 'InActive'
     employee.save()
+    laptop_assigned.emp_id = None
+    laptop_assigned.save()
+    
 
     messages.success(request, f"{employee.emp_name}'s Exit succesfully processed.")
 

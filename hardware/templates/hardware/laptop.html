@@ -6,7 +6,6 @@
             <div class="card-body">
             <h5 class="card-title"> Hardware ID: {{laptop_info.hardware_id}}</h5>
             <h6 class="card-subtitle mb-2 text-muted">Age: {{laptop_info.laptop_age}}</h6>
-            <h6 class="card-subtitle mb-2 text-muted">Media: {{laptop_info.media}}</h6>
             </div>
         </div>
     </div>
@@ -22,19 +21,22 @@
                             <th scope="col">Name</th>
                             <th scope="col">Location</th>
                             <th scope="col">Department</th>
-                            <th scope="col">Actions</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {% for employee in employees %}
                           <tr>
-                            <td>{{employee.emp_id}}</td>
-                            <td>{{employee.emp_name}}</td>
-                            <td>{{employee.loc_id}}</td>
-                            <td>{{employee.dept_id}}</td>
-                            <td><a href="#">Edit</a></td>
+                            {% if laptop_info.emp_id %}
+                                <td>{{laptop_info.lk_emp_id}}</td>
+                                <td>{{laptop_info.emp_id.emp_name}}</td>
+                                <td>{{laptop_info.emp_id.loc_id}}</td>
+                                <td>{{laptop_info.emp_id.dept_id}}</td>
+                            {% else %}
+                                <td>Not Assigned</td>
+                                <td>Not Assigned</td>
+                                <td>Not Assigned</td>
+                                <td>Not Assigned</td>
+                            {% endif %}
                           </tr>
-                          {% endfor %}
                         </tbody>
                     </table>
                     
@@ -42,6 +44,7 @@
             </div>
         </div>
     </div>
+    <!--History Section-->
     <div class="container my-4">
       <div class="card card-body">
         <div class="card-title h5">History</div>
@@ -61,14 +64,29 @@
                       <td>
                           {% if change.changed_fields|length > 0 %}
                               {% for change_by_id in change.changes %}
-                                  The field: <b>{{change_by_id.field|title}}</b> was changed from:
-                                  {% if change_by_id.old %}
-                                      <b>{{change_by_id.old}}</b>
-                                  {% else %}
-                                      <b>blank field</b>
-                                  {% endif %}
-                                  for <b>{{change_by_id.new}}</b>
-                                  <br>
+                                {% if change_by_id.field|title == 'Emp_Id' %}
+                                    The Laptop was transfered from
+                                    {% if change_by_id.old %}
+                                        <b><a href="{% url 'employee' change_by_id.old %}">{{change_by_id.old}}</a></b>
+                                    {% else %}
+                                        the <b>Laptop Inventory</b>
+                                    {% endif %}
+                                    {% if change_by_id.new == None %}
+                                        back to the <b>Laptop Inventory</b>
+                                    {% else %}
+                                        to <b><a href="{% url 'employee' change_by_id.new %}">{{change_by_id.new}}</a></b>
+                                    {% endif %}
+                                    <br>
+                                {% else %}
+                                    The field: <b>{{change_by_id.field|title}}</b> was changed from:
+                                    {% if change_by_id.old %}
+                                        <b>{{change_by_id.old}}</b>
+                                    {% else %}
+                                        <b>blank field</b>
+                                    {% endif %}
+                                    for <b>{{change_by_id.new}}</b>
+                                    <br>
+                                {% endif %}
                               {% endfor %}
                           {% else %}
                               There was no changes to this edition

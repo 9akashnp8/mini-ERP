@@ -1,31 +1,21 @@
 {% extends 'hardware/main.html' %}
+{% load crispy_forms_tags %}
 
 {% block content %}
 <div class="container">
+    <br>
     <div class="row">
-        <div class="col-md-6">
+        <div class="col">
             <div class="card card-body">
-                <h4>Assign Laptop for: {{latest_emp.emp_name}}</h4>
-                <h6>Location: {{latest_emp.loc_id}}</h6>
-                <form action="" type="submit" method="POST" name="submit">
-                    {% csrf_token %}
-                    {{form.as_p}}
-                    <input type="submit" name="Submit">
-                </form>
+                <h4>Available Laptops at {{latest_emp.loc_id}}</h4>
                 {% if messages %}
+                <br>
                 <div class="alert alert-success alert-dismissible" role="alert">
                     {% for message in messages %}
                         {{message}}
                     {% endfor %}
                 </div>
                 {% endif %}
-            <div>
-        </div>
-    </div>
-    <br>
-    <div class="row">
-        <div class="col">
-            <div class="card card-body">
                 <table class="table table-stripped">
                     <thead>
                     <tr>
@@ -34,6 +24,7 @@
                         <th scope="col">Staus</th>
                         <th scope="col">Age</th>
                         <th scope="col">Location</th>
+                        <th scope="col">Action</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -44,6 +35,7 @@
                                 <td>{{lap.laptop_status}}</td>
                                 <td>{{lap.laptop_age}}</td>
                                 <td>{{lap.laptop_location}}</td>
+                                <td><a href="{% url 'onbrd_complete' lap.id %}" class="btn btn-primary btn-sm">Assign</a></td>
                             </tr>
                         {% endfor %}
                     </tbody>
