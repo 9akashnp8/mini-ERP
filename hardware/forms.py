@@ -2,7 +2,7 @@ from tkinter.tix import Select
 from django.forms import DateInput, ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Designation, Employee, Hardware, Laptop
+from .models import Designation, Employee, Hardware, Laptop, LaptopMedia
 
 class EmployeeForm(ModelForm):
     class Meta:
@@ -33,11 +33,16 @@ class OnboardEmployeeAddForm(ModelForm):
         model = Employee
         fields = '__all__'
         exclude = ['user',]
+
+class EmployeeExitFormLaptopImage(ModelForm):
+    class Meta:
+        model = LaptopMedia
+        fields = ['media']
     
-class ExitEmployeeForm(ModelForm):
+class EmployeeExitFormLaptop(ModelForm):
     class Meta:
         model = Laptop
-        fields = ['media', 'laptop_date_returned', 'laptop_return_remarks',]
+        fields = [ 'laptop_date_returned', 'laptop_return_remarks',]
         widgets = {
             'laptop_date_returned': DateInput(),
         }

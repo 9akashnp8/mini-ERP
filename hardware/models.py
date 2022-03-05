@@ -106,7 +106,7 @@ class Laptop(models.Model):
     laptop_sr_no = models.CharField(max_length=100, unique=True)
     brand = models.ForeignKey(LaptopBrand, null=True, on_delete=models.SET_NULL)
     model = models.ForeignKey(LaptopModel, null=True, on_delete=models.SET_NULL)
-    media = models.ForeignKey(LaptopMedia, null=True, on_delete=models.SET_NULL)
+    media = models.ForeignKey(LaptopMedia, null=True, blank=True, on_delete=models.SET_NULL)
     laptop_status = models.CharField(max_length=20, null=True, choices=LAPTOP_STATUSES)
     laptop_location = models.ForeignKey(Location, null=True, blank=False, on_delete=models.SET_NULL)
     laptop_date_purchased = models.DateField(null=True)

@@ -1,17 +1,18 @@
-from pickle import EMPTY_DICT
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import Group
 from django.core import serializers
+from django.urls import is_valid_path
 from .decorators import unauthenticated_user, allowed_users, admin_only
 from .models import *
-from .forms import EmployeeForm, ExitEmployeeForm, LaptopAssignmentForm, LaptopForm, CreateUserForm, OnboardEmployeeAddForm
+from .forms import *
 from .filters import EmployeeFilter, ExitEmployeeFilter
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib import messages
+import datetime
 
 @unauthenticated_user
 def register(request):
@@ -277,9 +278,10 @@ def employeeProfile(request):
     An 'employee self service' page where the employee can view all the hardware
     that have been assigned to him/her.
     '''
-    hardwares = request.user.employee.hardware_set.all()
+    laptop_assigned = Laptop.objects.get(emp_id=request.user.employee)
+    print(laptop_assigned)
     hardwareType = Hardware._meta.get_field('hardware_id').remote_field.model.__name__
-    context = {'hardwares':hardwares, 'hardwareType':hardwareType}
+    context = {'laptop_assigned':laptop_assigned, 'hardwareType':hardwareType}
     return render(request, 'hardware/empprofile.html', context)
 
 @login_required(login_url='login')
@@ -296,6 +298,8 @@ def empSettingsPage(request):
     context = {'form':form}
     return render(request, 'hardware/empSettingsPage.html', context)
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def emp_exit(request):
     employees = Employee.objects.filter(emp_status='Active')
     myExitFilter = ExitEmployeeFilter(request.GET, queryset=employees)
@@ -304,23 +308,33 @@ def emp_exit(request):
     context = {'myExitFilter':myExitFilter, 'employees':employees}
     return render(request, 'hardware/emp_exit.html', context)
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def emp_exit_confirm(request, pk):
     employee_info = Employee.objects.get(emp_id=pk)
     laptop_assigned = Laptop.objects.get(emp_id=pk)
     hardware_type = Hardware._meta.get_field('hardware_id').remote_field.model.__name__
 
-    form = ExitEmployeeForm(instance=laptop_assigned)
+    laptop_exit_form = EmployeeExitFormLaptop(initial={'laptop_date_returned':datetime.date.today(), 'laptop_return_remarks':'Enter Any Remarks here'})
+    laptop_exit_media_form = EmployeeExitFormLaptopImage(instance=laptop_assigned)
 
     if request.method == "POST":
-        form = ExitEmployeeForm(request.POST, instance=laptop_assigned)
-        if form.is_valid():
-            form.save()
+        laptop_exit_form = EmployeeExitFormLaptop(request.POST, initial={'laptop_date_returned':datetime.date.today(), 'laptop_return_remarks':'Enter Any Remarks here'}, instance=laptop_assigned)
+        laptop_exit_media_form = EmployeeExitFormLaptopImage(request.POST, request.FILES)
+        if laptop_exit_form.is_valid() and laptop_exit_media_form.is_valid():
+            laptop_assigned.media = laptop_exit_media_form.save()
+            laptop_exit_form.save()
+            laptop_exit_media_form.save()
+            
             return redirect('emp_exit_complete', employee_info.emp_id)
 
     context = {'employee_info':employee_info, 'hardware_type':hardware_type,
-    'laptop_assigned':laptop_assigned, 'form':form}
+    'laptop_assigned':laptop_assigned, 'laptop_exit_form':laptop_exit_form,
+    'laptop_exit_media_form':laptop_exit_media_form}
     return render(request, 'hardware/emp_exit_confirm.html', context)
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def emp_exit_complete(request, pk):
     employee = Employee.objects.get(emp_id=pk)
     laptop_assigned = Laptop.objects.get(emp_id=pk)

@@ -16,13 +16,11 @@
                       </tr>
                     </thead>
                     <tbody>
-                      {% for hardware in hardwares %}
                       <tr>
                         <td>{{hardwareType }}</td>
-                        <td>{{hardware.hardware_id}}</td>
-                        <td><a href="{% url 'laptop' hardware.hardware_id.id %}">{{hardware.hardware_id.laptop_sr_no}}</a></td>
-                      </tr>
-                      {% endfor %}
+                        <td>{{laptop_assigned.hardware_id}}</td>
+                        <td>{{laptop_assigned.laptop_sr_no}}</td>
+                      </tr> 
                     </tbody>
                 </table>
                 

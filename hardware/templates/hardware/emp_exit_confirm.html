@@ -1,4 +1,5 @@
 {% extends 'hardware/main.html' %}
+{% load crispy_forms_tags %}
 
 {% block content %}
 <div class="container my-4">
@@ -6,7 +7,7 @@
         <div class="col">
             <div class="card card-body">
                 <h5 class="card-title">Hardware(s) Assigned</h5>
-                <a class="btn btn-primary" href="{% url 'emp_exit_complete' employee_info.emp_id %}">Proceed with Exit</a>
+                <!--<a class="btn btn-primary" href="{% url 'emp_exit_complete' employee_info.emp_id %}">Proceed with Exit</a>-->
                 <table class="table table-stripped">
                     <thead>
                       <tr>
@@ -32,11 +33,16 @@
             </div>
         </div>
         <div class="col">
-          <form method="POST">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" name="Submit"></input>
-          </form>
+          <div class="card card-body">
+            <form enctype="multipart/form-data" method="POST">
+              {% csrf_token %}
+              {{ laptop_exit_form|crispy }}
+              <br>
+              {{laptop_exit_media_form|crispy}}
+              <br>
+              <input type="submit" name="Submit" class="btn btn-success"></input>
+            </form>
+          </div>
         </div>
     </div>
 </div>
