@@ -6,6 +6,7 @@
             <div class="card-body">
             <h5 class="card-title"> Hardware ID: {{laptop_info.hardware_id}}</h5>
             <h6 class="card-subtitle mb-2 text-muted">Age: {{laptop_info.laptop_age}}</h6>
+            <h6 class="card-link"><a href="{% url 'lap_image_history' laptop_info.id %}">Image History</a></h6>
             </div>
         </div>
     </div>

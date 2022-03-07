@@ -1,0 +1,23 @@
+{% extends 'hardware/main.html' %}
+
+{% block content %}
+<div class="container">
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">File Name</th>
+            <th scope="col">Image</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for image in images %}
+        <tr>
+            <td>{{image.media}}</td>
+            <td><a href="#"><img src="{{image.media.url}}" alt="" height="200px"></a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}

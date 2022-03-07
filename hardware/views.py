@@ -347,3 +347,10 @@ def emp_exit_complete(request, pk):
     messages.success(request, f"{employee.emp_name}'s Exit succesfully processed.")
 
     return redirect('employee', employee.emp_id)
+
+def lap_image_history(request, pk):
+    laptop = Laptop.objects.get(id=pk)
+    images = laptop.laptopmedia_set.all()
+
+    context = {'images':images}
+    return render(request, 'hardware/laptop_image_history.html', context)

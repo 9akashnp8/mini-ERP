@@ -112,7 +112,7 @@ class Laptop(models.Model):
     laptop_date_created = models.DateField(auto_now_add=True)
     laptop_date_returned = models.DateField(null=True, blank=True)
     laptop_return_remarks = models.TextField(max_length=500, null=True, blank=True)
-    history = HistoricalRecords(excluded_fields=['media'])
+    history = HistoricalRecords()
 
     
     def __str__(self):
@@ -133,7 +133,7 @@ class Laptop(models.Model):
         return age_stripped
 
 def path_and_rename(instance, filename):
-    upload_to='uploads/'
+    upload_to='images/'
     ext = filename.split('.')[-1]
     if instance.pk:
         filename = '{}.{}'.format(instance.pk, ext)
