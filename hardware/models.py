@@ -1,7 +1,9 @@
+from uuid import uuid4
 from django.db import models
 from simple_history.models import HistoricalRecords
 from django.contrib.auth.models import User
 from datetime import date
+import os
 
 #Models for Employee side of the app
 class Department(models.Model):
@@ -55,10 +57,6 @@ class LaptopModel(models.Model):
     def __str__(self):
         return self.model_name
 
-class LaptopMedia(models.Model):
-    id = models.AutoField(primary_key=True, editable=False)
-    media = models.ImageField(upload_to='uploads/')
-
 class Employee(models.Model):
     EMPLOYEE_STATUS = (
         ('Active', 'Active'),
@@ -106,7 +104,7 @@ class Laptop(models.Model):
     laptop_sr_no = models.CharField(max_length=100, unique=True)
     brand = models.ForeignKey(LaptopBrand, null=True, on_delete=models.SET_NULL)
     model = models.ForeignKey(LaptopModel, null=True, on_delete=models.SET_NULL)
-    media = models.ForeignKey(LaptopMedia, null=True, blank=True, on_delete=models.SET_NULL)
+    #media = models.ForeignKey(LaptopMedia, null=True, blank=True, on_delete=models.SET_NULL)
     laptop_status = models.CharField(max_length=20, null=True, choices=LAPTOP_STATUSES)
     laptop_location = models.ForeignKey(Location, null=True, blank=False, on_delete=models.SET_NULL)
     laptop_date_purchased = models.DateField(null=True)
@@ -114,7 +112,7 @@ class Laptop(models.Model):
     laptop_date_created = models.DateField(auto_now_add=True)
     laptop_date_returned = models.DateField(null=True, blank=True)
     laptop_return_remarks = models.TextField(max_length=500, null=True, blank=True)
-    history = HistoricalRecords()
+    history = HistoricalRecords(excluded_fields=['media'])
 
     
     def __str__(self):
@@ -133,6 +131,20 @@ class Laptop(models.Model):
         age = today - self.laptop_date_purchased
         age_stripped = str(age).split(",", 1)[0]
         return age_stripped
+
+def path_and_rename(instance, filename):
+    upload_to='uploads/'
+    ext = filename.split('.')[-1]
+    if instance.pk:
+        filename = '{}.{}'.format(instance.pk, ext)
+    else:
+        filename = '{}-for-{}.{}'.format(date.today(), instance.laptop_id, ext)
+    return os.path.join(upload_to, filename)
+
+class LaptopMedia(models.Model):
+    id = models.AutoField(primary_key=True, editable=False)
+    media = models.ImageField(upload_to=path_and_rename)
+    laptop_id = models.ForeignKey(Laptop, null=True, on_delete=models.CASCADE)
 
 #Model linking the Employee to the various hardwares (Eg: Laptops, Tablets)
 class Hardware(models.Model):

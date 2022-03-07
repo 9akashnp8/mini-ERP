@@ -3,6 +3,8 @@ from django.forms import DateInput, ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Designation, Employee, Hardware, Laptop, LaptopMedia
+import os
+from uuid import uuid4
 
 class EmployeeForm(ModelForm):
     class Meta:

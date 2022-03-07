@@ -315,7 +315,7 @@ def emp_exit_confirm(request, pk):
     laptop_assigned = Laptop.objects.get(emp_id=pk)
     hardware_type = Hardware._meta.get_field('hardware_id').remote_field.model.__name__
 
-    laptop_exit_form = EmployeeExitFormLaptop(initial={'laptop_date_returned':datetime.date.today(), 'laptop_return_remarks':'Enter Any Remarks here'})
+    laptop_exit_form = EmployeeExitFormLaptop(initial={'laptop_date_returned':'YYYY-DD-MM', 'laptop_return_remarks':''})
     laptop_exit_media_form = EmployeeExitFormLaptopImage(instance=laptop_assigned)
 
     if request.method == "POST":

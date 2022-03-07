@@ -66,7 +66,7 @@
                       <td>
                           {% if change.changed_fields|length > 0 %}
                               {% for change_by_id in change.changes %}
-                                {% if change_by_id.field|title == 'Emp_Id' %}
+                                {% if change_by_id.field == 'emp_id' %}
                                     The Laptop was transfered from
                                     {% if change_by_id.old %}
                                         <b><a href="{% url 'employee' change_by_id.old %}">{{change_by_id.old}}</a></b>
@@ -79,6 +79,10 @@
                                         to <b><a href="{% url 'employee' change_by_id.new %}">{{change_by_id.new}}</a></b>
                                     {% endif %}
                                     <br>
+                                {% elif change_by_id.field == 'laptop_date_returned' %}
+                                    The Laptop was returned on <b>{{change_by_id.new}}</b>
+                                {% elif change_by_id.field == 'laptop_return_remarks' %}
+                                    and had the following remarks: <b>{{change_by_id.new}}</b>
                                 {% else %}
                                     The field: <b>{{change_by_id.field|title}}</b> was changed from:
                                     {% if change_by_id.old %}
