@@ -145,6 +145,7 @@ class LaptopMedia(models.Model):
     id = models.AutoField(primary_key=True, editable=False)
     media = models.ImageField(upload_to=path_and_rename)
     laptop_id = models.ForeignKey(Laptop, null=True, on_delete=models.CASCADE)
+    uploaded_at = models.DateField(auto_now_add=True)
 
 #Model linking the Employee to the various hardwares (Eg: Laptops, Tablets)
 class Hardware(models.Model):

@@ -1,23 +1,24 @@
 {% extends 'hardware/main.html' %}
+{% load static %}
 
 {% block content %}
 <div class="container">
-    <table class="table">
+    <table class="table table-bordered">
         <thead>
-        <tr>
-            <th scope="col">File Name</th>
-            <th scope="col">Image</th>
-
-        </tr>
+            <tr>
+                <td class="text-center">Date Returned</td>
+                <td class="text-center">Image</td>
+            </tr>
         </thead>
         <tbody>
-        {% for image in images %}
-        <tr>
-            <td>{{image.media}}</td>
-            <td><a href="#"><img src="{{image.media.url}}" alt="" height="200px"></a></td>
-        </tr>
-        {% endfor %}
+            {% for image in images %}
+            <tr>
+                <td class="text-center align-middle">{{image.uploaded_at}}</td>
+                <td class="text-center  align-middle"><a href="{{ image.media.url }}"><img src="{{ image.media.url }}" width="350px" alt="{{image.uploaded_at}}"></a></td>
+            </tr>
+            {% endfor %}
         </tbody>
     </table>
 </div>
+
 {% endblock content %}
