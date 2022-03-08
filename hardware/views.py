@@ -66,12 +66,55 @@ def onboading(request):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def replace(request):
-    return render(request, 'hardware/replace.html')
+    employees = Employee.objects.filter(emp_status='Active')
+    myExitFilter = ExitEmployeeFilter(request.GET, queryset=employees)
+    employees = myExitFilter.qs
 
-@login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
-def exit_return(request):
-    return render(request, 'hardware/exit.html')
+    context = {'myExitFilter':myExitFilter, 'employees':employees}
+    return render(request, 'hardware/replace.html', context)
+
+def replace_confirm(request, pk):
+    employee_info = Employee.objects.get(emp_id=pk)
+    laptop_assigned = Laptop.objects.get(emp_id=pk)
+    hardware_type = Hardware._meta.get_field('hardware_id').remote_field.model.__name__
+
+    laptop_exit_form = EmployeeExitFormLaptop(initial={'laptop_date_returned':'YYYY-DD-MM', 'laptop_return_remarks':''})
+    laptop_exit_media_form = EmployeeExitFormLaptopImage(instance=laptop_assigned)
+
+    if request.method == "POST":
+        laptop_exit_form = EmployeeExitFormLaptop(request.POST, initial={'laptop_date_returned':datetime.date.today(), 'laptop_return_remarks':'Enter Any Remarks here'}, instance=laptop_assigned)
+        laptop_exit_media_form = EmployeeExitFormLaptopImage(request.POST, request.FILES)
+        if laptop_exit_form.is_valid() and laptop_exit_media_form.is_valid():
+            laptop_assigned.media = laptop_exit_media_form.save()
+            laptop_exit_form.save()
+            laptop_exit_media_form.save()
+
+            laptop_assigned.emp_id=None
+            laptop_assigned.save()
+            
+            return redirect('replace_assign_new', employee_info.emp_id)
+
+    context = {'employee_info':employee_info, 'hardware_type':hardware_type,
+    'laptop_assigned':laptop_assigned, 'laptop_exit_form':laptop_exit_form,
+    'laptop_exit_media_form':laptop_exit_media_form}
+
+    return render(request, 'hardware/replace_confirm.html', context)
+
+def replace_assign_new(request, pk):
+    employee = Employee.objects.get(emp_id=pk)
+    free_laptops = Laptop.objects.filter(laptop_location=employee.loc_id, laptop_status='Working', emp_id=None)
+    request.session['employee'] = employee.emp_id
+
+    context={'employee':employee, 'free_laptops':free_laptops}
+    return render(request, 'hardware/replace_assign_new.html', context)
+
+def replace_complete(request, pk):
+    laptop_assigned = Laptop.objects.get(id=pk)
+    laptop_assigned.emp_id = Employee.objects.get(emp_id=request.session['employee'])
+    laptop_assigned.save()
+    del request.session['employee']
+
+    return redirect('laptop', laptop_assigned.id)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -342,12 +385,13 @@ def emp_exit_complete(request, pk):
     employee.save()
     laptop_assigned.emp_id = None
     laptop_assigned.save()
-    
 
     messages.success(request, f"{employee.emp_name}'s Exit succesfully processed.")
 
     return redirect('employee', employee.emp_id)
 
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def lap_image_history(request, pk):
     laptop = Laptop.objects.get(id=pk)
     images = laptop.laptopmedia_set.all()

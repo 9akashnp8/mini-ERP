@@ -8,8 +8,10 @@ urlpatterns = [
     path('logout/', views.logoutPage, name='logout'),
     path('', views.home, name='home'),
     path('onboarding/', views.onboading),
-    path('replace/', views.replace),
-    path('return/', views.exit_return),
+    path('replace/', views.replace, name='replace'),
+    path('replace_confirm/<str:pk>', views.replace_confirm, name='replace_confirm'),
+    path('replace_assign_new/<str:pk>', views.replace_assign_new, name='replace_assign_new'),
+    path('replace_complete/<str:pk>', views.replace_complete, name='replace_complete'),
 
     #Employees
     path('dash_employees/', views.employees, name='dash_employees'),
