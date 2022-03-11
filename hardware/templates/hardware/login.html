@@ -8,116 +8,46 @@
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
 	<script src="https://kit.fontawesome.com/75c6941ba1.js" crossorigin="anonymous"></script>
 
-	<style>
-		body,
-		html {
-			margin: 0;
-			padding: 0;
-			height: 100%;
-			background: #fde4cf !important;
-		}
-		.user_card {
-			width: 350px;
-			margin-top: auto;
-			margin-bottom: auto;
-			background: #a3c4f3;
-			position: relative;
-			display: flex;
-			justify-content: center;
-			flex-direction: column;
-			padding: 10px;
-			box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-			-webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-			-moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-			border-radius: 5px;
-
-		}
-
-		.form_container {
-			margin-top: 20px;
-		}
-
-		#form-title{
-			color: #fff;
-			
-		}
-
-		.login_btn {
-			width: 100%;
-			background: #6c87ad !important;
-			color: white !important;
-		}
-		.login_btn:focus {
-			box-shadow: none !important;
-			outline: 0px !important;
-		}
-		.login_container {
-			padding: 0 2rem;
-		}
-		.input-group-text {
-			background: #fde4cf !important;
-			color: white !important;
-			border: 0 !important;
-			border-radius: 0.25rem 0 0 0.25rem !important;
-		}
-		.input_user,
-		.input_pass:focus {
-			box-shadow: none !important;
-			outline: 0px !important;
-		}
-
-		#messages{
-			background-color: grey;
-			color: #fff;
-			padding: 10px;
-			margin-top: 10px;
-		}
-	</style>
-
 </head>
 <body>
-	<div class="container h-100">
-		<div class="d-flex justify-content-center h-100">
-			<div class="user_card">
-				<div class="d-flex justify-content-center">
-
-
-					<h3 id="form-title">LOGIN</h3>
-				</div>
-				<div class="d-flex justify-content-center form_container">
-					<form method="POST" action="">
-                        {% csrf_token %}
-						<div class="input-group mb-3">
-							<div class="input-group-append">
-								<span class="input-group-text"><i class="fa-solid fa-user" style="color:#a3c4f3"></i></span>
-							</div>
+	<section class="h-100" style="background-color: #fafafa;">
+		<div class="container py-5 h-100">
+		  <div class="row d-flex justify-content-center align-items-center h-100">
+			<div class="col-12 col-md-8 col-lg-6 col-xl-5">
+			  <div class="card shadow p-3 mb-5 bg-white rounded" style="border-radius: 1rem;">
+				<div class="card-body p-5 text-center">
+					<form method="POST">
+						{% csrf_token %}
+						<h3 class="mb-5">Sign in</h3>
+			
+						<div class="form-outline mb-4">
 							<input type="text" name="username" placeholder="Username..." class="form-control">
 						</div>
-						<div class="input-group mb-2">
-							<div class="input-group-append">
-								<span class="input-group-text"><i class="fa-solid fa-key" style="color:#a3c4f3"></i></span>
-							</div>
-								<input type="password" name="password" placeholder="Password..." class="form-control" >
+			
+						<div class="form-outline mb-4">
+							<input type="password" name="password" placeholder="Password..." class="form-control" >
 						</div>
+						
+						<input class="btn btn-primary btn-lg btn-block" type="submit" value="Login">
+			
+						<hr class="my-4">
 
-							<div class="d-flex justify-content-center mt-3 login_container">
-				 				<input class="btn login_btn" type="submit" value="Login">
-				   			</div>
+						{% for message in messages %}
+							<p id="messages">{{message}}</p>
+						{% endfor %}
+						<div class="mt-4">
+							<div class="d-flex justify-content-center links">
+							Don't have an account? <a href="{% url 'register' %}" class="ml-2">Sign Up</a>
+							</div>
+						</div>
+						
 					</form>
-
-				</div>
-                {% for message in messages %}
-                    <p id="messages">{{message}}</p>
-                {% endfor %}
-				<div class="mt-4">
-					<div class="d-flex justify-content-center links">
-						Don't have an account? <a href="{% url 'register' %}" class="ml-2">Sign Up</a>
-					</div>
 			
 				</div>
+			  </div>
 			</div>
+		  </div>
 		</div>
-	</div>
+	  </section>
 </body>
-
 </html>
