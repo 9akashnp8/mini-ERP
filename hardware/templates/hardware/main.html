@@ -28,20 +28,20 @@
         <div class="border-end bg-white" id="sidebar-wrapper">
             <div class="sidebar-heading border-bottom bg-light">miniERP</div>
             <div class="list-group list-group-flush">
-                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'home' %}">Dashboard</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'home' %}"><i class="bi bi-layout-text-sidebar-reverse"></i> Dashboard</a>
                 {% if request.user.is_staff %}
                 <div class="dropdown">
                     <a class="list-group-item list-group-item-action list-group-item-light p-3 dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                      New
+                        <i class="bi bi-plus-square"></i>  New
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
-                      <li><a class="dropdown-item" href="{% url 'onbrd_emp_add' %}">Onboarding</a></li>
-                      <li><a class="dropdown-item" href="{% url 'replace' %}">Replacement Request</a></li>
-                      <li><a class="dropdown-item" href="{% url 'emp_exit' %}">Exit</a></li>
+                      <li><a class="dropdown-item" href="{% url 'onbrd_emp_add' %}"><i class="bi bi-person-plus-fill"></i> Onboarding</a></li>
+                      <li><a class="dropdown-item" href="{% url 'replace' %}"><i class="bi bi-arrow-repeat"></i> Replacement Request</a></li>
+                      <li><a class="dropdown-item" href="{% url 'emp_exit' %}"><i class="bi bi-person-dash-fill"></i> Exit</a></li>
                     </ul>
                   </div>
-                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'dash_employees' %}">Employees</a>
-                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'dash_laptops' %}">Laptops</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'dash_employees' %}"><i class="bi bi-people"></i> Employees</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'dash_laptops' %}"><i class="bi bi-laptop"></i> Laptops</a>
                 {% endif %}
             </div>
         </div>
@@ -58,10 +58,10 @@
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{request.user}}</a>
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="#!">Profile</a>
-                                    <a class="dropdown-item" href="#!">Settings</a>
+                                    <a class="dropdown-item" href="#!"><i class="bi bi-person-circle"></i> Profile</a>
+                                    <a class="dropdown-item" href="#!"><i class="bi bi-gear"></i> Settings</a>
                                     <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="{% url 'logout' %}">Log out</a>
+                                    <a class="dropdown-item" href="{% url 'logout' %}"><i class="bi bi-box-arrow-in-left"></i> Log out</a>
                                 </div>
                             </li>
                         </ul>
