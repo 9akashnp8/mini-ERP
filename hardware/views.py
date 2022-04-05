@@ -47,7 +47,7 @@ def loginPage(request):
             messages.info(request, "username OR password is Incorrect.")
 
     context = {}
-    return render(request, 'hardware/login.html', context)
+    return render(request, 'login.html', context)
 
 def logoutPage(request):
     logout(request)
@@ -56,12 +56,12 @@ def logoutPage(request):
 @login_required(login_url='login')
 @admin_only
 def home(request):
-    return render(request, 'hardware/dashboard.html')
+    return render(request, 'dashboard.html')
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def onboading(request):
-    return render(request, 'hardware/onboard.html')
+    return render(request, 'onboard/onboard.html')
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -71,7 +71,7 @@ def replace(request):
     employees = myExitFilter.qs
 
     context = {'myExitFilter':myExitFilter, 'employees':employees}
-    return render(request, 'hardware/replace.html', context)
+    return render(request, 'replace/replace.html', context)
 
 def replace_confirm(request, pk):
     employee_info = Employee.objects.get(emp_id=pk)
@@ -98,7 +98,7 @@ def replace_confirm(request, pk):
     'laptop_assigned':laptop_assigned, 'laptop_exit_form':laptop_exit_form,
     'laptop_exit_media_form':laptop_exit_media_form}
 
-    return render(request, 'hardware/replace_confirm.html', context)
+    return render(request, 'replace/replace_confirm.html', context)
 
 def replace_assign_new(request, pk):
     employee = Employee.objects.get(emp_id=pk)
@@ -106,7 +106,7 @@ def replace_assign_new(request, pk):
     request.session['employee'] = employee.emp_id
 
     context={'employee':employee, 'free_laptops':free_laptops}
-    return render(request, 'hardware/replace_assign_new.html', context)
+    return render(request, 'replace/replace_assign_new.html', context)
 
 def replace_complete(request, pk):
     laptop_assigned = Laptop.objects.get(id=pk)
@@ -129,7 +129,7 @@ def employees(request):
     context = {'active_emps': active_emps, 'inactive_emps': inactive_emps, 'employees': employees,
     'myFilter':myFilter}
 
-    return render(request, 'hardware/dash_employees.html', context)
+    return render(request, 'employees/dash_employees.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -159,7 +159,7 @@ def employee(request, pk):
 
     context = {'employee_info': employee_info, 'laptop_assigned': laptop_assigned,
     'hardware_type':hardware_type, 'changes':changes,}
-    return render(request, 'hardware/employee.html', context)
+    return render(request, 'employees/employee.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -173,7 +173,7 @@ def employee_add(request):
             return redirect('/dash_employees')
 
     context = {'form':form}
-    return render(request, 'hardware/employee_add.html', context)
+    return render(request, 'employees/employee_add.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -188,7 +188,7 @@ def employee_edit(request, pk):
             return redirect('/dash_employees')
 
     context = {'form':form}
-    return render(request, 'hardware/employee_add.html', context)
+    return render(request, 'employees/employee_add.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -199,7 +199,7 @@ def employee_del(request, pk):
         return redirect('/dash_employees')
 
     context = {'employee':employee}
-    return render(request, 'hardware/employee_del.html', context)
+    return render(request, 'employees/employee_del.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -216,7 +216,7 @@ def laptops(request):
     context = {'laps_for_repair':laps_for_repair, 'laps_for_replace':laps_for_replace, 
     'working_laps':working_laps, 'available_laps':available_laps, 'laps_in_use':laps_in_use,
     'assignable_laps':assignable_laps, 'repairable_laps':repairable_laps, 'replaceable_laps':replaceable_laps }
-    return render(request, 'hardware/dash_laptops.html', context)
+    return render(request, 'laptops/dash_laptops.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -239,7 +239,7 @@ def laptop(request, pk):
     changes = historical_changes(qry)
 
     context = {'laptop_info': laptop_info, 'changes':changes}
-    return render(request, 'hardware/laptop.html', context)
+    return render(request, 'laptops/laptop.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -253,7 +253,7 @@ def laptop_add(request):
             return redirect('/dash_laptops')
     
     context = {'form' : form}
-    return render(request, 'hardware/laptop_add.html', context)
+    return render(request, 'laptops/laptop_add.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -268,7 +268,7 @@ def laptop_edit(request, pk):
             return redirect('/dash_laptops')
 
     context = {'form':form}
-    return render(request, 'hardware/laptop_add.html', context)
+    return render(request, 'laptops/laptop_add.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -279,7 +279,7 @@ def laptop_del(request, pk):
         return redirect('/dash_laptops')
     
     context = {'laptop':laptop}
-    return render(request, 'hardware/laptop_del.html', context)
+    return render(request, 'laptops/laptop_del.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -292,7 +292,7 @@ def onbrd_emp_add(request):
             messages.success(request, "Added New Employee")
             return redirect('onbrd_hw_assign')
     context = {'form':form}
-    return render(request, 'hardware/onbrd_emp_add.html', context)
+    return render(request, 'onboard/onbrd_emp_add.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -302,7 +302,7 @@ def onbrd_hw_assign(request):
     free_laptops = Laptop.objects.filter(laptop_location=latest_emp.loc_id, laptop_status='Working', emp_id=None)
     
     context = {'latest_emp':latest_emp, 'free_laptops':free_laptops}
-    return render(request, 'hardware/onbrd_hw_assign.html', context)
+    return render(request, 'onboard/onbrd_hw_assign.html', context)
 
 def onbrd_complete(request, pk):
     laptop_assigned = Laptop.objects.get(id=pk)
@@ -325,7 +325,7 @@ def employeeProfile(request):
     print(laptop_assigned)
     hardwareType = Hardware._meta.get_field('hardware_id').remote_field.model.__name__
     context = {'laptop_assigned':laptop_assigned, 'hardwareType':hardwareType}
-    return render(request, 'hardware/empprofile.html', context)
+    return render(request, 'employees/empprofile.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['employee',])
@@ -339,7 +339,7 @@ def empSettingsPage(request):
             form.save()
 
     context = {'form':form}
-    return render(request, 'hardware/empSettingsPage.html', context)
+    return render(request, 'employees/empSettingsPage.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -349,7 +349,7 @@ def emp_exit(request):
     employees = myExitFilter.qs
 
     context = {'myExitFilter':myExitFilter, 'employees':employees}
-    return render(request, 'hardware/emp_exit.html', context)
+    return render(request, 'exit/emp_exit.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -374,7 +374,7 @@ def emp_exit_confirm(request, pk):
     context = {'employee_info':employee_info, 'hardware_type':hardware_type,
     'laptop_assigned':laptop_assigned, 'laptop_exit_form':laptop_exit_form,
     'laptop_exit_media_form':laptop_exit_media_form}
-    return render(request, 'hardware/emp_exit_confirm.html', context)
+    return render(request, 'exit/emp_exit_confirm.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -397,4 +397,4 @@ def lap_image_history(request, pk):
     images = laptop.laptopmedia_set.all()
 
     context = {'images':images}
-    return render(request, 'hardware/laptop_image_history.html', context)
+    return render(request, 'laptops/laptop_image_history.html', context)
