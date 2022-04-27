@@ -50,7 +50,6 @@
                         <th scope="col">Name</th>
                         <th scope="col">Location</th>
                         <th scope="col">Department</th>
-                        <th scope="col">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -60,7 +59,6 @@
                         <td><a href="{% url 'employee' pk=employee.emp_id %}">{{employee.emp_name}}</a></td>
                         <td>{{employee.loc_id}}</td>
                         <td>{{employee.dept_id}}</td>
-                        <td><a class="btn btn-primary btn-sm" href="{% url 'employee_edit' pk=employee.emp_id %}">Edit</a> <a href="{% url 'employee_del' pk=employee.emp_id %}" class="btn btn-danger btn-sm">Delete</a></td>
                       </tr>
                       {% endfor %}
                     </tbody>
