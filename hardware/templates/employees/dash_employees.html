@@ -5,17 +5,38 @@
 
 <div class="container px-4">
   <!--Title with action buttons-->
-  <div class="py-4 d-flex justify-content-between align-items-center">
-    <h2 class="mr-auto">Employees</h2>
-    <a href="#" class="btn btn-primary">New</a>
+  <div class="d-flex py-3">
+    <div class="me-auto p-2 bd-highlight">
+      <h2>Employees</h2>
+    </div>
+    <div class="p-2 bd-highlight">
+      <p>
+        <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+          <i class="bi bi-funnel-fill"></i> Filter   
+        </a>
+      </p>
+    </div>
+    <div class="p-2 bd-highlight">
+      <a href="{% url 'employee_add' %}" class="btn btn-primary">
+        <i class="bi bi-plus-square"></i> New
+      </a>
+    </div>
   </div>
 
   <!--Employee List Table-->
   <div class="card card-body">
-      <form method="GET">
-        {{myFilter.form}}
-        <button class="btn btn-primary" type="submit">Search</button>
-      </form>
+    <div class="collapse" id="collapseExample">
+      <div class="card card-body">
+        <form method="GET">
+          Employee Name: {{myFilter.form.name_contains}}
+          Department: {{myFilter.form.dept_id}}
+          Designation: {{myFilter.form.desig_id}}
+          Status: {{myFilter.form.emp_status}}
+  
+          <button class="btn btn-secondary" type="submit">Search</button>
+        </form>
+      </div>
+    </div>
       <table class="table table-stripped">
           <thead>
             <tr>
