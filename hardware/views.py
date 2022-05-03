@@ -194,9 +194,12 @@ def employee_edit(request, pk):
 @allowed_users(allowed_roles=['admin'])
 def employee_del(request, pk):
     employee = Employee.objects.get(emp_id=pk)
+    messages.success(request, f'Cancelled deletion of {employee}', extra_tags='cancel_delete')
     if request.method == "POST":
         employee.delete()
+        messages.success(request, f'Successfully Deleted {employee}', extra_tags='successful_delete')
         return redirect('/dash_employees')
+        
 
     context = {'employee':employee}
     return render(request, 'employees/employee_del.html', context)

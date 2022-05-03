@@ -8,6 +8,16 @@
   <div class="d-flex py-3">
     <div class="me-auto p-2 bd-highlight">
       <h2>Employees</h2>
+      {% if messages %}
+      <br>
+      <div class="alert alert-success alert-dismissible" role="alert">
+          {% for message in messages %}
+            {% if "successful_delete" in message.tags %}
+              <div class="fw-bold">{{message}}</div>
+            {% endif %}
+          {% endfor %}
+      </div>
+      {% endif %}
     </div>
     <div class="p-2 bd-highlight">
       <p>

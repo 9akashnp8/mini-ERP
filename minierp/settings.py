@@ -137,3 +137,5 @@ MEDIA_URL = '/uploads/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads/')
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
