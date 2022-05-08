@@ -187,7 +187,7 @@ def employee_edit(request, pk):
             form.save()
             return redirect('employee', employee.emp_id)
 
-    context = {'form':form}
+    context = {'form':form, 'employee':employee}
     return render(request, 'employees/employee_add.html', context)
 
 @login_required(login_url='login')

@@ -2,13 +2,34 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<div class="container">
-    <div class="card card-body">
-        <form action="" type="submit" method="POST" name="submit">
-            {% csrf_token %}
-            {{form|crispy}}
-            <input type="submit" name="Submit">
-        </form>
-    <div>
+<div class="container d-flex justify-content-center py-5">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-title"><h4>Editing {{employee.emp_name}}'s Details</h4></div>
+                <form action="" type="submit" method="POST" name="submit">
+                    {% csrf_token %}
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Name: {{form.emp_name}}</li>
+                        <li class="list-group-item">Desingation: {{form.desig_id}}</li>
+                        <li class="list-group-item">Department: {{form.dept_id}}</li>
+                        <li class="list-group-item">Employee ID: {{form.lk_emp_id}}</li>
+                        <li class="list-group-item">Employee Email: {{form.emp_email}}</li>
+                        <li class="list-group-item">Employee Phone: {{form.emp_phone}}</li>
+                        <li class="list-group-item">Location: {{form.loc_id}}</li>
+                        <li class="list-group-item" >Status: 
+                            {% if employee_info.emp_status == "InActive" %}
+                                <span style="color: red; font-weight: bold;">{{form.emp_status}}</span>
+                            {% else %}
+                                <span style="color: green; font-weight: bold;">{{form.emp_status}}</span>
+                            {% endif %}
+                        </li>
+                    </ul>
+                    <input type="submit" name="Submit">
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
+
 {% endblock %}
