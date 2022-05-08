@@ -7,6 +7,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="card-title"><h4>Editing {{employee.emp_name}}'s Details</h4></div>
+                <br>
                 <form action="" type="submit" method="POST" name="submit">
                     {% csrf_token %}
                     <ul class="list-group list-group-flush">
@@ -25,7 +26,9 @@
                             {% endif %}
                         </li>
                     </ul>
-                    <input type="submit" name="Submit">
+                    <br>
+                    <button class="btn btn-warning" href="{% url 'employee' employee.emp_id %}">Cancel</button>
+                    <input class="btn btn-primary" type="submit" name="Submit">
                 </form>
             </div>
         </div>

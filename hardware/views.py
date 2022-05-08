@@ -180,11 +180,12 @@ def employee_add(request):
 def employee_edit(request, pk):
     employee = Employee.objects.get(emp_id=pk)
     form = EmployeeForm(instance=employee)
-
+    
     if request.method == 'POST':
         form = EmployeeForm(request.POST, instance=employee)
         if form.is_valid():
             form.save()
+            messages.success(request, f'Successfully Edited {employee}', extra_tags='successful_edit')
             return redirect('employee', employee.emp_id)
 
     context = {'form':form, 'employee':employee}
