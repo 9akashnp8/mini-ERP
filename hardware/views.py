@@ -185,7 +185,7 @@ def employee_edit(request, pk):
         form = EmployeeForm(request.POST, instance=employee)
         if form.is_valid():
             form.save()
-            return redirect('/dash_employees')
+            return redirect('employee', employee.emp_id)
 
     context = {'form':form}
     return render(request, 'employees/employee_add.html', context)
