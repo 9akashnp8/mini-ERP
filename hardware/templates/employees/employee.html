@@ -35,6 +35,13 @@
                             <li class="list-group-item">Employee Email: {{employee_info.emp_email}}</li>
                             <li class="list-group-item">Employee Phone: {{employee_info.emp_phone}}</li>
                             <li class="list-group-item">Location: {{employee_info.loc_id}}</li>
+                            <li class="list-group-item" >Status: 
+                                {% if employee_info.emp_status == "InActive" %}
+                                    <span style="color: red; font-weight: bold;">{{employee_info.emp_status}}</span>
+                                {% else %}
+                                    <span style="color: green; font-weight: bold;">{{employee_info.emp_status}}</span>
+                                {% endif %}
+                            </li>
                         </ul>
                         {% if messages %}
                         <br>
@@ -83,7 +90,7 @@
     </div>
 
     <!--Edit History Table-->
-    <div class="container my-3">
+    <div class="container px-4 py-3">
         <div class="col">
             <div class="card card-body">
                 <div class="card-title"><h4>Edit History</h4></div>
