@@ -1,77 +1,54 @@
 {% extends 'hardware/main.html' %}
 
 {% block content %}
-<div class="container">
-    <div class="row my-2">
-        <div class="col-md-6">
-            <div class="row row-cols-1 row-cols-md-2 g-4">
-                <div class="col">
-                    <div class="card bg-secondary text-white">
-                        <div class="card-header">
-                          Laptops in Use
-                        </div>
-                        <div class="card-body">
-                          <h5 class="card-title">{{laps_in_use.count}}</h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card bg-secondary text-white">
-                        <div class="card-header">
-                          Available Laptops
-                        </div>
-                        <div class="card-body">
-                          <h5 class="card-title">{{available_laps.count}}</h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card text-white bg-success">
-                        <div class="card-header">
-                          Free to assign
-                        </div>
-                        <div class="card-body">
-                          <h5 class="card-title">{{assignable_laps.count}}</h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card bg-warning">
-                        <div class="card-header">
-                          Need to Repair
-                        </div>
-                        <div class="card-body">
-                          <h5 class="card-title">{{repairable_laps.count}}</h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card bg-danger text-white">
-                        <div class="card-header">
-                          Need to replace
-                        </div>
-                        <div class="card-body">
-                          <h5 class="card-title">{{replaceable_laps.count}}</h5>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<div class="container px-4">
+    <!--Title with action buttons New and Filter-->
+    <div class="d-flex py-3">
+        <div class="me-auto p-2 bd-highlight">
+          <h2>Laptops</h2>
+          {% if messages %}
+          <br>
+          <div class="alert alert-success alert-dismissible" role="alert">
+              {% for message in messages %}
+                {% if "successful_delete" in message.tags %}
+                  <div class="fw-bold">{{message}}</div>
+                {% endif %}
+              {% endfor %}
+          </div>
+          {% endif %}
         </div>
-        <div class="col-md-6">
-            <div class="card bg-secondary text-white">
-                <div class="card-header">
-                  Actions
-                </div>
-                <div class="card-body">
-                    <div class="card-text">
-                        <a class="btn btn-primary" href="{% url 'laptop_add' %}">Add New Laptop</a>
-                    </div>
-                </div>
-            </div>
+        <div class="p-2 bd-highlight">
+          <p>
+            <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+              <i class="bi bi-funnel-fill"></i> Filter   
+            </a>
+          </p>
+        </div>
+        <div class="p-2 bd-highlight">
+          <a href="{% url 'laptop_add' %}" class="btn btn-primary">
+            <i class="bi bi-plus-square"></i> New
+          </a>
+        </div>
+    </div>
+    
+    <!--Filter-->
+    <div class="collapse" id="collapseExample">
+        <div class="card card-body">
+          <form method="GET">
+            Serial No. : {{myFilter.form.laptop_sr_no}}
+            Hardware ID: {{myFilter.form.hardware_id}}
+            Brand: {{myFilter.form.brand}}
+            Status: {{myFilter.form.laptop_status}}
+            Location: {{myFilter.form.laptop_location}}
+    
+            <button class="btn btn-secondary" type="submit">Search</button>
+          </form>
         </div>
     </div>
 
-    <div class="row my-4">
+    <!--Available Laptop & In Use Laptops tables-->
+    <div class="row">
+        <!--Available Laptop Table-->
         <div class="col-md-6">
             <div class="card card-body">
                 <h5 class="card-title">Available Laptops</h5>
@@ -81,26 +58,26 @@
                         <th scope="col">Sr No</th>
                         <th scope="col">Staus</th>
                         <th scope="col">Age</th>
-                        <th scope="col">Actions</th>
+                        <th scope="col">Location</th>
                     </tr>
                     </thead>
                     <tbody>
-                        {% for lap in available_laps %}
-                            <tr>
-                                <td><a href="{% url 'laptop' lap.id %}">{{lap.laptop_sr_no}}</a></td>
-                                <td>{{lap.laptop_status}}</td>
-                                <td>{{lap.laptop_age}}</td>
-                                <td>
-                                    <a href="{% url 'laptop_edit' lap.id %}" class="btn btn-primary btn-sm">Edit</a> 
-                                    <a href="{% url 'laptop_del' lap.id %}" class="btn btn-danger btn-sm">Delete</a>
-                                </td>
-                            </tr>
+                        {% for lap in laptops %}
+                            {% if lap.emp_id == None %}
+                                <tr>
+                                    <td><a href="{% url 'laptop' lap.id %}">{{lap.laptop_sr_no}}</a></td>
+                                    <td>{{lap.laptop_status}}</td>
+                                    <td>{{lap.laptop_age}}</td>
+                                    <td>{{lap.laptop_location}}</td>
+                                </tr>
+                            {% endif %}
                         {% endfor %}
                     </tbody>
                 </table>
                 
             </div>
         </div>
+        <!--In Use Laptop Table-->
         <div class="col-md-6">
             <div class="card card-body">
                 <h5 class="card-title">Laps in Use</h5>
@@ -110,20 +87,19 @@
                         <th scope="col">Sr No</th>
                         <th scope="col">Status</th>
                         <th scope="col">Age</th>
-                        <th scope="col">Actions</th>
+                        <th scope="col">Location</th>
                     </tr>
                     </thead>
                     <tbody>
-                        {% for lap in laps_in_use %}
-                            <tr>
-                                <td><a href="{% url 'laptop' lap.id %}">{{lap.laptop_sr_no}}</a></td>
-                                <td>{{lap.laptop_status}}</td>
-                                <td>{{lap.laptop_age}}</td>
-                                <td>
-                                    <a class="btn btn-primary btn-sm" href="{% url 'laptop_edit' lap.id %}">Edit</a> 
-                                    <a class="btn btn-danger btn-sm" href="{% url 'laptop_del' lap.id %}">Delete</a> 
-                                </td>
-                            </tr>
+                        {% for lap in laptops %}
+                            {% if lap.emp_id != None %}
+                                <tr>
+                                    <td><a href="{% url 'laptop' lap.id %}">{{lap.laptop_sr_no}}</a></td>
+                                    <td>{{lap.laptop_status}}</td>
+                                    <td>{{lap.laptop_age}}</td>
+                                    <td>{{lap.laptop_location}}</td>
+                                </tr>
+                            {% endif %}
                         {% endfor %}
                     </tbody>
                 </table>
