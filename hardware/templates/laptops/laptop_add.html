@@ -1,15 +1,29 @@
 {% extends 'hardware/main.html' %}
 
 {% block content %}
-<div class="row">
+<div class="container d-flex justify-content-center py-5">
     <div class="col-md-6">
-        <div class="card card-body">
-            <form action="" type="submit" method="POST" name="submit">
-                {% csrf_token %}
-                {{form.as_p}}
-                <input type="submit" name="Submit">
-            </form>
-        <div>
+        <div class="card">
+            <div class="card-body">
+                <div class="card-title"><h4>Editing {{laptop.hardware_id}}'s Information</h4></div>
+                <br>
+                <form action="" type="submit" method="POST" name="submit">
+                    {% csrf_token %}
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Employee Assigned To: {{form.emp_id}}</li>
+                        <li class="list-group-item">Serial No.: {{form.laptop_sr_no}}</li>
+                        <li class="list-group-item">Brand: {{form.brand}}</li>
+                        <li class="list-group-item">Model: {{form.model}}</li>
+                        <li class="list-group-item">Status: {{form.laptop_status}}</li>
+                        <li class="list-group-item">Location: {{form.laptop_location}}</li>
+                        <li class="list-group-item">Purchase Date: {{form.laptop_date_purchased}}</li>
+                    </ul>
+                    <br>
+                    <button class="btn btn-warning" href="{% url 'laptop' laptop.id %}">Cancel</button>
+                    <input class="btn btn-primary" type="submit" name="Submit">
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

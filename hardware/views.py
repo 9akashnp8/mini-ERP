@@ -263,9 +263,9 @@ def laptop_edit(request, pk):
         form = LaptopForm(request.POST, instance=laptop)
         if form.is_valid():
             form.save()
-            return redirect('/dash_laptops')
+            return redirect('laptop', laptop.id)
 
-    context = {'form':form}
+    context = {'form':form, 'laptop':laptop}
     return render(request, 'laptops/laptop_add.html', context)
 
 @login_required(login_url='login')
