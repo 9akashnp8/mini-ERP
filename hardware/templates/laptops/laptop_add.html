@@ -20,8 +20,8 @@
                     </ul>
                     <br>
                     {% if request.resolver_match.url_name == 'laptop_edit' %}
-                        <button class="btn btn-warning" href="{% url 'dash_laptops' %}">Cancel</button>
-                    {% endif %}
+                        <a class="btn btn-warning" href="{% url 'dash_laptops' %}">Cancel</a>
+                    {% endif git %}
                     <input class="btn btn-primary" type="submit" name="Submit">
                 </form>
             </div>

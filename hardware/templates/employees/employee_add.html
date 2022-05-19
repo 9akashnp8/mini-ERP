@@ -28,7 +28,7 @@
                     </ul>
                     <br>
                     {% if request.resolver_match.url_name == 'employee_edit' %}
-                        <button class="btn btn-warning" href="{% url 'employee' employee.emp_id %}">Cancel</button>
+                        <a class="btn btn-warning" href="{% url 'employee' employee.emp_id %}">Cancel</a>
                     {% endif %}
                     <input class="btn btn-primary" type="submit" name="Submit">
                 </form>

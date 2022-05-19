@@ -187,6 +187,8 @@ def employee_edit(request, pk):
             form.save()
             messages.success(request, f'Successfully Edited {employee}', extra_tags='successful_edit')
             return redirect('employee', employee.emp_id)
+    else:
+        messages.success(request, f'Cancelled Editing of {employee}', extra_tags='cancel_edit')
 
     context = {'form':form, 'employee':employee}
     return render(request, 'employees/employee_add.html', context)
