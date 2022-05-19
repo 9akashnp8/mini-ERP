@@ -249,7 +249,7 @@ def laptop_add(request):
         if form.is_valid():
             form.save()
             return redirect('/dash_laptops')
-    
+
     context = {'form' : form}
     return render(request, 'laptops/laptop_add.html', context)
 

@@ -1,19 +1,15 @@
 {% extends 'hardware/main.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
 
 {% block content %}
-<div class="container">
-    <div class="row">
-        <div class="col-md-6">
-            <h3>Add Employee Details</h3>
-            <div class="card card-body">
-                <form action="" type="submit" method="POST" name="submit">
-                    {% csrf_token %}
-                    {{form|crispy}}
-                    <input type="submit" name="Submit">
-                </form>
-            <div>
-        </div>
+<div class="container px-4 d-flex flex-column align-items-center">
+    <div class="progressbar-wrapper">
+        <ul class="progressbar">
+            <li class="active">Add Employee Details</li>
+            <li>Assign Hardware</li>
+            <li>Onboarding Complete</li>
+        </ul>
     </div>
 </div>
 {% endblock %}
