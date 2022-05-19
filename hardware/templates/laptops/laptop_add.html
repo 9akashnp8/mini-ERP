@@ -19,7 +19,9 @@
                         <li class="list-group-item">Purchase Date: {{form.laptop_date_purchased}}</li>
                     </ul>
                     <br>
-                    <!--<button class="btn btn-warning" href="{% url 'dash_laptops' %}">Cancel</button>-->
+                    {% if request.resolver_match.url_name == 'laptop_edit' %}
+                        <button class="btn btn-warning" href="{% url 'dash_laptops' %}">Cancel</button>
+                    {% endif %}
                     <input class="btn btn-primary" type="submit" name="Submit">
                 </form>
             </div>
