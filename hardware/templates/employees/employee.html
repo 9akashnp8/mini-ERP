@@ -53,6 +53,8 @@
                                     <div class="fw-bold">{{message}}</div>
                                 {% elif "cancel_edit" in message.tags %}
                                     <div class="fw-bold">{{message}}</div>
+                                {% elif "exit_confirm" in message.tags %}
+                                    <div class="fw-bold">{{message}}</div>
                                 {% endif %}
                             {% endfor %}
                         </div>
