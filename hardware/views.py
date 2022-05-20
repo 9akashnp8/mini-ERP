@@ -265,7 +265,10 @@ def laptop_edit(request, pk):
         form = LaptopForm(request.POST, instance=laptop)
         if form.is_valid():
             form.save()
+            messages.success(request, f'Successfully Edited {laptop}', extra_tags='successful_edit')
             return redirect('laptop', laptop.id)
+    else:
+        messages.success(request, f'Cancelled Editing of {laptop}', extra_tags='cancel_edit')
 
     context = {'form':form, 'laptop':laptop}
     return render(request, 'laptops/laptop_add.html', context)
@@ -276,6 +279,7 @@ def laptop_del(request, pk):
     laptop = Laptop.objects.get(id=pk)
     if request.method == 'POST':
         laptop.delete()
+        messages.success(request, f"Succesfully deleted {laptop}", extra_tags="successful_delete")
         return redirect('/dash_laptops')
     
     context = {'laptop':laptop}

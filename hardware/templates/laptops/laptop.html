@@ -32,6 +32,18 @@
                     <p>Model: {{laptop_info.model}}</p>
                     </div>
                 </div>
+                {% if messages %}
+                <br>
+                <div class="alert alert-success alert-dismissible" role="alert">
+                    {% for message in messages %}
+                        {% if "cancel_edit" in message.tags %}
+                            <div class="fw-bold">{{message}}</div>
+                        {% elif "successful_edit" in message.tags %}
+                            <div class="fw-bold">{{message}}</div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                {% endif %}
             </div>
             <!--Laptop Other Info-->
             <div class="col-md-3">
