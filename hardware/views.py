@@ -12,7 +12,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib import messages
-import datetime
+from datetime import date
 
 @unauthenticated_user
 def register(request):
@@ -78,11 +78,13 @@ def replace_confirm(request, pk):
     laptop_assigned = Laptop.objects.get(emp_id=pk)
     hardware_type = Hardware._meta.get_field('hardware_id').remote_field.model.__name__
 
-    laptop_exit_form = EmployeeExitFormLaptop(initial={'laptop_date_returned':'YYYY-DD-MM', 'laptop_return_remarks':''})
+    today = date.today()
+
+    laptop_exit_form = EmployeeExitFormLaptop(initial={'laptop_date_returned':today.strftime("%b %d, %Y"), 'laptop_return_remarks':''})
     laptop_exit_media_form = EmployeeExitFormLaptopImage(instance=laptop_assigned)
 
     if request.method == "POST":
-        laptop_exit_form = EmployeeExitFormLaptop(request.POST, initial={'laptop_date_returned':datetime.date.today(), 'laptop_return_remarks':'Enter Any Remarks here'}, instance=laptop_assigned)
+        laptop_exit_form = EmployeeExitFormLaptop(request.POST, initial={'laptop_date_returned':today.strftime("%b %d, %Y"), 'laptop_return_remarks':'Enter Any Remarks here'}, instance=laptop_assigned)
         laptop_exit_media_form = EmployeeExitFormLaptopImage(request.POST, request.FILES)
         if laptop_exit_form.is_valid() and laptop_exit_media_form.is_valid():
             laptop_assigned.media = laptop_exit_media_form.save()
