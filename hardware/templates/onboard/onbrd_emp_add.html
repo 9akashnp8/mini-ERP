@@ -3,13 +3,37 @@
 {% load static %}
 
 {% block content %}
-<div class="container px-4 d-flex flex-column align-items-center">
-    <div class="progressbar-wrapper">
-        <ul class="progressbar">
-            <li class="active">Add Employee Details</li>
-            <li>Assign Hardware</li>
-            <li>Onboarding Complete</li>
-        </ul>
+<div class="container px-4">
+    <div class="progress my-4" style="height: 20px;">
+        <div class="progress-bar" role="progressbar" style="width: 30%;" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100">30%</div>
+    </div>
+    <div class="card-body">
+        <div class="card-title"><h4>Add New Employees Details</h4></div>
+        <br>
+        <form action="" type="submit" method="POST" name="submit">
+            {% csrf_token %}
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Name: {{form.emp_name}}</li>
+                <li class="list-group-item">Desingation: {{form.desig_id}}</li>
+                <li class="list-group-item">Department: {{form.dept_id}}</li>
+                <li class="list-group-item">Employee ID: {{form.lk_emp_id}}</li>
+                <li class="list-group-item">Employee Email: {{form.emp_email}}</li>
+                <li class="list-group-item">Employee Phone: {{form.emp_phone}}</li>
+                <li class="list-group-item">Location: {{form.loc_id}}</li>
+                <li class="list-group-item" >Status: 
+                    {% if employee_info.emp_status == "InActive" %}
+                        <span style="color: red; font-weight: bold;">{{form.emp_status}}</span>
+                    {% else %}
+                        <span style="color: green; font-weight: bold;">{{form.emp_status}}</span>
+                    {% endif %}
+                </li>
+            </ul>
+            <br>
+            {% if request.resolver_match.url_name == 'employee_edit' %}
+                <a class="btn btn-warning" href="{% url 'employee' employee.emp_id %}">Cancel</a>
+            {% endif %}
+            <input class="btn btn-primary" type="submit" name="Submit">
+        </form>
     </div>
 </div>
 {% endblock %}
