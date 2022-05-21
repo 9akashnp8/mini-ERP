@@ -1,4 +1,3 @@
-from tkinter.tix import Select
 from django.forms import DateInput, ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
