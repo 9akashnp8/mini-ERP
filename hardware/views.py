@@ -66,11 +66,12 @@ def onboading(request):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def replace(request):
-    employees = Employee.objects.filter(emp_status='Active')
+    employees = Employee.objects.filter(laptop__emp_id__isnull=False)
+    
     myExitFilter = ExitEmployeeFilter(request.GET, queryset=employees)
     employees = myExitFilter.qs
 
-    context = {'myExitFilter':myExitFilter, 'employees':employees}
+    context = {'myExitFilter':myExitFilter, 'employees':employees,}
     return render(request, 'replace/replace.html', context)
 
 def replace_confirm(request, pk):
