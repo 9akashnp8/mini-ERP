@@ -316,7 +316,7 @@ def onbrd_complete(request, pk):
     print(employee_to_assign.emp_id)
     laptop_assigned.emp_id = employee_to_assign
     laptop_assigned.save()
-    messages.success(request, f"{employee_to_assign} succesfully onboarded!")
+    messages.success(request, f"{employee_to_assign} succesfully onboarded!", extra_tags="onbrd_complete")
 
     return redirect('employee', employee_to_assign.emp_id)
 

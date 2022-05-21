@@ -55,6 +55,8 @@
                                     <div class="fw-bold">{{message}}</div>
                                 {% elif "exit_confirm" in message.tags %}
                                     <div class="fw-bold">{{message}}</div>
+                                {% elif "onbrd_complete" in message.tags %}
+                                    <div class="fw-bold">{{message}}</div>
                                 {% endif %}
                             {% endfor %}
                         </div>
