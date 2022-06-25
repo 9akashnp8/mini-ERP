@@ -1,3 +1,7 @@
+body {
+    font-family: 'Inter', sans-serif;
+}
+
 .form-input {
     display: grid;
     grid-template-columns: 1fr 1fr;
