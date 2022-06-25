@@ -169,11 +169,14 @@ def employee(request, pk):
 def employee_add(request):
     form = EmployeeForm()
     if request.method == "POST":
-        #print(request.POST)
+        print(request.POST)
         form = EmployeeForm(request.POST)
         if form.is_valid():
+            print(form.cleaned_data)
             form.save()
             return redirect('/dash_employees')
+        else:
+            print(form.errors)
 
     context = {'form':form}
     return render(request, 'employees/employee_add.html', context)

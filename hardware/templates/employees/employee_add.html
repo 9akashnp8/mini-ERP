@@ -3,29 +3,43 @@
 
 {% block content %}
 <div class="container d-flex justify-content-center py-5">
-    <div class="col-md-6">
+    <div class="col-md-8">
         <div class="card">
             <div class="card-body">
-                <div class="card-title"><h4>Editing {{employee.emp_name}}'s Details</h4></div>
+                <div class="card-title"><h4>Employee Details</h4></div>
                 <br>
                 <form action="" type="submit" method="POST" name="submit">
                     {% csrf_token %}
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">Name: {{form.emp_name}}</li>
-                        <li class="list-group-item">Desingation: {{form.desig_id}}</li>
-                        <li class="list-group-item">Department: {{form.dept_id}}</li>
-                        <li class="list-group-item">Employee ID: {{form.lk_emp_id}}</li>
-                        <li class="list-group-item">Employee Email: {{form.emp_email}}</li>
-                        <li class="list-group-item">Employee Phone: {{form.emp_phone}}</li>
-                        <li class="list-group-item">Location: {{form.loc_id}}</li>
-                        <li class="list-group-item" >Status: 
-                            {% if employee_info.emp_status == "InActive" %}
-                                <span style="color: red; font-weight: bold;">{{form.emp_status}}</span>
-                            {% else %}
-                                <span style="color: green; font-weight: bold;">{{form.emp_status}}</span>
-                            {% endif %}
-                        </li>
-                    </ul>
+                    <div class="form-input">
+                        <div class="emp_name input-item">
+                            <div class="label">Employee Name</div> 
+                            {{form.emp_name}}
+                        </div>
+                        <div class="desig_id input-item">
+                            <div class="label">Department</div>
+                            {{form.dept_id}}
+                        </div>
+                        <div class="desig_id input-item">
+                            <div class="label">Designation</div>
+                            {{form.desig_id}}
+                        </div>
+                        <div class="desig_id input-item">
+                            <div class="label">Email</div>
+                            {{form.emp_email}}
+                        </div>
+                        <div class="desig_id input-item">
+                            <div class="label">Phone</div>
+                            {{form.emp_phone}}
+                        </div>
+                        <div class="desig_id input-item">
+                            <div class="label">Branch</div>
+                            {{form.loc_id}}
+                        </div>
+                        <div class="desig_id input-item">
+                            <div class="label">Status</div>
+                            {{form.emp_status}}
+                        </div>
+                    </div>
                     <br>
                     {% if request.resolver_match.url_name == 'employee_edit' %}
                         <a class="btn btn-warning" href="{% url 'employee' employee.emp_id %}">Cancel</a>
