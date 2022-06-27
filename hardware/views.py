@@ -1,8 +1,4 @@
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import Group
-from django.core import serializers
-from django.urls import is_valid_path
 from .decorators import unauthenticated_user, allowed_users, admin_only
 from .models import *
 from .forms import *
@@ -10,7 +6,6 @@ from .filters import EmployeeFilter, ExitEmployeeFilter, LaptopFilter
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
 from django.contrib import messages
 from datetime import date
 
@@ -215,14 +210,14 @@ def employee_del(request, pk):
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
-def laptops(request):
+def laptops_list_view(request):
     laptops = Laptop.objects.all()
 
     myFilter = LaptopFilter(request.GET, queryset=laptops)
     laptops = myFilter.qs
 
     context = {'myFilter':myFilter, 'laptops': laptops}
-    return render(request, 'laptops/dash_laptops.html', context)
+    return render(request, 'laptops/laptops.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -249,21 +244,21 @@ def laptop(request, pk):
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
-def laptop_add(request):
+def laptop_add_view(request):
     form = LaptopForm()
 
     if request.method == 'POST':
         form = LaptopForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('/dash_laptops')
+            return redirect(laptops_list_view)
 
     context = {'form' : form}
-    return render(request, 'laptops/laptop_add.html', context)
+    return render(request, 'laptops/add_new_laptop.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
-def laptop_edit(request, pk):
+def laptop_edit_view(request, pk):
     laptop = Laptop.objects.get(id=pk)
     form = LaptopForm(instance=laptop)
 
@@ -277,19 +272,19 @@ def laptop_edit(request, pk):
         messages.success(request, f'Cancelled Editing of {laptop}', extra_tags='cancel_edit')
 
     context = {'form':form, 'laptop':laptop}
-    return render(request, 'laptops/laptop_add.html', context)
+    return render(request, 'laptops/add_new_laptop.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
-def laptop_del(request, pk):
+def laptop_delete_view(request, pk):
     laptop = Laptop.objects.get(id=pk)
     if request.method == 'POST':
         laptop.delete()
         messages.success(request, f"Succesfully deleted {laptop}", extra_tags="successful_delete")
-        return redirect('/dash_laptops')
+        return redirect(laptops_list_view)
     
     context = {'laptop':laptop}
-    return render(request, 'laptops/laptop_del.html', context)
+    return render(request, 'laptops/laptop_delete_form.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])

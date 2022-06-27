@@ -23,11 +23,11 @@ urlpatterns = [
     path('empSettingsPage/', views.empSettingsPage, name='empSettingsPage'),
 
     ##Laptop
-    path('dash_laptops/', views.laptops, name='dash_laptops'),
+    path('laptops/', views.laptops_list_view, name='dash_laptops'),
     path('laptop/<str:pk>', views.laptop, name='laptop'),
-    path('laptop_add/', views.laptop_add, name='laptop_add'),
-    path('laptop_edit/<str:pk>', views.laptop_edit, name='laptop_edit'),
-    path('laptop_del/<str:pk>', views.laptop_del, name='laptop_del'),
+    path('laptops/add/', views.laptop_add_view, name='laptop_add'),
+    path('laptop/<str:pk>/edit/', views.laptop_edit_view, name='laptop_edit'),
+    path('laptop/<str:pk>/delete/', views.laptop_delete_view, name='laptop_del'),
     path('lap_image_history/<str:pk>', views.lap_image_history, name='lap_image_history'),
 
     #Onboarding
