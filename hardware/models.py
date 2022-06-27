@@ -66,17 +66,14 @@ class Employee(models.Model):
     emp_id = models.AutoField(primary_key=True, editable=False)
     lk_emp_id = models.CharField(null=True, blank=True, max_length=15)
     dept_id = models.ForeignKey(Department, null=True, on_delete=models.SET_NULL)
-    desig_id = models.ForeignKey(Designation, null=True, on_delete=models.SET_NULL)
-    #laptop_assiged = models.ForeignKey(Laptop, null=True, blank=True, on_delete=models.SET_NULL)
-    #username = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='custom_username')
-    profilePic = models.ImageField(null=True, blank=True)
-    emp_name = models.CharField(max_length=100, null=True)
-    emp_email = models.CharField(max_length=100, null=True)
-    emp_phone = models.CharField(max_length=10)
-    emp_status = models.CharField(max_length=10, null=True, choices=EMPLOYEE_STATUS)
-    loc_id = models.ForeignKey(Location, null=True, blank=False, on_delete=models.SET_NULL)
-    emp_date_joined = models.DateField
-    emp_date_exited = models.DateField
+    desig_id = models.ForeignKey(Designation,  null=True, on_delete=models.SET_NULL)
+    emp_name = models.CharField(max_length=100)
+    emp_email = models.CharField(max_length=100)
+    emp_phone = models.CharField(max_length=10, null=True, blank=True)
+    emp_status = models.CharField(max_length=10, choices=EMPLOYEE_STATUS)
+    loc_id = models.ForeignKey(Location,  null=True, on_delete=models.SET_NULL)
+    emp_date_joined = models.DateField(default=date.today)
+    emp_date_exited = models.DateField(null=True, blank=True)
     emp_date_created = models.DateField(auto_now_add=True)
     history = HistoricalRecords()
 
@@ -90,6 +87,8 @@ class Employee(models.Model):
             prefix = 'LAK-IND'
             id = Employee.objects.count()+1
             self.lk_emp_id = prefix+'-'+'{0:01d}'.format(id)
+        if not self.emp_date_joined:
+            self.emp_date_joined = self.emp_date_created
         super(Employee, self).save(*args, **kwargs)
 
 class Laptop(models.Model):
