@@ -72,7 +72,7 @@ class Employee(models.Model):
     profilePic = models.ImageField(null=True, blank=True)
     emp_name = models.CharField(max_length=100, null=True)
     emp_email = models.CharField(max_length=100, null=True)
-    emp_phone = models.IntegerField(null=True)
+    emp_phone = models.CharField(max_length=10)
     emp_status = models.CharField(max_length=10, null=True, choices=EMPLOYEE_STATUS)
     loc_id = models.ForeignKey(Location, null=True, blank=False, on_delete=models.SET_NULL)
     emp_date_joined = models.DateField
