@@ -41,6 +41,13 @@ class Location(models.Model):
     def __str__(self):
         return self.location
 
+class Building(models.Model):
+    location = models.ForeignKey(Location, null=True, on_delete=models.SET_NULL)
+    building = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.building
+
 #Models for the Laptop side of the app
 class LaptopBrand(models.Model):
     id = models.AutoField(primary_key=True, editable=False)
@@ -83,12 +90,10 @@ class Employee(models.Model):
         return self.emp_name
     
     def save(self,*args, **kwargs):  
-        if not self.lk_emp_id:
-            prefix = 'LAK-IND'
-            id = Employee.objects.count()+1
-            self.lk_emp_id = prefix+'-'+'{0:01d}'.format(id)
-        if not self.emp_date_joined:
-            self.emp_date_joined = self.emp_date_created
+            # if not self.lk_emp_id:
+            #     prefix = 'LAK-IND'
+            #     id = Employee.objects.count()+1
+            #     self.lk_emp_id = prefix+'-'+'{0:01d}'.format(id)
         super(Employee, self).save(*args, **kwargs)
 
 class Laptop(models.Model):
@@ -97,15 +102,18 @@ class Laptop(models.Model):
         ('Repair', 'Repair'),
         ('Replace', 'Replace'),
     )
+
     id = models.AutoField(primary_key=True, editable=False)
     hardware_id = models.CharField(max_length=50, null=True, default=None, blank=True, unique=True)
     emp_id = models.ForeignKey(Employee, null=True, blank=True, on_delete=models.SET_NULL)
     laptop_sr_no = models.CharField(max_length=100, unique=True)
     brand = models.ForeignKey(LaptopBrand, null=True, on_delete=models.SET_NULL)
-    model = models.ForeignKey(LaptopModel, null=True, on_delete=models.SET_NULL)
-    #media = models.ForeignKey(LaptopMedia, null=True, blank=True, on_delete=models.SET_NULL)
+    processor = models.CharField(max_length=15, default='i3 11th gen')
+    ram_capacity = models.CharField(max_length=5, default='8GB')
+    storage_capacity = models.CharField(max_length=10, default='512GB')
     laptop_status = models.CharField(max_length=20, null=True, choices=LAPTOP_STATUSES)
-    laptop_location = models.ForeignKey(Location, null=True, blank=False, on_delete=models.SET_NULL)
+    laptop_branch = models.ForeignKey(Location, null=True, blank=False, on_delete=models.SET_NULL)
+    laptop_building = models.ForeignKey(Building, null=True, on_delete=models.SET_NULL)
     laptop_date_purchased = models.DateField(null=True)
     laptop_date_sold = models.DateField(null=True, blank=True)
     laptop_date_created = models.DateField(auto_now_add=True)

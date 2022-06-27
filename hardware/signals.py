@@ -10,7 +10,6 @@ def createUser(sender, instance, created, **kwargs):
         usercreated = User.objects.get(username=instance.emp_email)
         instance.user = User.objects.get(username=instance.emp_email)
         instance.save()
-        print(instance.user)
 
 post_save.connect(createUser, sender=Employee)
 

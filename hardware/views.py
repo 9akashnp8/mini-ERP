@@ -100,7 +100,7 @@ def replace_confirm(request, pk):
 
 def replace_assign_new(request, pk):
     employee = Employee.objects.get(emp_id=pk)
-    free_laptops = Laptop.objects.filter(laptop_location=employee.loc_id, laptop_status='Working', emp_id=None)
+    free_laptops = Laptop.objects.filter(laptop_branch=employee.loc_id, laptop_status='Working', emp_id=None)
     request.session['employee'] = employee.emp_id
 
     context={'employee':employee, 'free_laptops':free_laptops}
@@ -304,7 +304,7 @@ def onbrd_emp_add(request):
 def onbrd_hw_assign(request):
     
     latest_emp = Employee.objects.last()
-    free_laptops = Laptop.objects.filter(laptop_location=latest_emp.loc_id, laptop_status='Working', emp_id=None)
+    free_laptops = Laptop.objects.filter(laptop_branch=latest_emp.loc_id, laptop_status='Working', emp_id=None)
     
     context = {'latest_emp':latest_emp, 'free_laptops':free_laptops}
     return render(request, 'onboard/onbrd_hw_assign.html', context)
