@@ -116,7 +116,7 @@ def replace_complete(request, pk):
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
-def employees(request):
+def employee_list_view(request):
     employees = Employee.objects.all()
     active_emps = Employee.objects.filter(emp_status = 'Active').count()
     inactive_emps = Employee.objects.filter(emp_status = 'InActive').count()
@@ -127,7 +127,7 @@ def employees(request):
     context = {'active_emps': active_emps, 'inactive_emps': inactive_emps, 'employees': employees,
     'myFilter':myFilter}
 
-    return render(request, 'employees/dash_employees.html', context)
+    return render(request, 'employees/employees.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -161,7 +161,7 @@ def employee(request, pk):
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
-def employee_add(request):
+def employee_add_view(request):
     form = EmployeeForm()
     if request.method == "POST":
         print(request.POST)
@@ -169,16 +169,16 @@ def employee_add(request):
         if form.is_valid():
             print(form.cleaned_data)
             form.save()
-            return redirect('/dash_employees')
+            return redirect(employee_list_view)
         else:
             print(form.errors)
 
     context = {'form':form}
-    return render(request, 'employees/employee_add.html', context)
+    return render(request, 'employees/add_new_employee.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
-def employee_edit(request, pk):
+def employee_edit_view(request, pk):
     employee = Employee.objects.get(emp_id=pk)
     form = EmployeeForm(instance=employee)
     
@@ -192,21 +192,21 @@ def employee_edit(request, pk):
         messages.success(request, f'Cancelled Editing of {employee}', extra_tags='cancel_edit')
 
     context = {'form':form, 'employee':employee}
-    return render(request, 'employees/employee_add.html', context)
+    return render(request, 'employees/add_new_employee.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
-def employee_del(request, pk):
+def employee_delete_view(request, pk):
     employee = Employee.objects.get(emp_id=pk)
     messages.success(request, f'Cancelled deletion of {employee}', extra_tags='cancel_delete')
     if request.method == "POST":
         employee.delete()
         messages.success(request, f'Successfully Deleted {employee}', extra_tags='successful_delete')
-        return redirect('/dash_employees')
+        return redirect(employee_list_view)
         
 
     context = {'employee':employee}
-    return render(request, 'employees/employee_del.html', context)
+    return render(request, 'employees/employee_delete_form.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -321,25 +321,24 @@ def onbrd_complete(request, pk):
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['employee', 'admin'])
-def employeeProfile(request):
+def employee_profile_view(request):
     '''
     An 'employee self service' page where the employee can view all the hardware
     that have been assigned to him/her.
     '''
     laptop_assigned = Laptop.objects.get(emp_id=request.user.employee)
-    print(laptop_assigned)
     hardwareType = Hardware._meta.get_field('hardware_id').remote_field.model.__name__
     context = {'laptop_assigned':laptop_assigned, 'hardwareType':hardwareType}
-    return render(request, 'employees/empprofile.html', context)
+    return render(request, 'employees/employee_profile.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['employee',])
-def empSettingsPage(request):
+def employee_profile_edit_view(request):
     employee = request.user.employee
     form = EmployeeForm(instance=employee)
 
     if request.method == "POST":
-        form = EmployeeForm(request.POST, request.FILES, instance=employee)
+        form = EmployeeForm(request.POST, instance=employee)
         if form.is_valid():
             form.save()
 
