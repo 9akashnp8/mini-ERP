@@ -19,11 +19,13 @@ body {
 }
 
 #id_emp_name,
+#id_lk_emp_id,
 #id_desig_id,
 #id_dept_id,
 #id_emp_email,
 #id_emp_phone,
 #id_loc_id,
+#id_emp_date_joined,
 #id_emp_status {
     border: 1px solid grey;
     border-radius: 8px;

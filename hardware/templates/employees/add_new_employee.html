@@ -10,10 +10,15 @@
                 <br>
                 <form action="" type="submit" method="POST" name="submit">
                     {% csrf_token %}
+                    {{form.errors}}
                     <div class="form-input">
                         <div class="emp_name input-item">
                             <div class="label">Employee Name</div> 
                             {{form.emp_name}}
+                        </div>
+                        <div class="desig_id input-item">
+                            <div class="label">Employee ID</div> 
+                            {{form.lk_emp_id}}
                         </div>
                         <div class="desig_id input-item">
                             <div class="label">Department</div>
@@ -34,6 +39,10 @@
                         <div class="desig_id input-item">
                             <div class="label">Branch</div>
                             {{form.loc_id}}
+                        </div>
+                        <div class="desig_id input-item">
+                            <div class="label">Date of Joining</div>
+                            {{form.emp_date_joined}}
                         </div>
                         <div class="desig_id input-item">
                             <div class="label">Status</div>
