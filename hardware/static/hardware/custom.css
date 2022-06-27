@@ -23,8 +23,10 @@ body {
 #id_dept_id,
 #id_emp_email,
 #id_emp_phone,
-#id_loc_id {
+#id_loc_id,
+#id_emp_status {
     border: 1px solid grey;
     border-radius: 8px;
     height: 40px;
+    padding: 10px;
 }

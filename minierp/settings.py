@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'hardware.apps.HardwareConfig',
 
     #3rd party
+    'rest_framework',
     'simple_history',
     'django_filters',
     'import_export',
