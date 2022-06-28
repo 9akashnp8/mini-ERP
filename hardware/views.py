@@ -404,11 +404,11 @@ def emp_exit_complete(request, pk):
 
     return redirect('employee', employee.emp_id)
 
-@login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
-def lap_image_history(request, pk):
-    laptop = Laptop.objects.get(id=pk)
-    images = laptop.laptopmedia_set.all()
+# @login_required(login_url='login')
+# @allowed_users(allowed_roles=['admin'])
+# def lap_image_history(request, pk):
+#     laptop = Laptop.objects.get(id=pk)
+#     images = laptop.laptopmedia_set.all()
 
-    context = {'images':images}
-    return render(request, 'laptops/laptop_image_history.html', context)
+#     context = {'images':images}
+#     return render(request, 'laptops/laptop_image_history.html', context)
