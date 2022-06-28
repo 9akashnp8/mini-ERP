@@ -171,10 +171,8 @@ def employee(request, pk):
 def employee_add_view(request):
     form = EmployeeForm()
     if request.method == "POST":
-        print(request.POST)
         form = EmployeeForm(request.POST)
         if form.is_valid():
-            print(form.cleaned_data)
             form.save()
             return redirect(employee_list_view)
         else:
@@ -296,9 +294,9 @@ def laptop_delete_view(request, pk):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def onbrd_emp_add(request):
-    form = OnboardEmployeeAddForm()
+    form = EmployeeForm()
     if request.method == "POST":
-        form = OnboardEmployeeAddForm(request.POST)
+        form = EmployeeForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, "Added New Employee")
