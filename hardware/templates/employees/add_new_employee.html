@@ -2,62 +2,66 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<div class="container d-flex justify-content-center py-5">
+<div class="container d-flex justify-content-center py-4">
     <div class="col-md-8">
-        <div class="card">
-            <div class="card-body">
-                <div class="card-title"><h4>Employee Details</h4></div>
-                <br>
-                <form action="" type="submit" method="POST" name="submit"
-                    id="employeeForm" data-designations-url="{% url 'load_designations' %}">
-                    {% csrf_token %}
-                    {{form.errors}}
-                    <div class="form-input">
-                        <div class="emp_name input-item">
-                            <div class="label">Employee Name</div> 
-                            {{form.emp_name}}
-                        </div>
-                        <div class="desig_id input-item">
-                            <div class="label">Employee ID</div> 
-                            {{form.lk_emp_id}}
-                        </div>
-                        <div class="desig_id input-item">
-                            <div class="label">Department</div>
-                            {{form.dept_id}}
-                        </div>
-                        <div class="desig_id input-item">
-                            <div class="label">Designation</div>
-                            {{form.desig_id}}
-                        </div>
-                        <div class="desig_id input-item">
-                            <div class="label">Email</div>
-                            {{form.emp_email}}
-                        </div>
-                        <div class="desig_id input-item">
-                            <div class="label">Phone</div>
-                            {{form.emp_phone}}
-                        </div>
-                        <div class="desig_id input-item">
-                            <div class="label">Branch</div>
-                            {{form.loc_id}}
-                        </div>
-                        <div class="desig_id input-item">
-                            <div class="label">Date of Joining</div>
-                            {{form.emp_date_joined}}
-                        </div>
-                        <div class="desig_id input-item">
-                            <div class="label">Status</div>
-                            {{form.emp_status}}
-                        </div>
-                    </div>
-                    <br>
-                    {% if request.resolver_match.url_name == 'employee_edit' %}
-                        <a class="btn btn-warning" href="{% url 'employee' employee.emp_id %}">Cancel</a>
-                    {% endif %}
-                    <input class="btn btn-primary" type="submit" name="Submit">
-                </form>
+        <h4>Employee Details</h4>
+        <hr>
+        <form action="" type="submit" method="POST" name="submit"
+            id="employeeForm" data-designations-url="{% url 'load_designations' %}">
+            {% csrf_token %}
+            <div class="alert alert-warning alert-dismissible" role="alert">
+                {% if form.errors %}
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        {{field.label}} : {{error|escape}}
+                    {% endfor %}
+                {% endfor %}
+            {% endif %}
             </div>
-        </div>
+            <div class="form-input">
+                <div class="emp_name input-item">
+                    <div class="label">Employee Name</div> 
+                    {{form.emp_name}}
+                </div>
+                <div class="desig_id input-item">
+                    <div class="label">Employee ID</div> 
+                    {{form.lk_emp_id}}
+                </div>
+                <div class="desig_id input-item">
+                    <div class="label">Department</div>
+                    {{form.dept_id}}
+                </div>
+                <div class="desig_id input-item">
+                    <div class="label">Designation</div>
+                    {{form.desig_id}}
+                </div>
+                <div class="desig_id input-item">
+                    <div class="label">Email</div>
+                    {{form.emp_email}}
+                </div>
+                <div class="desig_id input-item">
+                    <div class="label">Phone</div>
+                    {{form.emp_phone}}
+                </div>
+                <div class="desig_id input-item">
+                    <div class="label">Branch</div>
+                    {{form.loc_id}}
+                </div>
+                <div class="desig_id input-item">
+                    <div class="label">Date of Joining</div>
+                    {{form.emp_date_joined}}
+                </div>
+                <div class="desig_id input-item">
+                    <div class="label">Status</div>
+                    {{form.emp_status}}
+                </div>
+            </div>
+            <br>
+            {% if request.resolver_match.url_name == 'employee_edit' %}
+                <a class="btn btn-warning" href="{% url 'employee' employee.emp_id %}">Cancel</a>
+            {% endif %}
+            <input class="btn btn-primary" type="submit" name="Submit">
+        </form>
     </div>
 </div>
 {% endblock %}
