@@ -85,15 +85,15 @@ def replace_confirm(request, pk):
     today = date.today()
 
     laptop_exit_form = EmployeeExitFormLaptop(initial={'laptop_date_returned':today.strftime("%b %d, %Y"), 'laptop_return_remarks':''})
-    laptop_exit_media_form = EmployeeExitFormLaptopImage(instance=laptop_assigned)
+    # laptop_exit_media_form = EmployeeExitFormLaptopImage(instance=laptop_assigned)
 
     if request.method == "POST":
         laptop_exit_form = EmployeeExitFormLaptop(request.POST, initial={'laptop_date_returned':today.strftime("%b %d, %Y"), 'laptop_return_remarks':'Enter Any Remarks here'}, instance=laptop_assigned)
-        laptop_exit_media_form = EmployeeExitFormLaptopImage(request.POST, request.FILES)
-        if laptop_exit_form.is_valid() and laptop_exit_media_form.is_valid():
-            laptop_assigned.media = laptop_exit_media_form.save()
+        # laptop_exit_media_form = EmployeeExitFormLaptopImage(request.POST, request.FILES)
+        if laptop_exit_form.is_valid():
+            # laptop_assigned.media = laptop_exit_media_form.save()
             laptop_exit_form.save()
-            laptop_exit_media_form.save()
+            # laptop_exit_media_form.save()
 
             laptop_assigned.emp_id=None
             laptop_assigned.save()
@@ -101,8 +101,7 @@ def replace_confirm(request, pk):
             return redirect('replace_assign_new', employee_info.emp_id)
 
     context = {'employee_info':employee_info, 'hardware_type':hardware_type,
-    'laptop_assigned':laptop_assigned, 'laptop_exit_form':laptop_exit_form,
-    'laptop_exit_media_form':laptop_exit_media_form}
+    'laptop_assigned':laptop_assigned, 'laptop_exit_form':laptop_exit_form}
 
     return render(request, 'replace/replace_confirm.html', context)
 
@@ -373,21 +372,20 @@ def emp_exit_confirm(request, pk):
     today = date.today()
 
     laptop_exit_form = EmployeeExitFormLaptop(initial={'laptop_date_returned':today.strftime('%b %d, %Y'), 'laptop_return_remarks':''})
-    laptop_exit_media_form = EmployeeExitFormLaptopImage(instance=laptop_assigned)
+    # laptop_exit_media_form = EmployeeExitFormLaptopImage(instance=laptop_assigned)
 
     if request.method == "POST":
         laptop_exit_form = EmployeeExitFormLaptop(request.POST, initial={'laptop_date_returned':today.strftime('%b %d, %Y'), 'laptop_return_remarks':'Enter Any Remarks here'}, instance=laptop_assigned)
-        laptop_exit_media_form = EmployeeExitFormLaptopImage(request.POST, request.FILES)
-        if laptop_exit_form.is_valid() and laptop_exit_media_form.is_valid():
-            laptop_assigned.media = laptop_exit_media_form.save()
+        # laptop_exit_media_form = EmployeeExitFormLaptopImage(request.POST, request.FILES)
+        if laptop_exit_form.is_valid():
+            # laptop_assigned.media = laptop_exit_media_form.save()
             laptop_exit_form.save()
-            laptop_exit_media_form.save()
+            # laptop_exit_media_form.save()
             messages.success(request, f"{employee_info.emp_name}'s Exit succesfully processed", extra_tags="exit_confirm")
             return redirect('emp_exit_complete', employee_info.emp_id)
 
     context = {'employee_info':employee_info, 'hardware_type':hardware_type,
-    'laptop_assigned':laptop_assigned, 'laptop_exit_form':laptop_exit_form,
-    'laptop_exit_media_form':laptop_exit_media_form}
+    'laptop_assigned':laptop_assigned, 'laptop_exit_form':laptop_exit_form}
     return render(request, 'exit/emp_exit_confirm.html', context)
 
 @login_required(login_url='login')

@@ -1,7 +1,7 @@
 from django.forms import DateInput, ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Department, Designation, Employee, Hardware, Laptop, LaptopMedia
+from .models import Department, Designation, Employee, Hardware, Laptop
 from crispy_forms.helper import FormHelper
 import os
 from uuid import uuid4
@@ -45,10 +45,10 @@ class OnboardEmployeeAddForm(ModelForm):
         fields = '__all__'
         exclude = ['user',]
 
-class EmployeeExitFormLaptopImage(ModelForm):
-    class Meta:
-        model = LaptopMedia
-        fields = ['media']
+# class EmployeeExitFormLaptopImage(ModelForm):
+#     class Meta:
+#         model = LaptopMedia
+#         fields = ['media']
     
 class EmployeeExitFormLaptop(ModelForm):
     class Meta:
