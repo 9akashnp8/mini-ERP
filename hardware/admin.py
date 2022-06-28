@@ -42,7 +42,6 @@ admin.site.register(Building)
 admin.site.register(Hardware, HardwareAdmin)
 admin.site.register(LaptopBrand)
 admin.site.register(LaptopModel)
-admin.site.register(LaptopMedia)
 admin.site.register(Laptop, LaptopModelAdmin)
 
 
