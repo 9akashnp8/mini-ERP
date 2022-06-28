@@ -16,6 +16,15 @@ class EmployeeForm(ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['desig_id'].queryset = Designation.objects.none()
 
+        if 'dept_id' in self.data:
+            try:
+                dept_id = int(self.data.get('dept_id'))
+                self.fields['desig_id'].queryset = Designation.objects.filter(dept_id=dept_id).order_by('designation')
+            except (ValueError, TypeError):
+                pass
+        elif self.instance.emp_id:
+            self.fields['desig_id'].queryset = Designation.objects.filter(dept_id=self.instance.dept_id).order_by('designation')
+
 class LaptopForm(ModelForm):
     class Meta:
         model = Laptop
