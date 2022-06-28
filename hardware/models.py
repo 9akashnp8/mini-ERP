@@ -16,7 +16,7 @@ class Department(models.Model):
 class Designation(models.Model):
     dept_id = models.ForeignKey(Department, null=True, on_delete=models.SET_NULL)
     designation_id = models.AutoField(primary_key=True, editable=False)
-    designation = models.CharField(max_length=20, null=False, blank=False)
+    designation = models.CharField(max_length=50, null=False, blank=False)
 
     def __str__(self):
         return self.designation
@@ -29,21 +29,21 @@ class Userz(models.Model):
     )
     user_id = models.AutoField(primary_key=True, editable=False)
     user_name = models.CharField(max_length=20, null=True, unique=True)
-    user_type = models.CharField(max_length=10, null=True, choices=USER_TYPES)
+    user_type = models.CharField(max_length=20, null=True, choices=USER_TYPES)
     
     def __str__(self):
         return self.user_name
 
 class Location(models.Model):
     location_id = models.AutoField(primary_key=True, editable=False)
-    location = models.CharField(max_length=20, null=True)
+    location = models.CharField(max_length=50, null=True)
 
     def __str__(self):
         return self.location
 
 class Building(models.Model):
     location = models.ForeignKey(Location, null=True, on_delete=models.SET_NULL)
-    building = models.CharField(max_length=20)
+    building = models.CharField(max_length=50)
 
     def __str__(self):
         return self.building
@@ -51,7 +51,7 @@ class Building(models.Model):
 #Models for the Laptop side of the app
 class LaptopBrand(models.Model):
     id = models.AutoField(primary_key=True, editable=False)
-    brand_name = models.CharField(max_length=20, null=True, blank=True)
+    brand_name = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
         return self.brand_name
