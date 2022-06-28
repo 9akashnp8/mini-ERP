@@ -293,36 +293,48 @@ def laptop_delete_view(request, pk):
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
-def onbrd_emp_add(request):
+def onboarding_add_employee_view(request):
+    """
+    View for Step 1/3 of 'Onboarding', adding the new employee details & saving it.
+    After saving it, it passes over the emp_id to Step 2 for Laptop selection.
+    """
     form = EmployeeForm()
     if request.method == "POST":
         form = EmployeeForm(request.POST)
         if form.is_valid():
-            form.save()
+            instance = form.save()
+            request.session['onboard_employee'] = instance.emp_id
             messages.success(request, "Added New Employee")
-            return redirect('onbrd_hw_assign')
+            return redirect(onboarding_assign_hardware_view)
+
     context = {'form':form}
-    return render(request, 'onboard/onbrd_emp_add.html', context)
+    return render(request, 'onboard/onboarding_add_employee.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
-def onbrd_hw_assign(request):
+def onboarding_assign_hardware_view(request):
+    """
+    View for Step 2/3 of 'Onboarding', selecting a laptop for the newly added employee
+    from the previous step. Available laptops are based of the employees Location.
+    """
+    onboarded_emp = Employee.objects.get(emp_id=request.session['onboard_employee'])
+    free_laptops = Laptop.objects.filter(laptop_branch=onboarded_emp.loc_id, laptop_status='Working', emp_id=None)
     
-    latest_emp = Employee.objects.last()
-    free_laptops = Laptop.objects.filter(laptop_branch=latest_emp.loc_id, laptop_status='Working', emp_id=None)
-    
-    context = {'latest_emp':latest_emp, 'free_laptops':free_laptops}
-    return render(request, 'onboard/onbrd_hw_assign.html', context)
+    context = {'onboarded_empp':onboarded_emp, 'free_laptops':free_laptops}
+    return render(request, 'onboard/onboarding_assign_hardware.html', context)
 
-def onbrd_complete(request, pk):
-    laptop_assigned = Laptop.objects.get(id=pk)
-    employee_to_assign = Employee.objects.last()
-    print(employee_to_assign.emp_id)
-    laptop_assigned.emp_id = employee_to_assign
-    laptop_assigned.save()
+def onboarding_complete_view(request, pk):
+    """
+    View for Step 3/3 of 'Onboarding', assigining the selected laptop from previous
+    step to the onboarded employee.
+    """
+    selected_laptop = Laptop.objects.get(id=pk)
+    employee_to_assign = Employee.objects.get(emp_id=request.session['onboard_employee'])
+    selected_laptop.emp_id = employee_to_assign
+    selected_laptop.save()
     messages.success(request, f"{employee_to_assign} succesfully onboarded!", extra_tags="onbrd_complete")
 
-    return redirect('employee', employee_to_assign.emp_id)
+    return redirect(employee, employee_to_assign.emp_id)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['employee', 'admin'])

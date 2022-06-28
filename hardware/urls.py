@@ -30,9 +30,9 @@ urlpatterns = [
     path('laptop/<str:pk>/delete/', views.laptop_delete_view, name='laptop_del'),
 
     #Onboarding
-    path('onbrd_emp_add', views.onbrd_emp_add, name='onbrd_emp_add'),
-    path('onbrd_hw_assign', views.onbrd_hw_assign, name='onbrd_hw_assign'),
-    path('onbrd_complete/<str:pk>', views.onbrd_complete, name='onbrd_complete'),
+    path('onboard/add/', views.onboarding_add_employee_view, name='onbrd_emp_add'),
+    path('onboard/assign/', views.onboarding_assign_hardware_view, name='onbrd_hw_assign'),
+    path('onboard/complete/<str:pk>', views.onboarding_complete_view, name='onbrd_complete'),
 
     #Exit
     path('emp_exit/', views.emp_exit, name='emp_exit'),
