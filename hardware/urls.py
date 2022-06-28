@@ -39,4 +39,6 @@ urlpatterns = [
     path('emp_exit_confirm/<str:pk>', views.emp_exit_confirm, name='emp_exit_confirm'),
     path('emp_exit_complete/<str:pk>', views.emp_exit_complete, name='emp_exit_complete'),
 
+    path('ajax/load-designations/', views.load_designations, name='load_designations'),
+
 ]

@@ -1,13 +1,21 @@
 from django.shortcuts import render, redirect
-from .decorators import unauthenticated_user, allowed_users, admin_only
-from .models import *
-from .forms import *
-from .filters import EmployeeFilter, ExitEmployeeFilter, LaptopFilter
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+
+from .decorators import unauthenticated_user, allowed_users, admin_only
+from .models import *
+from .forms import *
+from .filters import EmployeeFilter, ExitEmployeeFilter, LaptopFilter
+
 from datetime import date
+
+def load_designations(request):
+    dept_id = request.GET.get('dept_id')
+    designations = Designation.objects.filter(dept_id=dept_id).order_by('designation')
+    context = {'designations': designations}
+    return render(request, 'partials/designation_dropdown_list.html', context)
 
 @unauthenticated_user
 def register(request):

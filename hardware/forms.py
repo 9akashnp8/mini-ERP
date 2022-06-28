@@ -1,7 +1,7 @@
 from django.forms import DateInput, ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Designation, Employee, Hardware, Laptop, LaptopMedia
+from .models import Department, Designation, Employee, Hardware, Laptop, LaptopMedia
 from crispy_forms.helper import FormHelper
 import os
 from uuid import uuid4
@@ -14,7 +14,7 @@ class EmployeeForm(ModelForm):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['desig_id'].queryset = Designation.objects.all()
+        self.fields['desig_id'].queryset = Designation.objects.none()
 
 class LaptopForm(ModelForm):
     class Meta:

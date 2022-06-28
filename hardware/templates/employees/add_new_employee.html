@@ -8,7 +8,8 @@
             <div class="card-body">
                 <div class="card-title"><h4>Employee Details</h4></div>
                 <br>
-                <form action="" type="submit" method="POST" name="submit">
+                <form action="" type="submit" method="POST" name="submit"
+                    id="employeeForm" data-designations-url="{% url 'load_designations' %}">
                     {% csrf_token %}
                     {{form.errors}}
                     <div class="form-input">
@@ -59,5 +60,24 @@
         </div>
     </div>
 </div>
-
 {% endblock %}
+
+{% block js %}
+<script>
+    $("#id_dept_id").change(function () {
+      var url = $("#employeeForm").attr("data-designations-url");  // get the url of the `load_cities` view
+      var deptId = $(this).val();  // get the selected country ID from the HTML input
+
+      $.ajax({                       // initialize an AJAX request
+        url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+        data: {
+          'dept_id': deptId       // add the country id to the GET parameters
+        },
+        success: function (data) { // `data` is the return of the `load_cities` view function
+          $("#id_desig_id").html(data);  // replace the contents of the city input with the data that came from the server
+        }
+      });
+
+    });
+</script>
+{% endblock js%}
