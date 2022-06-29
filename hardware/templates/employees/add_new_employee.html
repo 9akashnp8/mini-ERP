@@ -9,15 +9,15 @@
         <form action="" type="submit" method="POST" name="submit"
             id="employeeForm" data-designations-url="{% url 'load_designations' %}">
             {% csrf_token %}
-            <div class="alert alert-warning alert-dismissible" role="alert">
-                {% if form.errors %}
+            {% if form.errors %}
+            <div class="alert alert-warning alert-dismissible" role="alert"> 
                 {% for field in form %}
                     {% for error in field.errors %}
                         {{field.label}} : {{error|escape}}
                     {% endfor %}
                 {% endfor %}
-            {% endif %}
             </div>
+            {% endif %}
             <div class="form-input">
                 <div class="emp_name input-item">
                     <div class="label">Employee Name</div> 
