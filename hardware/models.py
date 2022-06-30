@@ -77,7 +77,7 @@ class Employee(models.Model):
     emp_name = models.CharField(max_length=100)
     emp_email = models.CharField(max_length=100)
     emp_phone = models.CharField(max_length=10, null=True, blank=True)
-    emp_status = models.CharField(max_length=10, choices=EMPLOYEE_STATUS)
+    emp_status = models.CharField(max_length=10, choices=EMPLOYEE_STATUS, default='Active')
     loc_id = models.ForeignKey(Location,  null=True, on_delete=models.SET_NULL)
     emp_date_joined = models.DateField(default=date.today)
     emp_date_exited = models.DateField(null=True, blank=True)

@@ -1,21 +1,34 @@
-from django.forms import DateInput, ModelForm
+from django.forms import DateInput, ModelForm, ValidationError
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Department, Designation, Employee, Hardware, Laptop
-from crispy_forms.helper import FormHelper
-import os
+from .models import Designation, Employee, Laptop
 from uuid import uuid4
 
 class EmployeeForm(ModelForm):
+
     class Meta:
         model = Employee
         fields = '__all__'
         exclude = ['user',]
+        labels = {
+            'lk_emp_id': 'Employee ID',
+            'dept_id': 'Department',
+            'desig_id': 'Designation',
+            'emp_name': 'Name',
+            'emp_email': 'Email ID',
+            'emp_phone': 'Mobile Number',
+            'emp_status': 'Employee Status',
+            'loc_id': 'Branch',
+            'emp_date_joined': 'Date of Joining',
+            'emp_date_exited': 'Date of Exit',
+            'is_assigned': 'Laptop Assigned?'
+        }
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['desig_id'].queryset = Designation.objects.none()
 
+        #Department-Designation auto dependant dropdown
+        self.fields['desig_id'].queryset = Designation.objects.none()
         if 'dept_id' in self.data:
             try:
                 dept_id = int(self.data.get('dept_id'))
@@ -24,6 +37,15 @@ class EmployeeForm(ModelForm):
                 pass
         elif self.instance.emp_id:
             self.fields['desig_id'].queryset = Designation.objects.filter(dept_id=self.instance.dept_id).order_by('designation')
+        
+        #Custom class names for form fields styling
+        for key in self.fields:
+            self.fields[key].widget.attrs.update({'class': 'employee-form-fields'})
+    
+    def clean(self):
+        email = self.cleaned_data['emp_email']
+        if User.objects.filter(email=email).exists():
+            raise ValidationError("Email ID is already being used for an ERP User. Please use another email")
 
 class LaptopForm(ModelForm):
 
@@ -37,8 +59,10 @@ class LaptopForm(ModelForm):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        #Custom class names for form field styling
         for key in self.fields:
-            self.fields[key].widget.attrs.update({'class': 'laptop-form-field'})
+            self.fields[key].widget.attrs.update({'class': 'laptop-form-fields'})
 
 class LaptopAssignmentForm(ModelForm):
     class Meta:

@@ -304,7 +304,7 @@ def onboarding_add_employee_view(request):
         if form.is_valid():
             instance = form.save()
             request.session['onboard_employee'] = instance.emp_id
-            messages.success(request, "Added New Employee")
+            messages.success(request, f"Added New Employee {instance.emp_name}")
             return redirect(onboarding_assign_hardware_view)
 
     context = {'form':form}
@@ -320,7 +320,7 @@ def onboarding_assign_hardware_view(request):
     onboarded_emp = Employee.objects.get(emp_id=request.session['onboard_employee'])
     free_laptops = Laptop.objects.filter(laptop_branch=onboarded_emp.loc_id, laptop_status='Working', emp_id=None)
     
-    context = {'onboarded_empp':onboarded_emp, 'free_laptops':free_laptops}
+    context = {'onboarded_emp':onboarded_emp, 'free_laptops':free_laptops}
     return render(request, 'onboard/onboarding_assign_hardware.html', context)
 
 def onboarding_complete_view(request, pk):
