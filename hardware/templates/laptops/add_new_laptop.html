@@ -2,30 +2,34 @@
 
 {% block content %}
 <div class="container d-flex justify-content-center py-5">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-body">
-                <div class="card-title"><h4>Editing {{laptop.hardware_id}}'s Information</h4></div>
-                <br>
-                <form action="" type="submit" method="POST" name="submit">
-                    {% csrf_token %}
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">Employee Assigned To: {{form.emp_id}}</li>
-                        <li class="list-group-item">Serial No.: {{form.laptop_sr_no}}</li>
-                        <li class="list-group-item">Brand: {{form.brand}}</li>
-                        <li class="list-group-item">Model: {{form.model}}</li>
-                        <li class="list-group-item">Status: {{form.laptop_status}}</li>
-                        <li class="list-group-item">Location: {{form.laptop_location}}</li>
-                        <li class="list-group-item">Purchase Date: {{form.laptop_date_purchased}}</li>
-                    </ul>
-                    <br>
-                    {% if request.resolver_match.url_name == 'laptop_edit' %}
-                        <a class="btn btn-warning" href="{% url 'laptop' laptop.id %}">Cancel</a>
-                    {% endif %}
-                    <input class="btn btn-primary" type="submit" name="Submit">
-                </form>
-            </div>
+    <div class="col-md-8">
+        <h4>Editing {{laptop.hardware_id}}'s Information</h4>
+        {% if form.errors %}
+        <div class="alert alert-warning alert-dismissible" role="alert"> 
+            {% for field in form %}
+                {% for error in field.errors %}
+                    {{field.label}} : {{error|escape}}
+                {% endfor %}
+            {% endfor %}
         </div>
+        {% endif %}
+        <br>
+        <form action="" type="submit" method="POST" name="submit">
+            {% csrf_token %}
+            <div class="form-input">
+                {% for field in form %}
+                <div class="input-item">
+                    <div class="label">{{field.label}}</div> 
+                    {{field}}
+                </div>
+                {% endfor %}
+            </div>
+            <br>
+            {% if request.resolver_match.url_name == 'laptop_edit' %}
+                <a class="btn btn-warning" href="{% url 'laptop' laptop.id %}">Cancel</a>
+            {% endif %}
+            <input class="btn btn-primary" type="submit" name="Submit">
+        </form>
     </div>
 </div>
 {% endblock %}

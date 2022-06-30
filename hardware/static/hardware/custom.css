@@ -26,9 +26,14 @@ body {
 #id_emp_phone,
 #id_loc_id,
 #id_emp_date_joined,
-#id_emp_status {
+#id_emp_status,
+.laptop-form-field {
     border: 1px solid grey;
     border-radius: 8px;
-    height: 40px;
+    height: 45px;
     padding: 10px;
+}
+
+input.laptop-form-field:focus {
+    outline-color: #0d6efd;
 }

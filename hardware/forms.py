@@ -26,6 +26,7 @@ class EmployeeForm(ModelForm):
             self.fields['desig_id'].queryset = Designation.objects.filter(dept_id=self.instance.dept_id).order_by('designation')
 
 class LaptopForm(ModelForm):
+
     class Meta:
         model = Laptop
         fields = '__all__'
@@ -33,6 +34,11 @@ class LaptopForm(ModelForm):
             'laptop_date_purchased': DateInput(),
             'laptop_date_sold': DateInput()
         }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for key in self.fields:
+            self.fields[key].widget.attrs.update({'class': 'laptop-form-field'})
 
 class LaptopAssignmentForm(ModelForm):
     class Meta:
