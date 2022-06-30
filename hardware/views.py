@@ -1,10 +1,11 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-from .decorators import unauthenticated_user, allowed_users, admin_only
+from .decorators import unauthenticated_user, allowed_users
 from .models import *
 from .forms import *
 from .filters import EmployeeFilter, ExitEmployeeFilter, LaptopFilter
@@ -78,31 +79,25 @@ def replace(request):
     return render(request, 'replace/replace.html', context)
 
 def replace_confirm(request, pk):
+
     employee_info = Employee.objects.get(emp_id=pk)
-    laptop_assigned = Laptop.objects.get(emp_id=pk)
+    try:
+        laptop_assigned = Laptop.objects.get(emp_id=pk)
+    except (Laptop.MultipleObjectsReturned, Laptop.DoesNotExist) as e:
+        return HttpResponse(e)
     hardware_type = Hardware._meta.get_field('hardware_id').remote_field.model.__name__
-
     today = date.today()
-
     laptop_exit_form = EmployeeExitFormLaptop(initial={'laptop_date_returned':today.strftime("%b %d, %Y"), 'laptop_return_remarks':''})
-    # laptop_exit_media_form = EmployeeExitFormLaptopImage(instance=laptop_assigned)
-
     if request.method == "POST":
         laptop_exit_form = EmployeeExitFormLaptop(request.POST, initial={'laptop_date_returned':today.strftime("%b %d, %Y"), 'laptop_return_remarks':'Enter Any Remarks here'}, instance=laptop_assigned)
-        # laptop_exit_media_form = EmployeeExitFormLaptopImage(request.POST, request.FILES)
         if laptop_exit_form.is_valid():
-            # laptop_assigned.media = laptop_exit_media_form.save()
             laptop_exit_form.save()
-            # laptop_exit_media_form.save()
-
             laptop_assigned.emp_id=None
             laptop_assigned.save()
-            
             return redirect('replace_assign_new', employee_info.emp_id)
-
+    
     context = {'employee_info':employee_info, 'hardware_type':hardware_type,
     'laptop_assigned':laptop_assigned, 'laptop_exit_form':laptop_exit_form}
-
     return render(request, 'replace/replace_confirm.html', context)
 
 def replace_assign_new(request, pk):
