@@ -113,7 +113,7 @@ class Laptop(models.Model):
     processor = models.CharField(max_length=15, default='i3 11th gen')
     ram_capacity = models.CharField(max_length=5, default='8GB')
     storage_capacity = models.CharField(max_length=10, default='512GB')
-    laptop_status = models.CharField(max_length=20, null=True, choices=LAPTOP_STATUSES)
+    laptop_status = models.CharField(max_length=20, null=True, choices=LAPTOP_STATUSES, default="Working")
     laptop_branch = models.ForeignKey(Location, null=True, blank=False, on_delete=models.SET_NULL)
     laptop_building = models.ForeignKey(Building, null=True, on_delete=models.SET_NULL)
     laptop_date_purchased = models.DateField(null=True)
@@ -139,15 +139,19 @@ class Laptop(models.Model):
         today = date.today()
         age = today - self.laptop_date_purchased
         age_stripped = str(age).split(",", 1)[0]
-        age_int = int(age_stripped[:-5])
-        if age_int >= 365:
-            years = round(age_int / 365, 1)
-            return f"{years} years"
-        elif age_int >= 30 and age_int <= 365:
-            months = round(age_int / 30, 1)
-            return f"{months} months"
-        elif age_int <= 30:
-            return f"{age_int} days"
+        if age_stripped != "0:00:00":
+            age_int = int(age_stripped[:-5])
+            if age_int >= 365:
+                years = round(age_int / 365, 1)
+                return f"{years} years"
+            elif age_int >= 30 and age_int <= 365:
+                months = round(age_int / 30, 1)
+                return f"{months} months"
+            elif age_int <= 30:
+                return f"{age_int} days"
+        else:
+            return "0 days"
+
 
 def path_and_rename(instance, filename):
     upload_to='images/'

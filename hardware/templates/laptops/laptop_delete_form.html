@@ -2,18 +2,14 @@
 
 {% block content %}
 <br>
-<div class="container px-4">
-    <div class="row py-3 d-flex">
-        <div class="col">
-            <div class="card card-body align-items-center">
-                <p>Are you sure you wanna delete "{{laptop.laptop_sr_no}}"</p>
-                <form action="{% url 'laptop_del' laptop.id %}" method="POST">
-                    {% csrf_token %}
-                    <a class="btn btn-warning" href="{% url 'laptop' laptop.id %}">Cancel</a>
-                    <input class="btn btn-danger" type="submit" name="Confirm">
-                </form>
-            </div>
-        </div>
+<div class="container px-4 d-flex justify-content-center">
+    <div class="text-center">
+        <p>Are you sure you wanna delete "{{laptop.laptop_sr_no}}"</p>
+        <form action="{% url 'laptop_del' laptop.id %}" method="POST">
+            {% csrf_token %}
+            <a class="btn btn-warning" href="{% url 'laptop' laptop.id %}">Cancel</a>
+            <input class="btn btn-danger" type="submit" name="Confirm">
+        </form>
     </div>
 </div>
 {% endblock %}
