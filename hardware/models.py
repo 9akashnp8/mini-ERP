@@ -139,7 +139,15 @@ class Laptop(models.Model):
         today = date.today()
         age = today - self.laptop_date_purchased
         age_stripped = str(age).split(",", 1)[0]
-        return age_stripped
+        age_int = int(age_stripped[:-5])
+        if age_int >= 365:
+            years = round(age_int / 365, 1)
+            return f"{years} years"
+        elif age_int >= 30 and age_int <= 365:
+            months = round(age_int / 30, 1)
+            return f"{months} months"
+        elif age_int <= 30:
+            return f"{age_int} days"
 
 def path_and_rename(instance, filename):
     upload_to='images/'
