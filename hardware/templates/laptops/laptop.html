@@ -26,10 +26,13 @@
             <div class="col-md-3">
                 <div class="card">
                     <div class="card-body">
-                    <h5 class="card-title"> Brand & Model </h5>
+                    <h5 class="card-title fw-bold">Laptop Info</h5>
+                    <hr>
                     <p>Serial No. : {{laptop_info.laptop_sr_no}}</p>
                     <p>Brand: {{laptop_info.brand}}</p>
-                    <p>Model: {{laptop_info.model}}</p>
+                    <p>Processor: {{laptop_info.processor}}</p>
+                    <p>RAM: {{laptop_info.ram_capacity}}</p>
+                    <p>Storage: {{laptop_info.storage_capacity}}</p>
                     </div>
                 </div>
                 {% if messages %}
@@ -49,9 +52,11 @@
             <div class="col-md-3">
                 <div class="card">
                     <div class="card-body">
-                    <h5 class="card-title">Other Info</h5>
+                    <h5 class="card-title fw-bold">Other Info</h5>
+                    <hr>
                     <p>Status: {{laptop_info.laptop_status}} </p>
-                    <p>Location: {{laptop_info.laptop_location}} </p>
+                    <p>Location: {{laptop_info.laptop_branch}}, {{laptop_info.laptop_building}} </p>
+                    <p>Date Purchased: {{laptop_info.laptop_date_purchased}} </p>
                     <p>Age: {{laptop_info.laptop_age}}</p>
                     </div>
                 </div>
@@ -59,8 +64,9 @@
             <!--Employee to who this Laptop has been assigned-->
             <div class="col-md-6">
                 <div class="card card-body">
-                    <h5 class="card-title">Employe Assigned</h5>
-                    <table class="table table-stripped">
+                    <h5 class="card-title fw-bold">Employe Assigned</h5>
+                    <hr>
+                    <table class="table">
                         <thead>
                           <tr>
                             <th scope="col">Employee ID</th>
