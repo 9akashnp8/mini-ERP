@@ -82,18 +82,20 @@ class Employee(models.Model):
     emp_date_joined = models.DateField(default=date.today)
     emp_date_exited = models.DateField(null=True, blank=True)
     emp_date_created = models.DateField(auto_now_add=True)
+    is_assigned = models.BooleanField(default=False)
     history = HistoricalRecords()
 
     def __str__(self):
         if self.emp_name == None:
             return "NAME IS NULL"
         return self.emp_name
-    
+
     def save(self,*args, **kwargs):  
-            # if not self.lk_emp_id:
-            #     prefix = 'LAK-IND'
-            #     id = Employee.objects.count()+1
-            #     self.lk_emp_id = prefix+'-'+'{0:01d}'.format(id)
+        laptop_status = Laptop.objects.filter(emp_id=self.emp_id).exists()
+        if laptop_status:
+            self.is_assigned = True
+        else:
+            self.is_assigned = False
         super(Employee, self).save(*args, **kwargs)
 
 class Laptop(models.Model):
