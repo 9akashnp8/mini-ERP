@@ -31,8 +31,8 @@ urlpatterns = [
 
     #Onboarding
     path('onboard/add/', views.onboarding_add_employee_view, name='onbrd_emp_add'),
-    path('onboard/assign/', views.onboarding_assign_hardware_view, name='onbrd_hw_assign'),
-    path('onboard/complete/<str:pk>', views.onboarding_complete_view, name='onbrd_complete'),
+    path('onboard/assign/<str:pk>/', views.onboarding_assign_hardware_view, name='onbrd_hw_assign'),
+    path('onboard/complete/<str:pk>/', views.onboarding_complete_view, name='onbrd_complete'),
 
     #Exit
     path('emp_exit/', views.emp_exit, name='emp_exit'),
@@ -40,5 +40,6 @@ urlpatterns = [
     path('emp_exit_complete/<str:pk>', views.emp_exit_complete, name='emp_exit_complete'),
 
     path('ajax/load-designations/', views.load_designations, name='load_designations'),
+    path('ajax/search-results/', views.search_results, name='search_results'),
 
 ]

@@ -3,14 +3,11 @@
 
 {% block content %}
 <div class="container px-4">
-    <div class="progress my-4" style="height: 20px;">
-        <div class="progress-bar" role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">50%</div>
-    </div>
     <br>
     <div class="row">
         <div class="col">
             <div class="card card-body">
-                <h4>Available Laptops at {{onboarded_emp.loc_id}}</h4>
+                <h4>Available Laptops at <u>{{onboarded_emp.loc_id}}</u> for <u>{{onboarded_emp.emp_name}}</u></h4>
                 {% if messages %}
                 <br>
                 <div class="alert alert-success alert-dismissible" role="alert">

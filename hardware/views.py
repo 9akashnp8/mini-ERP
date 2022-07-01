@@ -169,6 +169,7 @@ def employee_add_view(request):
         form = EmployeeForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, "Successfully Added New Employee")
             return redirect(employee_list_view)
         else:
             print(form.errors)
@@ -298,7 +299,7 @@ def onboarding_add_employee_view(request):
         form = EmployeeForm(request.POST)
         if form.is_valid():
             instance = form.save()
-            request.session['onboard_employee'] = instance.emp_id
+            # request.session['onboard_employee'] = instance.emp_id
             messages.success(request, f"Added New Employee {instance.emp_name}")
             return redirect(onboarding_assign_hardware_view)
 
@@ -307,12 +308,13 @@ def onboarding_add_employee_view(request):
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
-def onboarding_assign_hardware_view(request):
+def onboarding_assign_hardware_view(request, pk):
     """
     View for Step 2/3 of 'Onboarding', selecting a laptop for the newly added employee
     from the previous step. Available laptops are based of the employees Location.
     """
-    onboarded_emp = Employee.objects.get(emp_id=request.session['onboard_employee'])
+    onboarded_emp = Employee.objects.get(emp_id=pk)
+    request.session['onboard_employee'] = onboarded_emp.emp_id
     free_laptops = Laptop.objects.filter(laptop_branch=onboarded_emp.loc_id, laptop_status='Working', emp_id=None)
     
     context = {'onboarded_emp':onboarded_emp, 'free_laptops':free_laptops}
@@ -325,6 +327,7 @@ def onboarding_complete_view(request, pk):
     """
     selected_laptop = Laptop.objects.get(id=pk)
     employee_to_assign = Employee.objects.get(emp_id=request.session['onboard_employee'])
+    print(employee_to_assign)
     selected_laptop.emp_id = employee_to_assign
     selected_laptop.save()
     messages.success(request, f"{employee_to_assign} succesfully onboarded!", extra_tags="onbrd_complete")
@@ -402,16 +405,16 @@ def emp_exit_complete(request, pk):
     employee.save()
     laptop_assigned.emp_id = None
     laptop_assigned.save()
-
     messages.success(request, f"{employee.emp_name}'s Exit succesfully processed.")
-
     return redirect('employee', employee.emp_id)
 
-# @login_required(login_url='login')
-# @allowed_users(allowed_roles=['admin'])
-# def lap_image_history(request, pk):
-#     laptop = Laptop.objects.get(id=pk)
-#     images = laptop.laptopmedia_set.all()
-
-#     context = {'images':images}
-#     return render(request, 'laptops/laptop_image_history.html', context)
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def search_results(request):
+    lk_emp_id = request.POST.get('lk_emp_id')
+    try:
+        employee = Employee.objects.get(lk_emp_id=lk_emp_id)
+    except Employee.DoesNotExist:
+        return HttpResponse("<div><br><p style='color: red;'>Invalid Employee ID, Please enter a valid employee ID</p></div>")
+    context = {'employee': employee}
+    return render(request, 'partials/search-result.html', context)
