@@ -59,10 +59,12 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
                       <li><a class="dropdown-item" href="{% url 'dash_laptops' %}">Laptop Dashboard</a></li>
-                      <li><a class="dropdown-item" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">
+                      <li><a class="dropdown-item" data-bs-toggle="offcanvas" href="#assign-laptop-canvas" role="button" aria-controls="assign-laptop-canvas">
                         Assign New Laptop
                       </a></li>
-                      <li><a class="dropdown-item" href="{% url 'replace' %}">Replace Laptop</a></li>
+                      <li><a class="dropdown-item" data-bs-toggle="offcanvas" href="#replace-laptop-canvas" role="button" aria-controls="replace-laptop-canvas">
+                        Replace Laptop
+                      </a></li>
                     </ul>
                 </div>
             </div>
@@ -96,10 +98,10 @@
         </div>
     </div>
 
-    <!-- Off-Canvas Canvas -->
-    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+    <!-- Assign Laptop Off-Canvas Canvas -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="assign-laptop-canvas" aria-labelledby="assign-laptop-canvas">
         <div class="offcanvas-header">
-          <h5 class="offcanvas-title" id="offcanvasExampleLabel">Search Employee to assign laptop</h5>
+          <h5 class="offcanvas-title" id="offcanvasExampleLabel">Search Employee to <strong>assign</strong> laptop</h5>
           <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
@@ -108,12 +110,37 @@
                     <form method="post">
                         {% csrf_token %}
                         <input type="text" name="lk_emp_id" placeholder="Enter Employee ID">
-                        <button hx-post="{% url 'search_results' %}" hx-target="#search-result"
+                        <button hx-post="{% url 'search_results_for_laptop_assignment' %}" hx-target="#search-result-assign"
                                         class="btn btn-primary">
                                         Search
                         </button>
                     </form>
-                    <div id="search-result">
+                    <div id="search-result-assign">
+            
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Replace Laptop Off-Canvas Canvas -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="replace-laptop-canvas" aria-labelledby="replace-laptop-canvas">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="offcanvasExampleLabel">Search Employee to <strong>replace</strong> laptop</h5>
+          <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="search-form d-flex justify-content-center py-5">
+                <div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="text" name="lk_emp_id" placeholder="Enter Employee ID">
+                        <button hx-post="{% url 'search_results_for_laptop_replacement' %}" hx-target="#search-result-replace"
+                                        class="btn btn-primary">
+                                        Search
+                        </button>
+                    </form>
+                    <div id="search-result-replace">
             
                     </div>
                 </div>

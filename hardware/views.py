@@ -67,17 +67,6 @@ def home(request):
 def onboading(request):
     return render(request, 'onboard/onboard.html')
 
-@login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
-def replace(request):
-    employees = Employee.objects.filter(laptop__emp_id__isnull=False)
-    
-    myExitFilter = ExitEmployeeFilter(request.GET, queryset=employees)
-    employees = myExitFilter.qs
-
-    context = {'myExitFilter':myExitFilter, 'employees':employees,}
-    return render(request, 'replace/replace.html', context)
-
 def replace_confirm(request, pk):
 
     employee_info = Employee.objects.get(emp_id=pk)
@@ -410,11 +399,22 @@ def emp_exit_complete(request, pk):
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
-def search_results(request):
+def search_results_for_laptop_assignment(request):
     lk_emp_id = request.POST.get('lk_emp_id')
     try:
         employee = Employee.objects.get(lk_emp_id=lk_emp_id)
     except Employee.DoesNotExist:
         return HttpResponse("<div><br><p style='color: red;'>Invalid Employee ID, Please enter a valid employee ID</p></div>")
     context = {'employee': employee}
-    return render(request, 'partials/search-result.html', context)
+    return render(request, 'partials/search-result-assign.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def search_results_for_laptop_replacement(request):
+    lk_emp_id = request.POST.get('lk_emp_id')
+    try:
+        employee = Employee.objects.get(lk_emp_id=lk_emp_id)
+    except Employee.DoesNotExist:
+        return HttpResponse("<div><br><p style='color: red;'>Invalid Employee ID! Please enter a valid employee ID</p></div>")
+    context = {'employee': employee}
+    return render(request, 'partials/search-result-replace.html', context)
