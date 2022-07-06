@@ -66,6 +66,9 @@
                       <li><a class="dropdown-item" data-bs-toggle="offcanvas" href="#replace-laptop-canvas" role="button" aria-controls="replace-laptop-canvas">
                         <i class="bi bi-arrow-clockwise"></i> Replace Laptop
                       </a></li>
+                      <li><a class="dropdown-item" data-bs-toggle="offcanvas" href="#return-laptop-canvas" role="button" aria-controls="return-laptop-canvas">
+                        <i class="bi bi-box-arrow-right"></i> Return Laptop
+                      </a></li>
                     </ul>
                 </div>
             </div>
@@ -145,6 +148,31 @@
                         </button>
                     </form>
                     <div id="search-result-replace">
+            
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Return Laptop Off-Canvas Canvas -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="return-laptop-canvas" aria-labelledby="return-laptop-canvas">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="offcanvasExampleLabel">Search Employee who is <strong>returning</strong> the laptop</h5>
+          <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="search-form d-flex justify-content-center py-5">
+                <div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="text" name="lk_emp_id" placeholder="Enter Employee ID">
+                        <button hx-post="{% url 'search_results_for_laptop_return' %}" hx-target="#search-result-return"
+                                        class="btn btn-primary">
+                                        Search
+                        </button>
+                    </form>
+                    <div id="search-result-return">
             
                     </div>
                 </div>

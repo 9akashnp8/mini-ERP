@@ -368,15 +368,11 @@ def emp_exit_confirm(request, pk):
     today = date.today()
 
     laptop_exit_form = EmployeeExitFormLaptop(initial={'laptop_date_returned':today.strftime('%b %d, %Y'), 'laptop_return_remarks':''})
-    # laptop_exit_media_form = EmployeeExitFormLaptopImage(instance=laptop_assigned)
 
     if request.method == "POST":
         laptop_exit_form = EmployeeExitFormLaptop(request.POST, initial={'laptop_date_returned':today.strftime('%b %d, %Y'), 'laptop_return_remarks':'Enter Any Remarks here'}, instance=laptop_assigned)
-        # laptop_exit_media_form = EmployeeExitFormLaptopImage(request.POST, request.FILES)
         if laptop_exit_form.is_valid():
-            # laptop_assigned.media = laptop_exit_media_form.save()
             laptop_exit_form.save()
-            # laptop_exit_media_form.save()
             messages.success(request, f"{employee_info.emp_name}'s Exit succesfully processed", extra_tags="exit_confirm")
             return redirect('emp_exit_complete', employee_info.emp_id)
 
@@ -417,3 +413,27 @@ def search_results_for_laptop_replacement(request):
         return HttpResponse("<div><br><p style='color: red;'>Invalid Employee ID! Please enter a valid employee ID</p></div>")
     context = {'employee': employee}
     return render(request, 'partials/search-result-replace.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def search_results_for_laptop_return(request):
+    lk_emp_id = request.POST.get('lk_emp_id')
+    try:
+        employee = Employee.objects.get(lk_emp_id=lk_emp_id)
+        laptop = Laptop.objects.get(emp_id=employee)
+    except Employee.DoesNotExist:
+        return HttpResponse("<div><br><p style='color: red;'>Invalid Employee ID! Please enter a valid employee ID</p></div>")
+    context = {'employee': employee, 'laptop': laptop}
+    return render(request, 'partials/search-result-return.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
+def laptop_return(request, pk):
+
+    laptop = Laptop.objects.get(emp_id=pk)
+    laptop.emp_id = None
+    laptop.save()
+
+    Employee.objects.get(emp_id=pk).save()
+    
+    return redirect(employee_list_view)

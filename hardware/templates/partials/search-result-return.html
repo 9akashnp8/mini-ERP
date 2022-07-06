@@ -1,0 +1,7 @@
+<div>
+    <br>
+    <p>Employee Found!</p>
+    <p>{{employee}}, {{employee.lk_emp_id}}</p>
+    <p>Laptop Assigned: {{laptop.hardware_id}}</p>
+    <a class="btn btn-success" href="{% url 'laptop_return' employee.emp_id %}">Return {{employee.emp_name}}'s Laptop</a>
+</div>

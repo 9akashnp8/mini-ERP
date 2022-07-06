@@ -24,7 +24,7 @@ urlpatterns = [
     #Laptop URL Paths
     path('laptops/', views.laptops_list_view, name='dash_laptops'),
     path('laptop/<str:pk>', views.laptop, name='laptop'),
-    path('laptops/add/', views.laptop_add_view, name='laptop_add'),
+    path('laptop/add/', views.laptop_add_view, name='laptop_add'),
     path('laptop/<str:pk>/edit/', views.laptop_edit_view, name='laptop_edit'),
     path('laptop/<str:pk>/delete/', views.laptop_delete_view, name='laptop_del'),
 
@@ -37,9 +37,11 @@ urlpatterns = [
     path('emp_exit/', views.emp_exit, name='emp_exit'),
     path('emp_exit_confirm/<str:pk>', views.emp_exit_confirm, name='emp_exit_confirm'),
     path('emp_exit_complete/<str:pk>', views.emp_exit_complete, name='emp_exit_complete'),
+    path('laptop-return/<str:pk>/', views.laptop_return, name='laptop_return'),
 
-    path('ajax/load-designations/', views.load_designations, name='load_designations'),
-    path('ajax/search-result-assign/', views.search_results_for_laptop_assignment, name='search_results_for_laptop_assignment'),
-    path('ajax/search-result-replace/', views.search_results_for_laptop_replacement, name='search_results_for_laptop_replacement'),
+    path('htmx/load-designations/', views.load_designations, name='load_designations'),
+    path('htmx/search-result-assign/', views.search_results_for_laptop_assignment, name='search_results_for_laptop_assignment'),
+    path('htmx/search-result-replace/', views.search_results_for_laptop_replacement, name='search_results_for_laptop_replacement'),
+    path('htmx/search-result-return/', views.search_results_for_laptop_return, name='search_results_for_laptop_return'),
 
 ]
