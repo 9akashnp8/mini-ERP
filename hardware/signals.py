@@ -1,8 +1,6 @@
-from django.db import IntegrityError
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User, Group
-from django.forms import ValidationError
-from .models import Employee
+from .models import Employee, Laptop
 
 def createUser(sender, instance, created, **kwargs):
     if created:
@@ -15,13 +13,11 @@ def createUser(sender, instance, created, **kwargs):
 
 post_save.connect(createUser, sender=Employee)
 
-'''
-def autoIncrementingHardwareID(sender, instance, created, **kwargs):
+def createHardwareID(sender, instance, created, **kwargs):
+    
     if created:
         if not instance.hardware_id:
-            prefix = 'LAK-LAP'
-            id = Laptop.objects.count()+1
-            instance.hardware_id = prefix+'-'+'{0:04d}'.format(id)
-
-post_save.connect(autoIncrementingHardwareID, sender=Laptop)
-'''
+            instance.hardware_id = "LAK-LAP-{0:04d}".format(instance.id)
+            instance.save()
+        
+post_save.connect(createHardwareID, sender=Laptop)

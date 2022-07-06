@@ -71,7 +71,7 @@ class Employee(models.Model):
     )
     user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
     emp_id = models.AutoField(primary_key=True, editable=False)
-    lk_emp_id = models.CharField(null=True, blank=True, max_length=15)
+    lk_emp_id = models.CharField(null=True, blank=False, max_length=15)
     dept_id = models.ForeignKey(Department, null=True, on_delete=models.SET_NULL)
     desig_id = models.ForeignKey(Designation,  null=True, on_delete=models.SET_NULL)
     emp_name = models.CharField(max_length=100)
@@ -125,14 +125,7 @@ class Laptop(models.Model):
 
     
     def __str__(self):
-        return self.hardware_id
-
-    def save(self,*args, **kwargs):  
-        if not self.hardware_id:
-            prefix = 'LAK-LAP'
-            id = Laptop.objects.count()+1
-            self.hardware_id = prefix+'-'+'{0:04d}'.format(id)
-        super(Laptop, self).save(*args, **kwargs)
+        return self.hardware_id 
 
     @property
     def laptop_age(self):
@@ -164,12 +157,6 @@ def path_and_rename(instance, filename):
     else:
         filename = '{}-for-{}.{}'.format(date.today(), instance.laptop_id, ext)
     return os.path.join(upload_to, filename)
-
-# class LaptopMedia(models.Model):
-#     id = models.AutoField(primary_key=True, editable=False)
-#     media = models.ImageField(upload_to=path_and_rename)
-#     laptop_id = models.ForeignKey(Laptop, null=True, on_delete=models.CASCADE)
-#     uploaded_at = models.DateField(auto_now_add=True)
 
 #Model linking the Employee to the various hardwares (Eg: Laptops, Tablets)
 class Hardware(models.Model):

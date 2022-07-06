@@ -1,15 +1,19 @@
 from django.forms import DateInput, ModelForm, ValidationError
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from psycopg2 import Date
 from .models import Designation, Employee, Laptop
-from uuid import uuid4
 
 class EmployeeForm(ModelForm):
 
     class Meta:
         model = Employee
         fields = '__all__'
-        exclude = ['user',]
+        exclude = ['user', 'is_assigned']
+        widgets = {
+            'emp_date_joined': DateInput(attrs={'type':'date'}),
+            'emp_date_exited': DateInput(attrs={'type':'date'})
+        }
         labels = {
             'lk_emp_id': 'Employee ID',
             'dept_id': 'Department',
@@ -43,6 +47,9 @@ class EmployeeForm(ModelForm):
             self.fields[key].widget.attrs.update({'class': 'employee-form-fields'})
     
     def clean(self):
+        '''Overide clean method to check if a 'User' object with same email
+        ID exists, raise a custom validation error if so.
+        '''
         email = self.cleaned_data['emp_email']
         if User.objects.filter(email=email).exists():
             raise ValidationError("Email ID is already being used for an ERP User. Please use another email")
@@ -53,16 +60,35 @@ class LaptopForm(ModelForm):
         model = Laptop
         fields = '__all__'
         widgets = {
-            'laptop_date_purchased': DateInput(),
-            'laptop_date_sold': DateInput()
+            'laptop_date_purchased': DateInput(attrs={'type':'date'}),
+            'laptop_date_sold': DateInput(attrs={'type':'date'}),
+            'laptop_date_returned': DateInput(attrs={'type':'date'})
+        }
+        labels = {
+            'hardware_id': 'Hardware ID',
+            'emp_id': 'Employee Assigned to',
+            'laptop_sr_no': 'Serial Number',
+            'brand': 'Brand',
+            'processor': 'Processor',
+            'ram_capacity': 'RAM',
+            'storage_capacity': 'Storage',
+            'laptop_status': 'Laptop Status',
+            'laptop_branch': 'Branch (Location)',
+            'laptop_building': 'Building (Location)',
+            'laptop_date_purchased': 'Purchase Date',
+            'laptop_date_sold': 'Date Sold',
+            'laptop_date_returned': 'Date Returned',
+            'laptop_return_remarks': 'Remarks'
         }
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        #Custom class names for form field styling
+        #Setting Custom class names for form field styling
         for key in self.fields:
             self.fields[key].widget.attrs.update({'class': 'laptop-form-fields'})
+        
+        self.fields['hardware_id'].widget.attrs.update({'placeholder': 'Hardware ID is auto-generated.'})
 
 class LaptopAssignmentForm(ModelForm):
     class Meta:

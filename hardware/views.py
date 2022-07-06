@@ -188,12 +188,12 @@ def employee_edit_view(request, pk):
 @allowed_users(allowed_roles=['admin'])
 def employee_delete_view(request, pk):
     employee = Employee.objects.get(emp_id=pk)
-    messages.success(request, f'Cancelled deletion of {employee}', extra_tags='cancel_delete')
     if request.method == "POST":
         employee.delete()
         messages.success(request, f'Successfully Deleted {employee}', extra_tags='successful_delete')
         return redirect(employee_list_view)
-        
+    else:
+        messages.success(request, f'Cancelled deletion of {employee}', extra_tags='cancel_delete')
 
     context = {'employee':employee}
     return render(request, 'employees/employee_delete_form.html', context)
@@ -240,6 +240,7 @@ def laptop_add_view(request):
     if request.method == 'POST':
         form = LaptopForm(request.POST)
         if form.is_valid():
+            print(form.cleaned_data)
             form.save()
             return redirect(laptops_list_view)
 
@@ -258,8 +259,6 @@ def laptop_edit_view(request, pk):
             form.save()
             messages.success(request, f'Successfully Edited {laptop}', extra_tags='successful_edit')
             return redirect('laptop', laptop.id)
-    else:
-        messages.success(request, f'Cancelled Editing of {laptop}', extra_tags='cancel_edit')
 
     context = {'form':form, 'laptop':laptop}
     return render(request, 'laptops/add_new_laptop.html', context)

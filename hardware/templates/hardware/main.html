@@ -18,11 +18,11 @@
     
     <!-- Custom CSS Links -->
     <link rel="stylesheet" href="{% static 'hardware/styles.css' %}">
-    <link rel="stylesheet" href="{% static 'hardware/progress.css' %}">
     <link rel="stylesheet" href="{% static 'hardware/custom.css' %}">
 
     <!-- HTMX CDN -->
     <script src="https://unpkg.com/htmx.org@1.7.0"></script>
+
     <style>
         .my-custom-scrollbar {
             position: relative;
@@ -38,6 +38,7 @@
     {% include 'hardware/navbar.html' %}
     
     <div class="d-flex" id="wrapper">
+
         <!-- Sidebar-->
         <div class="border-end bg-white" id="sidebar-wrapper">
             <div class="sidebar-heading border-bottom bg-light">miniERP</div>
@@ -58,19 +59,21 @@
                         <i class="bi bi-laptop"></i> Laptop
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
-                      <li><a class="dropdown-item" href="{% url 'dash_laptops' %}">Laptop Dashboard</a></li>
+                      <li><a class="dropdown-item" href="{% url 'dash_laptops' %}"><i class="bi bi-house"></i> Laptop Dashboard</a></li>
                       <li><a class="dropdown-item" data-bs-toggle="offcanvas" href="#assign-laptop-canvas" role="button" aria-controls="assign-laptop-canvas">
-                        Assign New Laptop
+                        <i class="bi bi-person-plus-fill"></i> Assign New Laptop
                       </a></li>
                       <li><a class="dropdown-item" data-bs-toggle="offcanvas" href="#replace-laptop-canvas" role="button" aria-controls="replace-laptop-canvas">
-                        Replace Laptop
+                        <i class="bi bi-arrow-clockwise"></i> Replace Laptop
                       </a></li>
                     </ul>
                 </div>
             </div>
         </div>
+
         <!-- Page content wrapper-->
         <div id="page-content-wrapper">
+
             <!-- Top navigation-->
             <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
                 <div class="container-fluid">
@@ -92,9 +95,9 @@
                     </div>
                 </div>
             </nav>
-        {% block content %}
-        
-        {% endblock %}
+            {% block content %}
+            
+            {% endblock %}
         </div>
     </div>
 
@@ -110,9 +113,10 @@
                     <form method="post">
                         {% csrf_token %}
                         <input type="text" name="lk_emp_id" placeholder="Enter Employee ID">
-                        <button hx-post="{% url 'search_results_for_laptop_assignment' %}" hx-target="#search-result-assign"
-                                        class="btn btn-primary">
-                                        Search
+                        <button hx-post="{% url 'search_results_for_laptop_assignment' %}" 
+                                hx-target="#search-result-assign"
+                                class="btn btn-primary">
+                                Search
                         </button>
                     </form>
                     <div id="search-result-assign">
