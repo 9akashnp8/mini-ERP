@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.core.paginator import Paginator
 
 from .decorators import unauthenticated_user, allowed_users
 from .models import *
@@ -108,16 +109,16 @@ def replace_complete(request, pk):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def employee_list_view(request):
+
     employees = Employee.objects.all()
-    active_emps = Employee.objects.filter(emp_status = 'Active').count()
-    inactive_emps = Employee.objects.filter(emp_status = 'InActive').count()
+    paginator = Paginator(employees, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     myFilter = EmployeeFilter(request.GET, queryset=employees)
     employees = myFilter.qs
 
-    context = {'active_emps': active_emps, 'inactive_emps': inactive_emps, 'employees': employees,
-    'myFilter':myFilter}
-
+    context = {'employees': employees, 'myFilter':myFilter, 'page_obj': page_obj}
     return render(request, 'employees/employees.html', context)
 
 @login_required(login_url='login')
