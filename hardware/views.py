@@ -289,7 +289,7 @@ def onboarding_add_employee_view(request):
             instance = form.save()
             # request.session['onboard_employee'] = instance.emp_id
             messages.success(request, f"Added New Employee {instance.emp_name}")
-            return redirect(onboarding_assign_hardware_view)
+            return redirect(onboarding_assign_hardware_view, instance.emp_id)
 
     context = {'form':form}
     return render(request, 'onboard/onboarding_add_employee.html', context)
