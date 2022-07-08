@@ -46,66 +46,52 @@
         </div>
     </div>
 
-    <!--Available Laptop & In Use Laptops tables-->
-    <div class="row">
-        <!--Available Laptop Table-->
-        <div class="col-md-6">
-            <div class="card card-body">
-                <h5 class="card-title">Available Laptops</h5>
-                <table class="table table-stripped">
-                    <thead>
+    <!-- Laptops Table-->
+    <div class="card card-body">
+        <table class="table table-stripped">
+            <thead>
+            <tr>
+                <th scope="col">Hardware ID</th>
+                <th scope="col">Sr No</th>
+                <th scope="col">Staus</th>
+                <th scope="col">Age</th>
+                <th scope="col">Location</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for laptop in page_obj %}
                     <tr>
-                        <th scope="col">Sr No</th>
-                        <th scope="col">Staus</th>
-                        <th scope="col">Age</th>
-                        <th scope="col">Location</th>
+                        <td>{{laptop.hardware_id}}</td>
+                        <td><a href="{% url 'laptop' laptop.id %}">{{laptop.laptop_sr_no}}</a></td>
+                        <td>{{laptop.laptop_status}}</td>
+                        <td>{{laptop.laptop_age}}</td>
+                        <td>{{laptop.laptop_branch}}</td>
                     </tr>
-                    </thead>
-                    <tbody>
-                        {% for lap in laptops %}
-                            {% if lap.emp_id == None %}
-                                <tr>
-                                    <td><a href="{% url 'laptop' lap.id %}">{{lap.laptop_sr_no}}</a></td>
-                                    <td>{{lap.laptop_status}}</td>
-                                    <td>{{lap.laptop_age}}</td>
-                                    <td>{{lap.laptop_branch}}</td>
-                                </tr>
-                            {% endif %}
-                        {% endfor %}
-                    </tbody>
-                </table>
-                
-            </div>
-        </div>
-        <!--In Use Laptop Table-->
-        <div class="col-md-6">
-            <div class="card card-body">
-                <h5 class="card-title">Laps in Use</h5>
-                <table class="table table-stripped">
-                    <thead>
-                    <tr>
-                        <th scope="col">Sr No</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Age</th>
-                        <th scope="col">Location</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        {% for lap in laptops %}
-                            {% if lap.emp_id != None %}
-                                <tr>
-                                    <td><a href="{% url 'laptop' lap.id %}">{{lap.laptop_sr_no}}</a></td>
-                                    <td>{{lap.laptop_status}}</td>
-                                    <td>{{lap.laptop_age}}</td>
-                                    <td>{{lap.laptop_branch}}</td>
-                                </tr>
-                            {% endif %}
-                        {% endfor %}
-                    </tbody>
-                </table>
-                
-            </div>
-        </div>
+                {% endfor %}
+            </tbody>
+        </table>   
     </div>
+    <!-- Pagination -->
+    <br>
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-end">
+          {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page=1">&laquo; First</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+          {% else %}
+            <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+          {% endif %}
+    
+          
+          <li class="page-item"><a href="#" class="page-link"><strong>{{ page_obj.number }}</strong> of {{ page_obj.paginator.num_pages }}</a></li>
+    
+          {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a></li>
+          {% else %}
+            <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+          {% endif %}
+        </ul>
+    </nav>
 </div>
 {% endblock %}

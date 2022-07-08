@@ -202,12 +202,16 @@ def employee_delete_view(request, pk):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def laptops_list_view(request):
+
     laptops = Laptop.objects.all()
+    paginator = Paginator(laptops, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     myFilter = LaptopFilter(request.GET, queryset=laptops)
     laptops = myFilter.qs
 
-    context = {'myFilter':myFilter, 'laptops': laptops}
+    context = {'myFilter':myFilter, 'page_obj': page_obj}
     return render(request, 'laptops/laptops.html', context)
 
 @login_required(login_url='login')
