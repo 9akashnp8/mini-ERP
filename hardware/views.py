@@ -201,8 +201,9 @@ def employee_delete_view(request, pk):
 @allowed_users(allowed_roles=['admin'])
 def laptops_list_view(request):
 
-    myFilter = LaptopFilter(request.GET, queryset=Laptop.objects.all()).qs
-    paginator = Paginator(myFilter, 10)
+    myFilter = LaptopFilter(request.GET, queryset=Laptop.objects.all())
+    laptops = myFilter.qs
+    paginator = Paginator(laptops, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
