@@ -110,13 +110,11 @@ def replace_complete(request, pk):
 @allowed_users(allowed_roles=['admin'])
 def employee_list_view(request):
 
-    employees = Employee.objects.all()
+    myFilter = EmployeeFilter(request.GET, queryset=Employee.objects.all())
+    employees = myFilter.qs
     paginator = Paginator(employees, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-
-    myFilter = EmployeeFilter(request.GET, queryset=employees)
-    employees = myFilter.qs
 
     context = {'employees': employees, 'myFilter':myFilter, 'page_obj': page_obj}
     return render(request, 'employees/employees.html', context)
@@ -203,13 +201,10 @@ def employee_delete_view(request, pk):
 @allowed_users(allowed_roles=['admin'])
 def laptops_list_view(request):
 
-    laptops = Laptop.objects.all()
-    paginator = Paginator(laptops, 10)
+    myFilter = LaptopFilter(request.GET, queryset=Laptop.objects.all()).qs
+    paginator = Paginator(myFilter, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-
-    myFilter = LaptopFilter(request.GET, queryset=laptops)
-    laptops = myFilter.qs
 
     context = {'myFilter':myFilter, 'page_obj': page_obj}
     return render(request, 'laptops/laptops.html', context)
