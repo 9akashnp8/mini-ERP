@@ -37,14 +37,15 @@
     <!-- Collapsible Filter -->
     <div class="collapse" id="collapseExample">
       <div class="card card-body">
-        <form method="GET">
-          Employee Name: {{myFilter.form.name_contains}}
-          Department: {{myFilter.form.dept_id}}
-          Designation: {{myFilter.form.desig_id}}
-          Location: {{myFilter.form.loc_id}}
-          Employee Status: {{myFilter.form.emp_status}}
-          Assigned Status: {{myFilter.form.is_assigned}}
-          <button class="btn btn-secondary" type="submit">Search</button>
+        <form method="GET" class="employee-filter-form">
+          {% for field in myFilter.form %}
+          <div class="employee-filter-field-parent">
+            {{field}}
+          </div>
+          {% endfor %}
+          <div class="employee-filter-field-parent">
+            <button class="btn btn-success employee-filter-button" type="submit">Search</button>
+          </div>
         </form>
       </div>
     </div>

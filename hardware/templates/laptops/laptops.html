@@ -31,46 +31,47 @@
         </a>
       </div>
   </div>
-  
-  <!--Filter-->
-  <div class="collapse" id="collapseExample">
-      <div class="card card-body">
-        <form method="GET">
-          Serial No. : {{myFilter.form.laptop_sr_no}}
-          Hardware ID: {{myFilter.form.hardware_id}}
-          Brand: {{myFilter.form.brand}}
-          Status: {{myFilter.form.laptop_status}}
-          Location: {{myFilter.form.laptop_location}}
-  
-          <button class="btn btn-secondary" type="submit">Search</button>
-        </form>
-      </div>
-  </div>
 
   <!-- Laptops Table-->
   <div class="card card-body">
-      <table class="table table-stripped">
-          <thead>
-          <tr>
-              <th scope="col">Hardware ID</th>
-              <th scope="col">Sr No</th>
-              <th scope="col">Staus</th>
-              <th scope="col">Age</th>
-              <th scope="col">Location</th>
-          </tr>
-          </thead>
-          <tbody>
-              {% for laptop in page_obj %}
-                  <tr>
-                      <td>{{laptop.hardware_id}}</td>
-                      <td><a href="{% url 'laptop' laptop.id %}">{{laptop.laptop_sr_no}}</a></td>
-                      <td>{{laptop.laptop_status}}</td>
-                      <td>{{laptop.laptop_age}}</td>
-                      <td>{{laptop.laptop_branch}}</td>
-                  </tr>
-              {% endfor %}
-          </tbody>
-      </table>   
+    <!--Filter-->
+    <div class="collapse" id="collapseExample">
+      <div class="card card-body">
+        <form method="GET" class="laptop-filter-form">
+          {% for field in myFilter.form %}
+          <div class="laptop-filter-field-parent">
+            {{field}}
+          </div>
+          {% endfor %}
+          <div class="laptop-filter-field-parent">
+            <button class="btn btn-success laptop-filter-button" type="submit">Search</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- Main Laptop Table -->
+    <table class="table table-stripped">
+        <thead>
+        <tr>
+            <th scope="col">Hardware ID</th>
+            <th scope="col">Sr No</th>
+            <th scope="col">Staus</th>
+            <th scope="col">Age</th>
+            <th scope="col">Location</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for laptop in page_obj %}
+                <tr>
+                    <td>{{laptop.hardware_id}}</td>
+                    <td><a href="{% url 'laptop' laptop.id %}">{{laptop.laptop_sr_no}}</a></td>
+                    <td>{{laptop.laptop_status}}</td>
+                    <td>{{laptop.laptop_age}}</td>
+                    <td>{{laptop.laptop_branch}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>   
   </div>
   <!-- Pagination -->
   <br>
