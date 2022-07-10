@@ -147,7 +147,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads/')
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+#Email Settings:
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = env.str('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD')
 
 #DRF Settings
 REST_FRAMEWORK = {
@@ -159,7 +164,7 @@ REST_FRAMEWORK = {
     ]
 }
 
-# Debugging in heroku live
+# Logging for Heroku/Production
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,

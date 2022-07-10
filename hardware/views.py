@@ -1,10 +1,13 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator
+from django.core.mail import send_mass_mail, send_mail
+from django.template.loader import render_to_string
 
 from .decorators import unauthenticated_user, allowed_users
 from .models import *
@@ -12,6 +15,28 @@ from .forms import *
 from .filters import EmployeeFilter, ExitEmployeeFilter, LaptopFilter
 
 from datetime import date
+from environs import Env
+
+env = Env()
+env.read_env()
+
+#Helpers
+def employee_add_email(emp_id, emp_name, lk_emp_id, dept_id, desig_id, loc_id, request):
+    URL = request.build_absolute_uri(reverse('onbrd_hw_assign', args=(emp_id,)))
+    SUBJECT = f"[miniERP] New Employee Added: {emp_name}"
+    context = {
+        'emp_name': emp_name,
+        'url': URL,
+        'lk_emp_id': lk_emp_id,
+        'dept_id': dept_id,
+        'desig_id': desig_id,
+        'loc_id': loc_id
+    }
+    MESSAGE = render_to_string('hardware/employee_add_email.html', context)
+    FROM = 'notifications.miniERP@gmail.com'
+    send_mail(SUBJECT, MESSAGE, FROM, env.list("EMAIL_RECIPIENTS"), fail_silently=True, html_message=MESSAGE)
+
+    
 
 def load_designations(request):
     dept_id = request.GET.get('dept_id')
@@ -19,6 +44,7 @@ def load_designations(request):
     context = {'designations': designations}
     return render(request, 'partials/designation_dropdown_list.html', context)
 
+#Views
 @unauthenticated_user
 def register(request):
     '''
@@ -152,11 +178,14 @@ def employee(request, pk):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def employee_add_view(request):
+
     form = EmployeeForm()
     if request.method == "POST":
         form = EmployeeForm(request.POST)
         if form.is_valid():
-            form.save()
+            instance = form.save()
+            employee_add_email(instance.emp_id, instance.emp_name, lk_emp_id=instance.lk_emp_id,
+            dept_id=instance.dept_id, desig_id=instance.desig_id, loc_id=instance.loc_id, request=request)
             messages.success(request, "Successfully Added New Employee")
             return redirect(employee_list_view)
         else:
