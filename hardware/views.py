@@ -1,3 +1,4 @@
+from audioop import mul
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -96,24 +97,50 @@ def onboading(request):
 
 def replace_confirm(request, pk):
 
+    today = date.today()
     employee_info = Employee.objects.get(emp_id=pk)
+    hardware_type = Hardware._meta.get_field('hardware_id').remote_field.model.__name__
+
     try:
         laptop_assigned = Laptop.objects.get(emp_id=pk)
-    except (Laptop.MultipleObjectsReturned, Laptop.DoesNotExist) as e:
+        number_of_laptops = "1"
+        return_form = EmployeeExitFormLaptop(
+            initial={
+            'laptop_date_returned':today.strftime("%b %d, %Y"),
+            'laptop_return_remarks':''
+        })
+        if request.method == "POST":
+            return_form = EmployeeExitFormLaptop(request.POST, initial={
+                'laptop_date_returned':today.strftime("%b %d, %Y"),
+                'laptop_return_remarks':'Enter Any Remarks here'}, 
+                instance=laptop_assigned
+            )
+            if return_form.is_valid():
+                return_form.save()
+                laptop_assigned.emp_id=None
+                laptop_assigned.save()
+                return redirect('replace_assign_new', employee_info.emp_id)
+    except Laptop.MultipleObjectsReturned:
+        number_of_laptops = ">1"
+        laptop_assigned = Laptop.objects.filter(emp_id=pk)
+        return_form = MultipleLaptopReturnForm(emp_id=employee_info.emp_id)
+        if request.method == "POST":
+            return_form = MultipleLaptopReturnForm(request.POST, emp_id=employee_info.emp_id,
+            initial={'laptop_date_returned':today.strftime("%b %d, %Y")}, 
+            instance=Laptop.objects.get(id=request.POST['returning_laptop']))
+            if return_form.is_valid():
+                instance = return_form.save()
+                instance.emp_id = None
+                instance.save()
+                return redirect(replace_assign_new, employee_info.emp_id)
+    except Laptop.DoesNotExist as e:
         return HttpResponse(e)
-    hardware_type = Hardware._meta.get_field('hardware_id').remote_field.model.__name__
-    today = date.today()
-    laptop_exit_form = EmployeeExitFormLaptop(initial={'laptop_date_returned':today.strftime("%b %d, %Y"), 'laptop_return_remarks':''})
-    if request.method == "POST":
-        laptop_exit_form = EmployeeExitFormLaptop(request.POST, initial={'laptop_date_returned':today.strftime("%b %d, %Y"), 'laptop_return_remarks':'Enter Any Remarks here'}, instance=laptop_assigned)
-        if laptop_exit_form.is_valid():
-            laptop_exit_form.save()
-            laptop_assigned.emp_id=None
-            laptop_assigned.save()
-            return redirect('replace_assign_new', employee_info.emp_id)
+    except Exception as e:
+        return HttpResponse(e)
     
     context = {'employee_info':employee_info, 'hardware_type':hardware_type,
-    'laptop_assigned':laptop_assigned, 'laptop_exit_form':laptop_exit_form}
+    'laptop_assigned':laptop_assigned, 'number_of_laptops':number_of_laptops, 
+    'return_form': return_form}
     return render(request, 'replace/replace_confirm.html', context)
 
 def replace_assign_new(request, pk):
@@ -148,15 +175,23 @@ def employee_list_view(request):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def employee(request, pk):
+
     employee_info = Employee.objects.get(emp_id=pk)
+    hardware_type = Hardware._meta.get_field('hardware_id').remote_field.model.__name__
     laptop_assigned = None
+    number_of_laptops = ''
     try:
         laptop_assigned = Laptop.objects.get(emp_id=pk)
-    except:
-        pass
-    hardware_type = Hardware._meta.get_field('hardware_id').remote_field.model.__name__
-    qry = employee_info.history.all()
+        number_of_laptops = '1'
+    except Laptop.MultipleObjectsReturned:
+        number_of_laptops = '>1'
+        laptop_assigned = Laptop.objects.filter(emp_id=pk)
+    except Laptop.DoesNotExist:
+        number_of_laptops = '0'
+    except Exception as e:
+        return HttpResponse(e)
 
+    qry = employee_info.history.all()
     def historical_changes(qry):
         changes = []
         if qry is not None and id:
@@ -168,11 +203,10 @@ def employee(request, pk):
                     changes.append(delta)
                 last = old_record
         return changes
-    
     changes = historical_changes(qry)
 
-    context = {'employee_info': employee_info, 'laptop_assigned': laptop_assigned,
-    'hardware_type':hardware_type, 'changes':changes,}
+    context = {'employee_info': employee_info, 'number_of_laptops': number_of_laptops,
+    'laptop_assigned': laptop_assigned, 'hardware_type':hardware_type, 'changes':changes,}
     return render(request, 'employees/employee.html', context)
 
 @login_required(login_url='login')
@@ -270,7 +304,6 @@ def laptop_add_view(request):
     if request.method == 'POST':
         form = LaptopForm(request.POST)
         if form.is_valid():
-            print(form.cleaned_data)
             form.save()
             return redirect(laptops_list_view)
 
@@ -345,7 +378,6 @@ def onboarding_complete_view(request, pk):
     """
     selected_laptop = Laptop.objects.get(id=pk)
     employee_to_assign = Employee.objects.get(emp_id=request.session['onboard_employee'])
-    print(employee_to_assign)
     selected_laptop.emp_id = employee_to_assign
     selected_laptop.save()
     messages.success(request, f"{employee_to_assign} succesfully onboarded!", extra_tags="onbrd_complete")
@@ -447,12 +479,22 @@ def search_results_for_laptop_replacement(request):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def search_results_for_laptop_return(request):
+
     lk_emp_id = request.POST.get('lk_emp_id')
+
     try:
         employee = Employee.objects.get(lk_emp_id=lk_emp_id)
         laptop = Laptop.objects.get(emp_id=employee)
+        number_of_laptops = "1"
+    except Laptop.MultipleObjectsReturned:
+        number_of_laptops = ">1"
+        employee = Employee.objects.get(lk_emp_id=lk_emp_id)
+        laptop = Laptop.objects.filter(emp_id=employee)
+    except Laptop.DoesNotExist:
+        number_of_laptops = "0"
     except Employee.DoesNotExist:
         return HttpResponse("<div><br><p style='color: red;'>Invalid Employee ID! Please enter a valid employee ID</p></div>")
+        
     context = {'employee': employee, 'laptop': laptop}
     return render(request, 'partials/search-result-return.html', context)
 

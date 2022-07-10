@@ -8,7 +8,6 @@
             <div class="card card-body">
               <!--Assigned Hardware List-->
                 <h5 class="card-title">Hardware(s) Assigned</h5>
-                <!--<a class="btn btn-primary" href="{% url 'emp_exit_complete' employee_info.emp_id %}">Proceed with Exit</a>-->
                 <table class="table table-stripped">
                     <thead>
                       <tr>
@@ -18,17 +17,27 @@
                       </tr>
                     </thead>
                     <tbody>
+                      {% if number_of_laptops == ">1" %}
+                      {% for lap in laptop_assigned %}
                       <tr>
-                        {% if laptop_assigned %}
+                        <td>{{hardware_type}}</td>
+                        <td>{{lap.hardware_id}}</td>
+                        <td><a href="{% url 'laptop' lap.id %}">{{lap.laptop_sr_no}}</a></td>
+                      </tr>
+                      {% endfor %}
+                      {% elif number_of_laptops == "1" %}
+                      <tr>
                         <td>{{hardware_type}}</td>
                         <td>{{laptop_assigned.hardware_id}}</td>
                         <td><a href="{% url 'laptop' laptop_assigned.id %}">{{laptop_assigned.laptop_sr_no}}</a></td>
-                        {% else %}
-                        <td>Not Assigned</td>
-                        <td>Not Assigned</td>
-                        <td>Not Assigned</td>
-                        {% endif %}
                       </tr>
+                      {% else %}
+                      <tr>
+                        <td>Not Assigned</td>
+                        <td>Not Assigned</td>
+                        <td>Not Assigned</td>
+                      </tr>
+                      {% endif %}
                     </tbody>
                 </table> 
             </div>
@@ -40,7 +49,7 @@
               {% csrf_token %}
               {{ laptop_exit_form|crispy }}
               <br>
-              {{laptop_exit_media_form|crispy}}
+              {{return_form|crispy}}
               <br>
               <input type="submit" name="Submit" class="btn btn-success"></input>
             </form>

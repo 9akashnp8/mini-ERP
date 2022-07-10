@@ -1,4 +1,4 @@
-from django.forms import DateInput, ModelForm, ValidationError
+from django.forms import ChoiceField, DateInput, ModelForm, ValidationError, ModelChoiceField
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from psycopg2 import Date
@@ -107,12 +107,32 @@ class OnboardEmployeeAddForm(ModelForm):
 #         fields = ['media']
     
 class EmployeeExitFormLaptop(ModelForm):
+
     class Meta:
         model = Laptop
-        fields = [ 'laptop_date_returned', 'laptop_return_remarks',]
+        fields = ['laptop_date_returned', 'laptop_return_remarks',]
         widgets = {
-            'laptop_date_returned': DateInput(),
+            'laptop_date_returned': DateInput(attrs={'type':'date'}),
         }
+
+class MultipleLaptopReturnForm(ModelForm):
+
+    returning_laptop = ModelChoiceField(queryset=None)
+
+    class Meta:
+        model = Laptop
+        fields = ['laptop_date_returned', 'laptop_return_remarks',]
+        widgets = {
+            'laptop_date_returned': DateInput(attrs={'type':'date'})
+        }
+    
+    def __init__(self, *args, **kwargs):
+        emp_id = kwargs.pop('emp_id', None)
+        super(MultipleLaptopReturnForm, self).__init__(*args, **kwargs)
+        
+        if emp_id:
+            self.fields['returning_laptop'].queryset = Laptop.objects.filter(emp_id=emp_id)
+
 
 class CreateUserForm(UserCreationForm, EmployeeForm):
     class Meta:

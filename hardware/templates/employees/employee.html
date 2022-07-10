@@ -77,17 +77,27 @@
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
-                            {% if laptop_assigned %}
-                            <td>{{hardware_type}}</td>
-                            <td>{{laptop_assigned.hardware_id}}</td>
-                            <td><a href="{% url 'laptop' laptop_assigned.id %}">{{laptop_assigned.laptop_sr_no}}</a></td>
+                            {% if number_of_laptops == ">1" %}
+                            {% for laptop in laptop_assigned %}
+                            <tr>
+                                <td>{{hardware_type}}</td>
+                                <td>{{laptop.hardware_id}}</td>
+                                <td><a href="{% url 'laptop' laptop.id %}">{{laptop.laptop_sr_no}}</a></td>
+                            </tr>
+                            {% endfor %} 
+                            {% elif number_of_laptops == "1" %}
+                            <tr>
+                                <td>{{hardware_type}}</td>
+                                <td>{{laptop_assigned.hardware_id}}</td>
+                                <td><a href="{% url 'laptop' laptop_assigned.id %}">{{laptop_assigned.laptop_sr_no}}</a></td>
+                            </tr>
                             {% else %}
-                            <td>Not Assigned</td>
-                            <td>Not Assigned</td>
-                            <td>Not Assigned</td>
+                            <tr>
+                                <td>Not Assigned</td>
+                                <td>Not Assigned</td>
+                                <td>Not Assigned</td>
+                            </tr>
                             {% endif %}
-                          </tr>
                         </tbody>
                     </table>
                     
