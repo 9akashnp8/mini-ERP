@@ -8,7 +8,7 @@ urlpatterns = [
     path('logout/', views.logoutPage, name='logout'),
     path('', views.home, name='home'),
     path('onboarding/', views.onboading),
-    path('replace_confirm/<str:pk>', views.replace_confirm, name='replace_confirm'),
+    path('laptop-return/<str:pk>/', views.laptop_return, name='replace_confirm'),
     path('replace_assign_new/<str:pk>', views.replace_assign_new, name='replace_assign_new'),
     path('replace_complete/<str:pk>', views.replace_complete, name='replace_complete'),
 
@@ -37,7 +37,6 @@ urlpatterns = [
     path('emp_exit/', views.emp_exit, name='emp_exit'),
     path('emp_exit_confirm/<str:pk>', views.emp_exit_confirm, name='emp_exit_confirm'),
     path('emp_exit_complete/<str:pk>', views.emp_exit_complete, name='emp_exit_complete'),
-    path('laptop-return/<str:pk>/', views.laptop_return, name='laptop_return'),
 
     path('htmx/load-designations/', views.load_designations, name='load_designations'),
     path('htmx/search-result-assign/', views.search_results_for_laptop_assignment, name='search_results_for_laptop_assignment'),

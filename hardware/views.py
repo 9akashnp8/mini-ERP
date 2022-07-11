@@ -95,7 +95,7 @@ def home(request):
 def onboading(request):
     return render(request, 'onboard/onboard.html')
 
-def replace_confirm(request, pk):
+def laptop_return(request, pk):
 
     today = date.today()
     employee_info = Employee.objects.get(emp_id=pk)
@@ -457,23 +457,37 @@ def emp_exit_complete(request, pk):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def search_results_for_laptop_assignment(request):
+
     lk_emp_id = request.POST.get('lk_emp_id')
+
     try:
         employee = Employee.objects.get(lk_emp_id=lk_emp_id)
+        laptop = Laptop.objects.filter(emp_id=employee)
+        num_of_laptops = laptop.count()
     except Employee.DoesNotExist:
         return HttpResponse("<div><br><p style='color: red;'>Invalid Employee ID, Please enter a valid employee ID</p></div>")
-    context = {'employee': employee}
+    except Exception as e:
+        return HttpResponse(e)
+        
+    context = {'employee': employee, 'laptop': laptop, 'num_of_laptops':num_of_laptops}
     return render(request, 'partials/search-result-assign.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def search_results_for_laptop_replacement(request):
+
     lk_emp_id = request.POST.get('lk_emp_id')
+
     try:
         employee = Employee.objects.get(lk_emp_id=lk_emp_id)
+        laptop = Laptop.objects.filter(emp_id=employee)
+        num_of_laptops = laptop.count()       
     except Employee.DoesNotExist:
         return HttpResponse("<div><br><p style='color: red;'>Invalid Employee ID! Please enter a valid employee ID</p></div>")
-    context = {'employee': employee}
+    except Exception as e:
+        return HttpResponse(e)
+
+    context = {'employee': employee, 'laptop': laptop, 'num_of_laptops':num_of_laptops}
     return render(request, 'partials/search-result-replace.html', context)
 
 @login_required(login_url='login')
@@ -484,28 +498,12 @@ def search_results_for_laptop_return(request):
 
     try:
         employee = Employee.objects.get(lk_emp_id=lk_emp_id)
-        laptop = Laptop.objects.get(emp_id=employee)
-        number_of_laptops = "1"
-    except Laptop.MultipleObjectsReturned:
-        number_of_laptops = ">1"
-        employee = Employee.objects.get(lk_emp_id=lk_emp_id)
         laptop = Laptop.objects.filter(emp_id=employee)
-    except Laptop.DoesNotExist:
-        number_of_laptops = "0"
+        num_of_laptops = laptop.count()       
     except Employee.DoesNotExist:
         return HttpResponse("<div><br><p style='color: red;'>Invalid Employee ID! Please enter a valid employee ID</p></div>")
-        
-    context = {'employee': employee, 'laptop': laptop}
+    except Exception as e:
+        return HttpResponse(e)
+
+    context = {'employee': employee, 'laptop': laptop, 'num_of_laptops':num_of_laptops}
     return render(request, 'partials/search-result-return.html', context)
-
-@login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
-def laptop_return(request, pk):
-
-    laptop = Laptop.objects.get(emp_id=pk)
-    laptop.emp_id = None
-    laptop.save()
-
-    Employee.objects.get(emp_id=pk).save()
-    
-    return redirect(employee_list_view)

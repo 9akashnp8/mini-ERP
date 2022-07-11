@@ -2,5 +2,15 @@
     <br>
     <p>Employee Found!</p>
     <p>{{employee}}, {{employee.lk_emp_id}}</p>
-    <a class="btn btn-success" href="{% url 'onbrd_hw_assign' employee.emp_id %}">Assign Laptop</a>
+    {% if num_of_laptops == 0 %}
+    <a class="btn btn-success" href="{% url 'onbrd_hw_assign' employee.emp_id %}">Assign {{employee.emp_name}}, a Laptop</a>
+    {% else %}
+    <p style="color: red; font-weight: bold;">Laptop(s) already assigned:</p>
+    <ul>
+        {% for lap in laptop %}
+        <li>{{lap}}</li>
+        {% endfor %}
+    </ul>
+    <a class="btn btn-success" href="{% url 'onbrd_hw_assign' employee.emp_id %}">Assign {{employee.emp_name}}, another Laptop</a>
+    {% endif %}
 </div>
