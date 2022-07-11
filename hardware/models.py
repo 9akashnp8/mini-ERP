@@ -71,7 +71,7 @@ class Employee(models.Model):
     )
     user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
     emp_id = models.AutoField(primary_key=True, editable=False)
-    lk_emp_id = models.CharField(null=True, blank=False, max_length=15)
+    lk_emp_id = models.CharField(null=True, blank=False, unique=True, max_length=15)
     dept_id = models.ForeignKey(Department, null=True, on_delete=models.SET_NULL)
     desig_id = models.ForeignKey(Designation,  null=True, on_delete=models.SET_NULL)
     emp_name = models.CharField(max_length=100)
