@@ -142,6 +142,7 @@
                     <form method="post">
                         {% csrf_token %}
                         <input type="text" name="lk_emp_id" placeholder="Enter Employee ID">
+                        <input type="hidden" name="assign_new" value="true">
                         <button hx-post="{% url 'search_results_for_laptop_replacement' %}" hx-target="#search-result-replace"
                                         class="btn btn-primary">
                                         Search
@@ -167,6 +168,7 @@
                     <form method="post">
                         {% csrf_token %}
                         <input type="text" name="lk_emp_id" placeholder="Enter Employee ID">
+                        <input type="hidden" name="assign_new" value="false">
                         <button hx-post="{% url 'search_results_for_laptop_return' %}" hx-target="#search-result-return"
                                         class="btn btn-primary">
                                         Search

@@ -100,6 +100,7 @@ def laptop_return(request, pk):
     today = date.today()
     employee_info = Employee.objects.get(emp_id=pk)
     hardware_type = Hardware._meta.get_field('hardware_id').remote_field.model.__name__
+    assign_new = request.session['assign_new']
 
     try:
         laptop_assigned = Laptop.objects.get(emp_id=pk)
@@ -119,7 +120,13 @@ def laptop_return(request, pk):
                 return_form.save()
                 laptop_assigned.emp_id=None
                 laptop_assigned.save()
-                return redirect('replace_assign_new', employee_info.emp_id)
+                if assign_new == 'true':
+                    return redirect('replace_assign_new', employee_info.emp_id)
+                elif assign_new == 'false':
+                    return redirect('employee', employee_info.emp_id )
+                else:
+                    return HttpResponse("'Assign New' condition not found")
+
     except Laptop.MultipleObjectsReturned:
         number_of_laptops = ">1"
         laptop_assigned = Laptop.objects.filter(emp_id=pk)
@@ -132,7 +139,13 @@ def laptop_return(request, pk):
                 instance = return_form.save()
                 instance.emp_id = None
                 instance.save()
-                return redirect(replace_assign_new, employee_info.emp_id)
+                if assign_new == 'true':
+                    return redirect('replace_assign_new', employee_info.emp_id)
+                elif assign_new == 'false':
+                    return redirect('employee', employee_info.emp_id )
+                else:
+                    return HttpResponse("'Assign New' condition not found")
+                    
     except Laptop.DoesNotExist as e:
         return HttpResponse(e)
     except Exception as e:
@@ -147,6 +160,7 @@ def replace_assign_new(request, pk):
     employee = Employee.objects.get(emp_id=pk)
     free_laptops = Laptop.objects.filter(laptop_branch=employee.loc_id, laptop_status='Working', emp_id=None)
     request.session['employee'] = employee.emp_id
+    del request.session['assign_new']
 
     context={'employee':employee, 'free_laptops':free_laptops}
     return render(request, 'replace/replace_assign_new.html', context)
@@ -180,6 +194,8 @@ def employee(request, pk):
     hardware_type = Hardware._meta.get_field('hardware_id').remote_field.model.__name__
     laptop_assigned = None
     number_of_laptops = ''
+    del request.session['assign_new']
+
     try:
         laptop_assigned = Laptop.objects.get(emp_id=pk)
         number_of_laptops = '1'
@@ -424,7 +440,10 @@ def emp_exit(request):
 @allowed_users(allowed_roles=['admin'])
 def emp_exit_confirm(request, pk):
     employee_info = Employee.objects.get(emp_id=pk)
-    laptop_assigned = Laptop.objects.get(emp_id=pk)
+    try:
+        laptop_assigned = Laptop.objects.get(emp_id=pk)
+    except Laptop.DoesNotExist:
+        laptop_assigned = None
     hardware_type = Hardware._meta.get_field('hardware_id').remote_field.model.__name__
 
     today = date.today()
@@ -477,6 +496,7 @@ def search_results_for_laptop_assignment(request):
 def search_results_for_laptop_replacement(request):
 
     lk_emp_id = request.POST.get('lk_emp_id')
+    request.session['assign_new'] = request.POST.get('assign_new')
 
     try:
         employee = Employee.objects.get(lk_emp_id=lk_emp_id)
@@ -495,6 +515,7 @@ def search_results_for_laptop_replacement(request):
 def search_results_for_laptop_return(request):
 
     lk_emp_id = request.POST.get('lk_emp_id')
+    request.session['assign_new'] = request.POST.get('assign_new')
 
     try:
         employee = Employee.objects.get(lk_emp_id=lk_emp_id)

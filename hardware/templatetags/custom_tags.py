@@ -1,3 +1,4 @@
+from django.urls import reverse, reverse_lazy
 from django import template
 
 register = template.Library()
