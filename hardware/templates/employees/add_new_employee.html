@@ -11,6 +11,9 @@
             {% csrf_token %}
             {% if form.errors %}
             <div class="alert alert-warning alert-dismissible" role="alert"> 
+                {% if form.non_field_errors %}
+                    {{form.non_field_errors}}
+                {% endif %}
                 {% for field in form %}
                     {% for error in field.errors %}
                         {{field.label}} : {{error|escape}}

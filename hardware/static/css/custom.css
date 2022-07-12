@@ -19,7 +19,8 @@ body {
 }
 
 .employee-form-fields,
-.laptop-form-fields {
+.laptop-form-fields,
+.return-form-fields {
     border: 1px solid grey;
     border-radius: 8px;
     height: 45px;

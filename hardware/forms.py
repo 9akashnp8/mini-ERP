@@ -114,10 +114,20 @@ class EmployeeExitFormLaptop(ModelForm):
         widgets = {
             'laptop_date_returned': DateInput(attrs={'type':'date'}),
         }
+        labels = {
+            'laptop_date_returned': 'Returning Date',
+            'laptop_return_remarks': 'Remarks'
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'class': 'return-form-fields'})
+            self.fields[field].required = True
+        
 
 class MultipleLaptopReturnForm(ModelForm):
-
-    returning_laptop = ModelChoiceField(queryset=None)
 
     class Meta:
         model = Laptop
@@ -125,14 +135,17 @@ class MultipleLaptopReturnForm(ModelForm):
         widgets = {
             'laptop_date_returned': DateInput(attrs={'type':'date'})
         }
+        labels = {
+            'laptop_date_returned': 'Returning Date',
+            'laptop_return_remarks': 'Remarks'
+        }
     
     def __init__(self, *args, **kwargs):
-        emp_id = kwargs.pop('emp_id', None)
         super(MultipleLaptopReturnForm, self).__init__(*args, **kwargs)
-        
-        if emp_id:
-            self.fields['returning_laptop'].queryset = Laptop.objects.filter(emp_id=emp_id)
 
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'class': 'return-form-fields'})
+            self.fields[field].required = True
 
 class CreateUserForm(UserCreationForm, EmployeeForm):
     class Meta:

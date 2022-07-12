@@ -130,9 +130,9 @@ def laptop_return(request, pk):
     except Laptop.MultipleObjectsReturned:
         number_of_laptops = ">1"
         laptop_assigned = Laptop.objects.filter(emp_id=pk)
-        return_form = MultipleLaptopReturnForm(emp_id=employee_info.emp_id)
+        return_form = MultipleLaptopReturnForm()
         if request.method == "POST":
-            return_form = MultipleLaptopReturnForm(request.POST, emp_id=employee_info.emp_id,
+            return_form = MultipleLaptopReturnForm(request.POST,
             initial={'laptop_date_returned':today.strftime("%b %d, %Y")}, 
             instance=Laptop.objects.get(id=request.POST['returning_laptop']))
             if return_form.is_valid():
@@ -261,10 +261,8 @@ def employee_edit_view(request, pk):
         form = EmployeeForm(request.POST, instance=employee)
         if form.is_valid():
             form.save()
-            messages.success(request, f'Successfully Edited {employee}', extra_tags='successful_edit')
+            # messages.success(request, f'Successfully Edited {employee}', extra_tags='successful_edit')
             return redirect('employee', employee.emp_id)
-    else:
-        messages.success(request, f'Cancelled Editing of {employee}', extra_tags='cancel_edit')
 
     context = {'form':form, 'employee':employee}
     return render(request, 'employees/add_new_employee.html', context)
