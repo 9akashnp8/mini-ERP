@@ -160,7 +160,11 @@ def replace_assign_new(request, pk):
     employee = Employee.objects.get(emp_id=pk)
     free_laptops = Laptop.objects.filter(laptop_branch=employee.loc_id, laptop_status='Working', emp_id=None)
     request.session['employee'] = employee.emp_id
-    del request.session['assign_new']
+
+    try:
+        del request.session['assign_new']
+    except KeyError:
+        pass
 
     context={'employee':employee, 'free_laptops':free_laptops}
     return render(request, 'replace/replace_assign_new.html', context)
@@ -194,7 +198,10 @@ def employee(request, pk):
     hardware_type = Hardware._meta.get_field('hardware_id').remote_field.model.__name__
     laptop_assigned = None
     number_of_laptops = ''
-    del request.session['assign_new']
+    try:
+        del request.session['assign_new']
+    except KeyError:
+        pass
 
     try:
         laptop_assigned = Laptop.objects.get(emp_id=pk)
@@ -439,27 +446,13 @@ def emp_exit(request):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def emp_exit_confirm(request, pk):
+
     employee_info = Employee.objects.get(emp_id=pk)
-    try:
-        laptop_assigned = Laptop.objects.get(emp_id=pk)
-    except Laptop.DoesNotExist:
-        laptop_assigned = None
-    hardware_type = Hardware._meta.get_field('hardware_id').remote_field.model.__name__
+    employee_info.emp_status = 'InActive'
+    employee_info.save()
+    request.session['assign_new'] = 'false'
 
-    today = date.today()
-
-    laptop_exit_form = EmployeeExitFormLaptop(initial={'laptop_date_returned':today.strftime('%b %d, %Y'), 'laptop_return_remarks':''})
-
-    if request.method == "POST":
-        laptop_exit_form = EmployeeExitFormLaptop(request.POST, initial={'laptop_date_returned':today.strftime('%b %d, %Y'), 'laptop_return_remarks':'Enter Any Remarks here'}, instance=laptop_assigned)
-        if laptop_exit_form.is_valid():
-            laptop_exit_form.save()
-            messages.success(request, f"{employee_info.emp_name}'s Exit succesfully processed", extra_tags="exit_confirm")
-            return redirect('emp_exit_complete', employee_info.emp_id)
-
-    context = {'employee_info':employee_info, 'hardware_type':hardware_type,
-    'laptop_assigned':laptop_assigned, 'laptop_exit_form':laptop_exit_form}
-    return render(request, 'exit/emp_exit_confirm.html', context)
+    return redirect(laptop_return, employee_info.emp_id)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
