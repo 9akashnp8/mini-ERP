@@ -37,13 +37,18 @@ def employee_add_email(emp_id, emp_name, lk_emp_id, dept_id, desig_id, loc_id, r
     FROM = 'notifications.miniERP@gmail.com'
     send_mail(SUBJECT, MESSAGE, FROM, env.list("EMAIL_RECIPIENTS"), fail_silently=True, html_message=MESSAGE)
 
-    
-
 def load_designations(request):
     dept_id = request.GET.get('dept_id')
     designations = Designation.objects.filter(dept_id=dept_id).order_by('designation')
     context = {'designations': designations}
     return render(request, 'partials/designation_dropdown_list.html', context)
+
+def load_buildings(request):
+    laptop_branch = request.GET.get('laptop_branch')
+    print(laptop_branch)
+    buildings = Building.objects.filter(location=laptop_branch).order_by('building')
+    context = {'buildings': buildings}
+    return render(request, 'partials/building_dropdown_list.html', context)
 
 #Views
 @unauthenticated_user

@@ -39,6 +39,7 @@ urlpatterns = [
     path('emp_exit_complete/<str:pk>', views.emp_exit_complete, name='emp_exit_complete'),
 
     path('htmx/load-designations/', views.load_designations, name='load_designations'),
+    path('htmx/load-buildings/', views.load_buildings, name='load_buildings'),
     path('htmx/search-result-assign/', views.search_results_for_laptop_assignment, name='search_results_for_laptop_assignment'),
     path('htmx/search-result-replace/', views.search_results_for_laptop_replacement, name='search_results_for_laptop_replacement'),
     path('htmx/search-result-return/', views.search_results_for_laptop_return, name='search_results_for_laptop_return'),
