@@ -122,9 +122,7 @@ def laptop_return(request, pk):
                 instance=laptop_assigned
             )
             if return_form.is_valid():
-                return_form.save()
-                laptop_assigned.emp_id=None
-                laptop_assigned.save()
+                return_form.save(returning=True)
                 if assign_new == 'true':
                     return redirect('replace_assign_new', employee_info.emp_id)
                 elif assign_new == 'false':
@@ -141,9 +139,8 @@ def laptop_return(request, pk):
             initial={'laptop_date_returned':today.strftime("%b %d, %Y")}, 
             instance=Laptop.objects.get(id=request.POST['returning_laptop']))
             if return_form.is_valid():
-                instance = return_form.save()
-                instance.emp_id = None
-                instance.save()
+                instance = return_form.save(returning=True)
+
                 if assign_new == 'true':
                     return redirect('replace_assign_new', employee_info.emp_id)
                 elif assign_new == 'false':
@@ -404,10 +401,14 @@ def onboarding_complete_view(request, pk):
     """
     selected_laptop = Laptop.objects.get(id=pk)
     employee_to_assign = Employee.objects.get(emp_id=request.session['onboard_employee'])
+
     selected_laptop.emp_id = employee_to_assign
     selected_laptop.save()
-    messages.success(request, f"{employee_to_assign} succesfully onboarded!", extra_tags="onbrd_complete")
 
+    employee_to_assign.is_assigned = True
+    employee_to_assign.save()
+
+    messages.success(request, f"{employee_to_assign} succesfully onboarded!", extra_tags="onbrd_complete")
     return redirect(employee, employee_to_assign.emp_id)
 
 @login_required(login_url='login')

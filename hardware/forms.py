@@ -100,11 +100,6 @@ class OnboardEmployeeAddForm(ModelForm):
         model = Employee
         fields = '__all__'
         exclude = ['user',]
-
-# class EmployeeExitFormLaptopImage(ModelForm):
-#     class Meta:
-#         model = LaptopMedia
-#         fields = ['media']
     
 class EmployeeExitFormLaptop(ModelForm):
 
@@ -120,12 +115,29 @@ class EmployeeExitFormLaptop(ModelForm):
         }
     
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+
+        self.returning = None
+        
+        super(EmployeeExitFormLaptop, self).__init__(*args, **kwargs)
 
         for field in self.fields:
             self.fields[field].widget.attrs.update({'class': 'return-form-fields'})
             self.fields[field].required = True
-        
+    
+    def save(self, *args, **kwargs):
+
+        self.returning = kwargs.pop('returning', None)
+
+        if self.returning == True:
+
+            employee = Employee.objects.get(emp_id=self.instance.emp_id.emp_id)
+            employee.is_assigned = False
+            employee.save()
+            
+            self.instance.emp_id = None
+            self.instance.save()
+
+        super(EmployeeExitFormLaptop, self).save(*args, **kwargs)  
 
 class MultipleLaptopReturnForm(ModelForm):
 
@@ -141,11 +153,41 @@ class MultipleLaptopReturnForm(ModelForm):
         }
     
     def __init__(self, *args, **kwargs):
+
+        self.returning = None
+
         super(MultipleLaptopReturnForm, self).__init__(*args, **kwargs)
 
         for field in self.fields:
             self.fields[field].widget.attrs.update({'class': 'return-form-fields'})
             self.fields[field].required = True
+    
+    def save(self, *args, **kwargs):
+
+        self.returning = kwargs.pop('returning', None)
+        if self.returning:
+
+            count_of_laptops_assigned = Laptop.objects.filter(emp_id=self.instance.emp_id.emp_id).count()
+
+            if count_of_laptops_assigned > 1:
+
+                self.instance.emp_id = None
+                self.instance.save()
+            
+            elif count_of_laptops_assigned == 1:
+                        
+                employee = Employee.objects.get(emp_id=self.instance.emp_id.emp_id)
+                employee.is_assigned = False
+                employee.save()
+                
+                self.instance.emp_id = None
+                self.instance.save()
+
+            else:
+                
+                pass
+
+        super(MultipleLaptopReturnForm, self).save(*args, **kwargs)
 
 class CreateUserForm(UserCreationForm, EmployeeForm):
     class Meta:

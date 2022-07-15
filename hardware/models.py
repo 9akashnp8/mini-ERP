@@ -90,14 +90,6 @@ class Employee(models.Model):
             return "NAME IS NULL"
         return self.emp_name
 
-    def save(self,*args, **kwargs):  
-        laptop_status = Laptop.objects.filter(emp_id=self.emp_id).exists()
-        if laptop_status:
-            self.is_assigned = True
-        else:
-            self.is_assigned = False
-        super(Employee, self).save(*args, **kwargs)
-
 class Laptop(models.Model):
     LAPTOP_STATUSES = (
         ('Working', 'Working'),
