@@ -1,7 +1,6 @@
-from django.forms import ChoiceField, DateInput, ModelForm, ValidationError, ModelChoiceField
-from django.contrib.auth.forms import UserCreationForm
+from django.forms import DateInput, ModelForm, ValidationError
 from django.contrib.auth.models import User
-from psycopg2 import Date
+
 from .models import Designation, Employee, Laptop
 
 class EmployeeForm(ModelForm):
@@ -29,7 +28,8 @@ class EmployeeForm(ModelForm):
         }
     
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+
+        super(EmployeeForm, self).__init__(*args, **kwargs)
 
         #Department-Designation auto dependant dropdown
         self.fields['desig_id'].queryset = Designation.objects.none()
@@ -50,9 +50,10 @@ class EmployeeForm(ModelForm):
         '''Overide clean method to check if a 'User' object with same email
         ID exists, raise a custom validation error if so.
         '''
-        email = self.cleaned_data['emp_email']
-        if User.objects.filter(email=email).exists():
-            raise ValidationError("Email ID is already being used for an ERP User. Please use another email")
+        if self.instance.pk is None:
+            email = self.cleaned_data['emp_email']
+            if User.objects.filter(email=email).exists():
+                raise ValidationError("Email ID is already being used for an ERP User. Please use another email")
 
 class LaptopForm(ModelForm):
 
@@ -82,64 +83,17 @@ class LaptopForm(ModelForm):
         }
     
     def __init__(self, *args, **kwargs):
+
         super().__init__(*args, **kwargs)
 
         #Setting Custom class names for form field styling
         for key in self.fields:
             self.fields[key].widget.attrs.update({'class': 'laptop-form-fields'})
         
-        self.fields['hardware_id'].widget.attrs.update({'placeholder': 'Hardware ID is auto-generated.'})
+        #Placeholder text for Hardware ID
+        self.fields['hardware_id'].widget.attrs.update({'placeholder': 'Hardware ID is auto-generated.'}) 
 
-class LaptopAssignmentForm(ModelForm):
-    class Meta:
-        model = Laptop
-        fields = ['emp_id', 'laptop_sr_no']
-
-class OnboardEmployeeAddForm(ModelForm):
-    class Meta:
-        model = Employee
-        fields = '__all__'
-        exclude = ['user',]
-    
-class EmployeeExitFormLaptop(ModelForm):
-
-    class Meta:
-        model = Laptop
-        fields = ['laptop_date_returned', 'laptop_return_remarks',]
-        widgets = {
-            'laptop_date_returned': DateInput(attrs={'type':'date'}),
-        }
-        labels = {
-            'laptop_date_returned': 'Returning Date',
-            'laptop_return_remarks': 'Remarks'
-        }
-    
-    def __init__(self, *args, **kwargs):
-
-        self.returning = None
-        
-        super(EmployeeExitFormLaptop, self).__init__(*args, **kwargs)
-
-        for field in self.fields:
-            self.fields[field].widget.attrs.update({'class': 'return-form-fields'})
-            self.fields[field].required = True
-    
-    def save(self, *args, **kwargs):
-
-        self.returning = kwargs.pop('returning', None)
-
-        if self.returning == True:
-
-            employee = Employee.objects.get(emp_id=self.instance.emp_id.emp_id)
-            employee.is_assigned = False
-            employee.save()
-            
-            self.instance.emp_id = None
-            self.instance.save()
-
-        super(EmployeeExitFormLaptop, self).save(*args, **kwargs)  
-
-class MultipleLaptopReturnForm(ModelForm):
+class LaptopReturnForm(ModelForm):
 
     class Meta:
         model = Laptop
@@ -156,7 +110,7 @@ class MultipleLaptopReturnForm(ModelForm):
 
         self.returning = None
 
-        super(MultipleLaptopReturnForm, self).__init__(*args, **kwargs)
+        super(LaptopReturnForm, self).__init__(*args, **kwargs)
 
         for field in self.fields:
             self.fields[field].widget.attrs.update({'class': 'return-form-fields'})
@@ -187,9 +141,4 @@ class MultipleLaptopReturnForm(ModelForm):
                 
                 pass
 
-        super(MultipleLaptopReturnForm, self).save(*args, **kwargs)
-
-class CreateUserForm(UserCreationForm, EmployeeForm):
-    class Meta:
-        model = User
-        fields = ['username', 'email', 'password1', 'password2']
+        super(LaptopReturnForm, self).save(*args, **kwargs)

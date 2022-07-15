@@ -52,24 +52,6 @@ def load_buildings(request):
 
 #Views
 @unauthenticated_user
-def register(request):
-    '''
-    Register a new user. This view uses a custom UserCreationForm where in an additional
-    email field is added and all other decorators are removed.
-    '''
-    form1 = CreateUserForm()
-    if request.method == "POST":
-        form1 = CreateUserForm(request.POST)
-        if form1.is_valid():
-            user = form1.save()
-            username = form1.cleaned_data.get('username')
-            messages.success(request, "Account was created for " + username)
-            return redirect('login')
-            
-    context = {'form1':form1}
-    return render(request, 'hardware/register.html', context)
-
-@unauthenticated_user
 def loginPage(request):
     if request.method == "POST":
         username = request.POST.get('username')
@@ -99,7 +81,9 @@ def home(request):
 @allowed_users(allowed_roles=['admin'])
 def onboading(request):
     return render(request, 'onboard/onboard.html')
-
+    
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def laptop_return(request, pk):
 
     today = date.today()
@@ -110,52 +94,42 @@ def laptop_return(request, pk):
     try:
         laptop_assigned = Laptop.objects.get(emp_id=pk)
         number_of_laptops = "1"
-        return_form = EmployeeExitFormLaptop(
-            initial={
-            'laptop_date_returned':today.strftime("%b %d, %Y"),
-            'laptop_return_remarks':''
-        })
-        if request.method == "POST":
-            return_form = EmployeeExitFormLaptop(request.POST, initial={
-                'laptop_date_returned':today.strftime("%b %d, %Y"),
-                'laptop_return_remarks':'Enter Any Remarks here'}, 
-                instance=laptop_assigned
-            )
-            if return_form.is_valid():
-                return_form.save(returning=True)
-                if assign_new == 'true':
-                    return redirect('replace_assign_new', employee_info.emp_id)
-                elif assign_new == 'false':
-                    return redirect('employee', employee_info.emp_id )
-                else:
-                    return HttpResponse("'Assign New' condition not found")
-
     except Laptop.MultipleObjectsReturned:
         number_of_laptops = ">1"
         laptop_assigned = Laptop.objects.filter(emp_id=pk)
-        return_form = MultipleLaptopReturnForm()
-        if request.method == "POST":
-            return_form = MultipleLaptopReturnForm(request.POST,
-            initial={'laptop_date_returned':today.strftime("%b %d, %Y")}, 
-            instance=Laptop.objects.get(id=request.POST['returning_laptop']))
-            if return_form.is_valid():
-                instance = return_form.save(returning=True)
-
-                if assign_new == 'true':
-                    return redirect('replace_assign_new', employee_info.emp_id)
-                elif assign_new == 'false':
-                    return redirect('employee', employee_info.emp_id )
-                else:
-                    return HttpResponse("'Assign New' condition not found")
-                    
-    except Laptop.DoesNotExist as e:
-        return HttpResponse(e)
     except Exception as e:
         return HttpResponse(e)
     
+    form = LaptopReturnForm(
+        initial={
+            'laptop_date_returned': today.strftime("%b %d, %Y")
+        }
+    )
+
+    if request.method == "POST":
+        
+        form = LaptopReturnForm(
+            request.POST,
+            initial={
+                'laptop_date_returned': today.strftime("%b %d, %Y")
+            },
+            instance=laptop_assigned
+        )
+
+        if form.is_valid():
+
+            form.save(returning=True)
+
+            if assign_new == 'true':
+                return redirect('replace_assign_new', employee_info.emp_id)
+            elif assign_new == 'false':
+                return redirect('employee', employee_info.emp_id )
+            else:
+                return HttpResponse("'Assign New' condition not found")
+    
     context = {'employee_info':employee_info, 'hardware_type':hardware_type,
     'laptop_assigned':laptop_assigned, 'number_of_laptops':number_of_laptops, 
-    'return_form': return_form}
+    'return_form': form}
     return render(request, 'replace/replace_confirm.html', context)
 
 def replace_assign_new(request, pk):
