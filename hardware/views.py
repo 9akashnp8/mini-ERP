@@ -250,12 +250,11 @@ def employee_edit_view(request, pk):
 @allowed_users(allowed_roles=['admin'])
 def employee_delete_view(request, pk):
     employee = Employee.objects.get(emp_id=pk)
+
     if request.method == "POST":
         employee.delete()
-        messages.success(request, f'Successfully Deleted {employee}', extra_tags='successful_delete')
+        messages.success(request, f'Successfully Deleted {employee}')
         return redirect(employee_list_view)
-    else:
-        messages.success(request, f'Cancelled deletion of {employee}', extra_tags='cancel_delete')
 
     context = {'employee':employee}
     return render(request, 'employees/employee_delete_form.html', context)
