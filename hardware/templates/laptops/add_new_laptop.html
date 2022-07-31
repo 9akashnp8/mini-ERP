@@ -26,9 +26,7 @@
                 {% endfor %}
             </div>
             <br>
-            {% if request.resolver_match.url_name == 'laptop_edit' %}
-                <a class="btn btn-warning" href="{% url 'laptop' laptop.id %}">Cancel</a>
-            {% endif %}
+            <a class="btn btn-warning" href="{{cancel_url}}">Cancel</a>
             <input class="btn btn-primary" type="submit" name="Submit">
         </form>
     </div>

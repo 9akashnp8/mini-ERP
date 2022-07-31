@@ -239,7 +239,7 @@ def employee_edit_view(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, f"Succesfully Edited {employee.emp_name}'s Profile")
-            return redirect('employee', employee.emp_id)
+            return redirect('employee', employee.emp_id)        
 
     cancel_url_name = reverse('employee', args=(employee.emp_id,))
 
@@ -305,8 +305,10 @@ def laptop_add_view(request):
         if form.is_valid():
             form.save()
             return redirect(laptops_list_view)
+    
+    cancel_url = reverse('dash_laptops')
 
-    context = {'form' : form}
+    context = {'form' : form, 'cancel_url': cancel_url}
     return render(request, 'laptops/add_new_laptop.html', context)
 
 @login_required(login_url='login')
@@ -322,7 +324,9 @@ def laptop_edit_view(request, pk):
             messages.success(request, f'Successfully Edited {laptop}', extra_tags='successful_edit')
             return redirect('laptop', laptop.id)
 
-    context = {'form':form, 'laptop':laptop}
+    cancel_url = reverse('laptop', args=(laptop.id,))
+
+    context = {'form':form, 'laptop':laptop, 'cancel_url': cancel_url}
     return render(request, 'laptops/add_new_laptop.html', context)
 
 @login_required(login_url='login')
