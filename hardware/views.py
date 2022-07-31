@@ -222,8 +222,10 @@ def employee_add_view(request):
             return redirect(employee_list_view)
         else:
             print(form.errors)
+            
+    cancel_url_name = reverse('dash_employees')
 
-    context = {'form':form}
+    context = {'form':form, 'cancel_url_name': cancel_url_name}
     return render(request, 'employees/add_new_employee.html', context)
 
 @login_required(login_url='login')
@@ -236,10 +238,12 @@ def employee_edit_view(request, pk):
         form = EmployeeForm(request.POST, instance=employee)
         if form.is_valid():
             form.save()
-            # messages.success(request, f'Successfully Edited {employee}', extra_tags='successful_edit')
+            messages.success(request, f"Succesfully Edited {employee.emp_name}'s Profile")
             return redirect('employee', employee.emp_id)
 
-    context = {'form':form, 'employee':employee}
+    cancel_url_name = reverse('employee', args=(employee.emp_id,))
+
+    context = {'form':form, 'employee':employee, 'cancel_url_name': cancel_url_name}
     return render(request, 'employees/add_new_employee.html', context)
 
 @login_required(login_url='login')
