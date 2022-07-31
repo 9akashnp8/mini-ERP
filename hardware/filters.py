@@ -44,8 +44,20 @@ class LaptopFilter(django_filters.FilterSet):
         ('Repair', 'Repair'),
         ('Replace', 'Replace'),
     )
-
     laptop_status = ChoiceFilter(choices=LAPTOP_STATUS_CHOICES, empty_label='Select Condition')
+
+    LAPTOP_CHOICES = (
+        (True, 'Available'),
+        (False, 'Assigned')
+    )
+    laptop_availability = ChoiceFilter(choices=LAPTOP_CHOICES, method='filter_laptop_availability', empty_label='Select Availability')
+
+    def filter_laptop_availability(self, queryset, name, value):
+        if value == "True":
+            return queryset.filter(emp_id__isnull=True)
+        else:
+            return queryset.filter(emp_id__isnull=False)
+
     class Meta:
         model = Laptop
         fields = ['laptop_sr_no', 'hardware_id', 'brand', 'laptop_status', 'laptop_branch']
