@@ -22,21 +22,11 @@
             </div>
         </div>
         {% if messages %}
-        <div class="alert alert-success alert-dismissible" role="alert">
             {% for message in messages %}
-                {% if "cancel_delete" in message.tags %}
-                    <div class="fw-bold">{{message}}</div>
-                {% elif "successful_edit" in message.tags %}
-                    <div class="fw-bold">{{message}}</div>
-                {% elif "cancel_edit" in message.tags %}
-                    <div class="fw-bold">{{message}}</div>
-                {% elif "exit_confirm" in message.tags %}
-                    <div class="fw-bold">{{message}}</div>
-                {% elif "onbrd_complete" in message.tags %}
-                    <div class="fw-bold">{{message}}</div>
-                {% endif %}
+            <div class="alert alert-{{message.tags}} alert-dismissible" role="alert">
+                <div class="fw-bold">{{message}}</div>
+            </div>
             {% endfor %}
-        </div>
         {% endif %}
         <!--Information & Hardware Assigned Cards-->
         <div class="row">
