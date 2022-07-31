@@ -381,7 +381,7 @@ def onboarding_complete_view(request, pk):
     employee_to_assign.is_assigned = True
     employee_to_assign.save()
 
-    messages.success(request, f"{employee_to_assign} succesfully successfuly assigned the laptop: {selected_laptop}", extra_tags="onbrd_complete")
+    messages.success(request, f"{employee_to_assign} succesfully assigned the laptop: {selected_laptop}", extra_tags="onbrd_complete")
     return redirect(employee, employee_to_assign.emp_id)
 
 @login_required(login_url='login')
