@@ -321,7 +321,7 @@ def laptop_edit_view(request, pk):
         form = LaptopForm(request.POST, instance=laptop)
         if form.is_valid():
             form.save()
-            messages.success(request, f'Successfully Edited {laptop}', extra_tags='successful_edit')
+            messages.success(request, f'Successfully Edited {laptop}')
             return redirect('laptop', laptop.id)
 
     cancel_url = reverse('laptop', args=(laptop.id,))
@@ -335,7 +335,7 @@ def laptop_delete_view(request, pk):
     laptop = Laptop.objects.get(id=pk)
     if request.method == 'POST':
         laptop.delete()
-        messages.success(request, f"Succesfully deleted {laptop}", extra_tags="successful_delete")
+        messages.success(request, f"Succesfully deleted {laptop}")
         return redirect(laptops_list_view)
     
     context = {'laptop':laptop}
@@ -388,7 +388,7 @@ def onboarding_complete_view(request, pk):
     employee_to_assign.is_assigned = True
     employee_to_assign.save()
 
-    messages.success(request, f"{employee_to_assign} succesfully assigned the laptop: {selected_laptop}", extra_tags="onbrd_complete")
+    messages.success(request, f"{employee_to_assign} succesfully assigned the laptop: {selected_laptop}")
     return redirect(employee, employee_to_assign.emp_id)
 
 @login_required(login_url='login')
