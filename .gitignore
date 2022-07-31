@@ -1,7 +1,8 @@
 venv/
+.gitignore
 uploads/
 db.sqlite3
-/__pycache__/
+__pycache__/
 .gitignore
 .env
 client/
