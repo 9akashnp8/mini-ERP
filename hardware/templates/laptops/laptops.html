@@ -8,14 +8,11 @@
       <div class="me-auto p-2 bd-highlight">
         <h2>Laptops</h2>
         {% if messages %}
-        <br>
-        <div class="alert alert-success alert-dismissible" role="alert">
             {% for message in messages %}
-              {% if "successful_delete" in message.tags %}
+            <div class="alert alert-{{message.tags}} alert-dismissible" role="alert">
                 <div class="fw-bold">{{message}}</div>
-              {% endif %}
+            </div>
             {% endfor %}
-        </div>
         {% endif %}
       </div>
       <div class="p-2 bd-highlight">
