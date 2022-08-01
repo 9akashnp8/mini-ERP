@@ -118,6 +118,7 @@ def laptop_return(request, pk):
         if form.is_valid():
 
             form.save(returning=True)
+            messages.info(request, f"Laptop Return for {employee_info.emp_name}'s processed.")
 
             if assign_new == 'true':
                 return redirect('replace_assign_new', employee_info.emp_id)
@@ -303,7 +304,8 @@ def laptop_add_view(request):
     if request.method == 'POST':
         form = LaptopForm(request.POST)
         if form.is_valid():
-            form.save()
+            instance = form.save()
+            messages.success(request, f"Successfully added {instance} to database.")
             return redirect(laptops_list_view)
     
     cancel_url = reverse('dash_laptops')
@@ -334,8 +336,8 @@ def laptop_edit_view(request, pk):
 def laptop_delete_view(request, pk):
     laptop = Laptop.objects.get(id=pk)
     if request.method == 'POST':
-        laptop.delete()
         messages.success(request, f"Succesfully deleted {laptop}")
+        laptop.delete()
         return redirect(laptops_list_view)
     
     context = {'laptop':laptop}
@@ -435,6 +437,8 @@ def emp_exit_confirm(request, pk):
     employee_info.emp_status = 'InActive'
     employee_info.save()
     request.session['assign_new'] = 'false'
+
+    messages.success(request, f"{employee_info.emp_name}'s Exit Complete")
 
     return redirect(laptop_return, employee_info.emp_id)
 
