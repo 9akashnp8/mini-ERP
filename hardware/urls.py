@@ -8,9 +8,7 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('onboarding/', views.onboading),
     path('laptop-return/<str:pk>/', views.laptop_return, name='replace_confirm'),
-    path('replace_assign_new/<str:pk>', views.replace_assign_new, name='replace_assign_new'),
-    path('replace_complete/<str:pk>', views.replace_complete, name='replace_complete'),
-
+    
     #Employee URL Paths
     path('employees/', views.employee_list_view, name='dash_employees'),
     path('employee/<str:pk>', views.employee, name='employee'),

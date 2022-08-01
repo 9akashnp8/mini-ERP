@@ -118,10 +118,10 @@ def laptop_return(request, pk):
         if form.is_valid():
 
             form.save(returning=True)
-            messages.info(request, f"Laptop Return for {employee_info.emp_name}'s processed.")
+            messages.info(request, f"Laptop Return for {employee_info.emp_name} Complete.")
 
             if assign_new == 'true':
-                return redirect('replace_assign_new', employee_info.emp_id)
+                return redirect('onbrd_hw_assign', employee_info.emp_id)
             elif assign_new == 'false':
                 return redirect('employee', employee_info.emp_id )
             else:
@@ -131,27 +131,6 @@ def laptop_return(request, pk):
     'laptop_assigned':laptop_assigned, 'number_of_laptops':number_of_laptops, 
     'return_form': form}
     return render(request, 'replace/replace_confirm.html', context)
-
-def replace_assign_new(request, pk):
-    employee = Employee.objects.get(emp_id=pk)
-    free_laptops = Laptop.objects.filter(laptop_branch=employee.loc_id, laptop_status='Working', emp_id=None)
-    request.session['employee'] = employee.emp_id
-
-    try:
-        del request.session['assign_new']
-    except KeyError:
-        pass
-
-    context={'employee':employee, 'free_laptops':free_laptops}
-    return render(request, 'replace/replace_assign_new.html', context)
-
-def replace_complete(request, pk):
-    laptop_assigned = Laptop.objects.get(id=pk)
-    laptop_assigned.emp_id = Employee.objects.get(emp_id=request.session['employee'])
-    laptop_assigned.save()
-    del request.session['employee']
-
-    return redirect('laptop', laptop_assigned.id)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -390,7 +369,7 @@ def onboarding_complete_view(request, pk):
     employee_to_assign.is_assigned = True
     employee_to_assign.save()
 
-    messages.success(request, f"{employee_to_assign} succesfully assigned the laptop: {selected_laptop}")
+    messages.success(request, f"Succesfully assigned the laptop: {selected_laptop} to {employee_to_assign}")
     return redirect(employee, employee_to_assign.emp_id)
 
 @login_required(login_url='login')
