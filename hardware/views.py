@@ -75,12 +75,7 @@ def logoutPage(request):
 @allowed_users(allowed_roles=['admin'])
 def home(request):
     return render(request, 'dashboard.html')
-
-@login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
-def onboading(request):
-    return render(request, 'onboard/onboard.html')
-    
+   
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def laptop_return(request, pk):

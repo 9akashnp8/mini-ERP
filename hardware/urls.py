@@ -6,7 +6,6 @@ urlpatterns = [
     path('login/', views.loginPage, name='login'),
     path('logout/', views.logoutPage, name='logout'),
     path('', views.home, name='home'),
-    path('onboarding/', views.onboading),
     path('laptop-return/<str:pk>/', views.laptop_return, name='replace_confirm'),
     
     #Employee URL Paths
