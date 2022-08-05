@@ -75,57 +75,6 @@ def logoutPage(request):
 @allowed_users(allowed_roles=['admin'])
 def home(request):
     return render(request, 'dashboard.html')
-   
-@login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
-def laptop_return(request, pk):
-
-    today = date.today()
-    employee_info = Employee.objects.get(emp_id=pk)
-    hardware_type = Hardware._meta.get_field('hardware_id').remote_field.model.__name__
-    assign_new = request.session['assign_new']
-
-    try:
-        laptop_assigned = Laptop.objects.get(emp_id=pk)
-        number_of_laptops = "1"
-    except Laptop.MultipleObjectsReturned:
-        number_of_laptops = ">1"
-        laptop_assigned = Laptop.objects.filter(emp_id=pk)
-    except Exception as e:
-        return HttpResponse(e)
-    
-    form = LaptopReturnForm(
-        initial={
-            'laptop_date_returned': today.strftime("%b %d, %Y")
-        }
-    )
-
-    if request.method == "POST":
-        
-        form = LaptopReturnForm(
-            request.POST,
-            initial={
-                'laptop_date_returned': today.strftime("%b %d, %Y")
-            },
-            instance=laptop_assigned
-        )
-
-        if form.is_valid():
-
-            form.save(returning=True)
-            messages.info(request, f"Laptop Return for {employee_info.emp_name} Complete.")
-
-            if assign_new == 'true':
-                return redirect('onbrd_hw_assign', employee_info.emp_id)
-            elif assign_new == 'false':
-                return redirect('employee', employee_info.emp_id )
-            else:
-                return HttpResponse("'Assign New' condition not found")
-    
-    context = {'employee_info':employee_info, 'hardware_type':hardware_type,
-    'laptop_assigned':laptop_assigned, 'number_of_laptops':number_of_laptops, 
-    'return_form': form}
-    return render(request, 'replace/replace_confirm.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -368,30 +317,55 @@ def onboarding_complete_view(request, pk):
     return redirect(employee, employee_to_assign.emp_id)
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['employee', 'admin'])
-def employee_profile_view(request):
-    '''
-    An 'employee self service' page where the employee can view all the hardware
-    that have been assigned to him/her.
-    '''
-    laptop_assigned = Laptop.objects.get(emp_id=request.user.employee)
-    hardwareType = Hardware._meta.get_field('hardware_id').remote_field.model.__name__
-    context = {'laptop_assigned':laptop_assigned, 'hardwareType':hardwareType}
-    return render(request, 'employees/employee_profile.html', context)
+@allowed_users(allowed_roles=['admin'])
+def laptop_return(request, pk):
 
-@login_required(login_url='login')
-@allowed_users(allowed_roles=['employee',])
-def employee_profile_edit_view(request):
-    employee = request.user.employee
-    form = EmployeeForm(instance=employee)
+    today = date.today()
+    employee_info = Employee.objects.get(emp_id=pk)
+    hardware_type = Hardware._meta.get_field('hardware_id').remote_field.model.__name__
+    assign_new = request.session['assign_new']
+
+    try:
+        laptop_assigned = Laptop.objects.get(emp_id=pk)
+        number_of_laptops = "1"
+    except Laptop.MultipleObjectsReturned:
+        number_of_laptops = ">1"
+        laptop_assigned = Laptop.objects.filter(emp_id=pk)
+    except Exception as e:
+        return HttpResponse(e)
+    
+    form = LaptopReturnForm(
+        initial={
+            'laptop_date_returned': today.strftime("%b %d, %Y")
+        }
+    )
 
     if request.method == "POST":
-        form = EmployeeForm(request.POST, instance=employee)
-        if form.is_valid():
-            form.save()
+        
+        form = LaptopReturnForm(
+            request.POST,
+            initial={
+                'laptop_date_returned': today.strftime("%b %d, %Y")
+            },
+            instance=laptop_assigned
+        )
 
-    context = {'form':form}
-    return render(request, 'employees/empSettingsPage.html', context)
+        if form.is_valid():
+
+            form.save(returning=True)
+            messages.info(request, f"Laptop Return for {employee_info.emp_name} Complete.")
+
+            if assign_new == 'true':
+                return redirect('onbrd_hw_assign', employee_info.emp_id)
+            elif assign_new == 'false':
+                return redirect('employee', employee_info.emp_id )
+            else:
+                return HttpResponse("'Assign New' condition not found")
+    
+    context = {'employee_info':employee_info, 'hardware_type':hardware_type,
+    'laptop_assigned':laptop_assigned, 'number_of_laptops':number_of_laptops, 
+    'return_form': form}
+    return render(request, 'replace/replace_confirm.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -427,6 +401,32 @@ def emp_exit_complete(request, pk):
     laptop_assigned.save()
     messages.success(request, f"{employee.emp_name}'s Exit succesfully processed.")
     return redirect('employee', employee.emp_id)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['employee', 'admin'])
+def employee_profile_view(request):
+    '''
+    An 'employee self service' page where the employee can view all the hardware
+    that have been assigned to him/her.
+    '''
+    laptop_assigned = Laptop.objects.get(emp_id=request.user.employee)
+    hardwareType = Hardware._meta.get_field('hardware_id').remote_field.model.__name__
+    context = {'laptop_assigned':laptop_assigned, 'hardwareType':hardwareType}
+    return render(request, 'employees/employee_profile.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['employee',])
+def employee_profile_edit_view(request):
+    employee = request.user.employee
+    form = EmployeeForm(instance=employee)
+
+    if request.method == "POST":
+        form = EmployeeForm(request.POST, instance=employee)
+        if form.is_valid():
+            form.save()
+
+    context = {'form':form}
+    return render(request, 'employees/empSettingsPage.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
