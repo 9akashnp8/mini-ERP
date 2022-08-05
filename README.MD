@@ -1,9 +1,9 @@
 # miniERP
 Your Organization's Laptop Administration, Made Easy.
 
-[![miniERP CI](https://github.com/9akashnp8/mini-ERP/workflows/main.yaml/badge.svg)](https://github.com/9akashnp8/mini-ERP/actions/workflows/main.yaml)
+[![minitests](https://github.com/9akashnp8/mini-ERP/actions/workflows/main.yaml/badge.svg)](https://github.com/9akashnp8/mini-ERP/actions/workflows/main.yaml)
 
-## About
+# About
 ---
 miniERP, a Free and Opensource web application to easily manage the laptops at your organization covering the following areas:
 
@@ -11,7 +11,7 @@ miniERP, a Free and Opensource web application to easily manage the laptops at y
 2. **Replacement**: Process Laptop Replacement requests where existing laptops assigned to the employee are returned and new one's assigned based on the availability at the branch. 
 3. **Employee Exit**: Process the exit of employees with emphasis on return of the laptop assigned to them.
 
-## Features
+# Features
 ---
 - Edit History Tracking
 - Employee Self Service Portal
@@ -19,7 +19,7 @@ miniERP, a Free and Opensource web application to easily manage the laptops at y
 - API Integration
 - ...
 
-## Installation
+# Installation
 ---
 1. Set up & Activate virtual environment
 
