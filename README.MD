@@ -1,7 +1,7 @@
 # miniERP
 Your Organization's Laptop Administration, Made Easy.
 
-[![miniERP CI](https://github.com/9akashnp8/mini-ERP/actions/workflows/main.yaml/badge.svg)](https://github.com/9akashnp8/mini-ERP/actions/workflows/main.yaml)
+[![miniERP CI](https://github.com/9akashnp8/mini-ERP/workflows/main.yaml/badge.svg)](https://github.com/9akashnp8/mini-ERP/actions/workflows/main.yaml)
 
 ## About
 ---
