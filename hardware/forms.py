@@ -1,7 +1,8 @@
 from django.forms import DateInput, ModelForm, ValidationError
 from django.contrib.auth.models import User
 
-from .models import Designation, Employee, Laptop
+from hardware.models import Laptop
+from employee.models import Designation, Employee
 
 class EmployeeForm(ModelForm):
 

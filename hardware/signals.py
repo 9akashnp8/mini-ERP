@@ -1,6 +1,7 @@
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User, Group
-from .models import Employee, Laptop
+from hardware.models import Laptop
+from employee.models import Employee
 
 def createUser(sender, instance, created, **kwargs):
     if created:
