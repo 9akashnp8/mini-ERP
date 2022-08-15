@@ -9,8 +9,9 @@ from django.template.loader import render_to_string
 
 from hardware.decorators import allowed_users
 from hardware.filters import EmployeeFilter, ExitEmployeeFilter, LaptopFilter
-from hardware.forms import *
-from .models import Employee
+from hardware.forms import LaptopForm, LaptopReturnForm
+from employee.forms import EmployeeForm
+from .models import Employee, Designation
 from hardware.models import Laptop, Building, Hardware
 
 from datetime import date
