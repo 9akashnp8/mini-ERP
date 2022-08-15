@@ -41,7 +41,7 @@ class EmployeeDashboardPageTests(LoginTestCase):
     
     def test_correct_template_being_used(self):
         response = self.client.get(reverse('dash_employees'))
-        self.assertTemplateUsed(response, 'employees/employees.html')
+        self.assertTemplateUsed(response, 'employee/employees.html')
 
 class EmployeeDetailPageTests(LoginTestCase):
 
@@ -76,7 +76,7 @@ class EmployeeDetailPageTests(LoginTestCase):
     def test_correct_template_being_used(self):
         url = reverse('employee', args=(self.employee.emp_id,))
         response = self.client.get(url)
-        self.assertTemplateUsed(response, 'employees/employee.html')
+        self.assertTemplateUsed(response, 'employee/employee.html')
 
 class EmployeeAddPageTests(LoginTestCase):
 
@@ -93,7 +93,7 @@ class EmployeeAddPageTests(LoginTestCase):
     def test_correct_template_being_used(self):
         url = reverse('employee_add')
         response = self.client.get(url)
-        self.assertTemplateUsed(response, 'employees/add_new_employee.html')
+        self.assertTemplateUsed(response, 'employee/add_new_employee.html')
 
 class EmployeeEditPageTests(LoginTestCase):
 
@@ -128,7 +128,7 @@ class EmployeeEditPageTests(LoginTestCase):
     def test_correct_template_being_used(self):
         url = reverse('employee_edit', args=(self.employee.emp_id,))
         response = self.client.get(url)
-        self.assertTemplateUsed(response, 'employees/add_new_employee.html')
+        self.assertTemplateUsed(response, 'employee/add_new_employee.html')
 
 class EmployeeDeletePageTests(LoginTestCase):
 
@@ -163,4 +163,4 @@ class EmployeeDeletePageTests(LoginTestCase):
     def test_correct_template_being_used(self):
         url = reverse('employee_del', args=(self.employee.emp_id,))
         response = self.client.get(url)
-        self.assertTemplateUsed(response, 'employees/employee_delete_form.html')
+        self.assertTemplateUsed(response, 'employee/employee_delete_form.html')
