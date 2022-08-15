@@ -7,9 +7,8 @@ from django.core.paginator import Paginator
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
-from hardware.decorators import allowed_users
-from hardware.filters import EmployeeFilter, ExitEmployeeFilter, LaptopFilter
-from hardware.forms import LaptopForm, LaptopReturnForm
+from minierp.decorators import allowed_users
+from employee.filters import EmployeeFilter, ExitEmployeeFilter
 from employee.forms import EmployeeForm
 from .models import Employee, Designation
 from hardware.models import Laptop, Building, Hardware
