@@ -5,8 +5,8 @@ urlpatterns = [
 
     #Laptop URL Paths
     path('laptops/', views.laptops_list_view, name='dash_laptops'),
-    path('laptop/<str:pk>/', views.laptop, name='laptop'),
     path('laptop/add/', views.laptop_add_view, name='laptop_add'),
+    path('laptop/<str:pk>/', views.laptop, name='laptop'),
     path('laptop/<str:pk>/edit/', views.laptop_edit_view, name='laptop_edit'),
     path('laptop/<str:pk>/delete/', views.laptop_delete_view, name='laptop_del'),
     path('laptop-return/<str:pk>/', views.laptop_return, name='replace_confirm'),
