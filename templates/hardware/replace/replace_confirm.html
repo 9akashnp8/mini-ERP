@@ -1,0 +1,54 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<div class="container my-4 d-flex justify-content-center">
+  <div class="col-md-6">
+    <h4 class="card-title">Return Form</h4>
+    <hr>
+    <form enctype="multipart/form-data" method="POST">
+      {% csrf_token %}
+      {% if number_of_laptops == ">1" %}
+        <div class="input-item">
+          <p class="label">Returning Laptop:</p>
+          <select name="returning_laptop" id="returning_laptop" class="return-form-fields">
+            {% for lap in laptop_assigned %}
+            <option value="{{lap.id}}">{{lap.hardware_id}} | {{lap.laptop_sr_no}}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <br>
+        <div class="form-input">
+          {% for field in return_form %}
+          <div class="input-item">
+            <div class="label">{{field.label}}</div> 
+            {{field}}
+          </div>
+          {% endfor %}
+        </div>
+      {% elif number_of_laptops == "1" %}
+        <div>
+          <p class="label">Returning Laptop:</p>
+          <ul class="list-group">
+            <li class="list-group-item">
+              <a href="{% url 'laptop' laptop_assigned.id %}">{{ laptop_assigned.hardware_id }} | {{ laptop_assigned.laptop_sr_no }}</a>
+            </li>
+          </ul>
+        </div>
+        <br>
+        <div class="form-input">
+          {% for field in return_form %}
+          <div class="input-item">
+            <div class="label">{{field.label}}</div> 
+            {{field}}
+          </div>
+          {% endfor %}
+        </div>
+      {% else %}
+      <h5>ERROR: number of laptops out of range</h5>
+      {% endif %}
+      <br>
+      <input type="submit" name="Submit" class="btn btn-success"></input>
+    </form>
+  </div>
+</div>
+{% endblock content%}

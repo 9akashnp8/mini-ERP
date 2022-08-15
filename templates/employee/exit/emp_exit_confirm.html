@@ -1,0 +1,49 @@
+{% extends 'main.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="row">
+        <div class="col">
+            <div class="card card-body">
+                <h5 class="card-title">Hardware(s) Assigned</h5>
+                <!--<a class="btn btn-primary" href="{% url 'emp_exit_complete' employee_info.emp_id %}">Proceed with Exit</a>-->
+                <table class="table table-stripped">
+                    <thead>
+                      <tr>
+                        <th scope="col">Hardware Type</th>
+                        <th scope="col">Hardware ID</th>
+                        <th scope="col">Hardware Sr No</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        {% if laptop_assigned %}
+                        <td>{{hardware_type}}</td>
+                        <td>{{laptop_assigned.hardware_id}}</td>
+                        <td><a href="{% url 'laptop' laptop_assigned.id %}">{{laptop_assigned.laptop_sr_no}}</a></td>
+                        {% else %}
+                        <td>Not Assigned</td>
+                        <td>Not Assigned</td>
+                        <td>Not Assigned</td>
+                        {% endif %}
+                      </tr>
+                    </tbody>
+                </table> 
+            </div>
+        </div>
+        <div class="col">
+          <div class="card card-body">
+            <form enctype="multipart/form-data" method="POST">
+              {% csrf_token %}
+              {{ laptop_exit_form|crispy }}
+              <br>
+              {{laptop_exit_media_form|crispy}}
+              <br>
+              <input type="submit" name="Submit" class="btn btn-success"></input>
+            </form>
+          </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

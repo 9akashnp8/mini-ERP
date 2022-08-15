@@ -1,0 +1,59 @@
+{% extends 'main.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+<div class="container d-flex justify-content-center py-4">
+    <div class="col-md-8">
+        <h4>Employee Details</h4>
+        <hr>
+        <form action="" type="submit" method="POST" name="submit"
+            id="employeeForm" data-designations-url="{% url 'load_designations' %}">
+            {% csrf_token %}
+            {% if form.errors %}
+            <div class="alert alert-warning alert-dismissible" role="alert">
+            {{form.non_field_errors}} 
+            {% for field in form %}
+                {% for error in field.errors %}
+                    {{field.label}} : {{error|escape}}
+                {% endfor %}
+            {% endfor %}
+            </div>
+            {% endif %}
+            <div class="form-input">
+            {% for field in form %}
+                <div class="input-item">
+                    <div class="label">{{field.label}}</div> 
+                    {{field}}
+                </div>
+            {% endfor %}
+            </div>
+            <br>
+            {% if request.resolver_match.url_name == 'employee_edit' %}
+                <a class="btn btn-warning" href="{% url 'employee' employee.emp_id %}">Cancel</a>
+            {% endif %}
+            <input class="btn btn-primary" type="submit" name="Submit">
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    $("#id_dept_id").change(function () {
+      var url = $("#employeeForm").attr("data-designations-url");  // get the url of the `load_cities` view
+      var deptId = $(this).val();  // get the selected country ID from the HTML input
+
+      $.ajax({                       // initialize an AJAX request
+        url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+        data: {
+          'dept_id': deptId       // add the country id to the GET parameters
+        },
+        success: function (data) { // `data` is the return of the `load_cities` view function
+          $("#id_desig_id").html(data);  // replace the contents of the city input with the data that came from the server
+        }
+      });
+
+    });
+</script>
+{% endblock js%}

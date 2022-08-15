@@ -1,0 +1,31 @@
+{% extends 'main.html' %}
+
+
+{% block content %}
+<div class="container my-4">
+    <div class="row">
+        <div class="col">
+            <div class="card card-body">
+                <h5 class="card-title">Hardware(s) Assigned To You</h5>
+                <table class="table table-stripped">
+                    <thead>
+                      <tr>
+                        <th scope="col">Hardware Type</th>
+                        <th scope="col">Hardware ID</th>
+                        <th scope="col">Hardware Sr No</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>{{hardwareType }}</td>
+                        <td>{{laptop_assigned.hardware_id}}</td>
+                        <td>{{laptop_assigned.laptop_sr_no}}</td>
+                      </tr> 
+                    </tbody>
+                </table>
+                
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

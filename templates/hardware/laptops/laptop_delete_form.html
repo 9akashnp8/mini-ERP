@@ -1,0 +1,15 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<br>
+<div class="container px-4 d-flex justify-content-center">
+    <div class="text-center">
+        <p>Are you sure you wanna delete "{{laptop.laptop_sr_no}}"</p>
+        <form action="{% url 'laptop_del' laptop.id %}" method="POST">
+            {% csrf_token %}
+            <a class="btn btn-warning" href="{% url 'laptop' laptop.id %}">Cancel</a>
+            <input class="btn btn-danger" type="submit" name="Confirm">
+        </form>
+    </div>
+</div>
+{% endblock %}

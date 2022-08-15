@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'hardware.apps.HardwareConfig',
-
+    'employee',
+    
     #3rd party
     'rest_framework',
     'rest_framework.authtoken',

@@ -1,8 +1,8 @@
 from rest_framework import generics
 from rest_framework import authentication
 
-from hardware.models import Employee
-from hardware.serializers import EmployeeSerializer
+from employee.models import Employee
+from employee.serializers import EmployeeSerializer
 
 class GetEmployeeDetailAPIView(generics.RetrieveAPIView):
     queryset = Employee.objects.all()

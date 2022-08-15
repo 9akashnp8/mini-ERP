@@ -1,0 +1,54 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<div class="container d-flex justify-content-center py-5">
+    <div class="col-md-8">
+        <h4>Laptop Information</h4>
+        {% if form.errors %}
+        <div class="alert alert-warning alert-dismissible" role="alert"> 
+            {% for field in form %}
+                {% for error in field.errors %}
+                    {{field.label}} : {{error|escape}}
+                {% endfor %}
+            {% endfor %}
+        </div>
+        {% endif %}
+        <br>
+        <form action="" type="submit" method="POST" name="submit" id="laptopForm"
+        data-buildings-url="{% url 'load_buildings' %}">
+            {% csrf_token %}
+            <div class="form-input">
+                {% for field in form %}
+                <div class="input-item">
+                    <div class="label">{{field.label}}</div> 
+                    {{field}}
+                </div>
+                {% endfor %}
+            </div>
+            <br>
+            <a class="btn btn-warning" href="{{cancel_url}}">Cancel</a>
+            <input class="btn btn-primary" type="submit" name="Submit">
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    $("#id_laptop_branch").change(function () {
+      var url = $("#laptopForm").attr("data-buildings-url");  // get the url of the `load_cities` view
+      var laptopBranch = $(this).val();  // get the selected country ID from the HTML input
+
+      $.ajax({                       // initialize an AJAX request
+        url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+        data: {
+          'laptop_branch': laptopBranch       // add the country id to the GET parameters
+        },
+        success: function (data) { // `data` is the return of the `load_cities` view function
+          $("#id_laptop_building").html(data);  // replace the contents of the city input with the data that came from the server
+        }
+      });
+
+    });
+</script>
+{% endblock js%}
