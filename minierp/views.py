@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
-from hardware.decorators import unauthenticated_user, allowed_users
+from .decorators import unauthenticated_user, allowed_users
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 

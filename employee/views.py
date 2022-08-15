@@ -41,14 +41,6 @@ def load_designations(request):
     context = {'designations': designations}
     return render(request, 'partials/designation_dropdown_list.html', context)
 
-def load_buildings(request):
-    laptop_branch = request.GET.get('laptop_branch')
-    print(laptop_branch)
-    buildings = Building.objects.filter(location=laptop_branch).order_by('building')
-    context = {'buildings': buildings}
-    return render(request, 'partials/building_dropdown_list.html', context)
-
-
 # Create your views here.
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])

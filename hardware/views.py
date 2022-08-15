@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 
 from minierp.decorators import  allowed_users
-from .models import Laptop, Hardware
+from .models import Laptop, Hardware, Building
 from .forms import LaptopForm, LaptopReturnForm
 from .filters import LaptopFilter
 from employee.models import Employee
@@ -16,6 +16,14 @@ from environs import Env
 
 env = Env()
 env.read_env()
+
+#Helpers
+def load_buildings(request):
+    laptop_branch = request.GET.get('laptop_branch')
+    print(laptop_branch)
+    buildings = Building.objects.filter(location=laptop_branch).order_by('building')
+    context = {'buildings': buildings}
+    return render(request, 'partials/building_dropdown_list.html', context)
 
 #Views
 @login_required(login_url='login')
