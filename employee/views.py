@@ -53,7 +53,7 @@ def employee_list_view(request):
     page_obj = paginator.get_page(page_number)
 
     context = {'employees': employees, 'myFilter':myFilter, 'page_obj': page_obj}
-    return render(request, 'employees/employees.html', context)
+    return render(request, 'employee/employees.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -95,7 +95,7 @@ def employee(request, pk):
 
     context = {'employee_info': employee_info, 'number_of_laptops': number_of_laptops,
     'laptop_assigned': laptop_assigned, 'hardware_type':hardware_type, 'changes':changes,}
-    return render(request, 'employees/employee.html', context)
+    return render(request, 'employee/employee.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -116,7 +116,7 @@ def employee_add_view(request):
     cancel_url_name = reverse('dash_employees')
 
     context = {'form':form, 'cancel_url_name': cancel_url_name}
-    return render(request, 'employees/add_new_employee.html', context)
+    return render(request, 'employee/add_new_employee.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -134,7 +134,7 @@ def employee_edit_view(request, pk):
     cancel_url_name = reverse('employee', args=(employee.emp_id,))
 
     context = {'form':form, 'employee':employee, 'cancel_url_name': cancel_url_name}
-    return render(request, 'employees/add_new_employee.html', context)
+    return render(request, 'employee/add_new_employee.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -147,7 +147,7 @@ def employee_delete_view(request, pk):
         return redirect(employee_list_view)
 
     context = {'employee':employee}
-    return render(request, 'employees/employee_delete_form.html', context)
+    return render(request, 'employee/employee_delete_form.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -157,7 +157,7 @@ def emp_exit(request):
     employees = myExitFilter.qs
 
     context = {'myExitFilter':myExitFilter, 'employees':employees}
-    return render(request, 'exit/emp_exit.html', context)
+    return render(request, 'employee/exit/emp_exit.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -194,7 +194,7 @@ def employee_profile_view(request):
     laptop_assigned = Laptop.objects.get(emp_id=request.user.employee)
     hardwareType = Hardware._meta.get_field('hardware_id').remote_field.model.__name__
     context = {'laptop_assigned':laptop_assigned, 'hardwareType':hardwareType}
-    return render(request, 'employees/employee_profile.html', context)
+    return render(request, 'employee/employee_profile.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['employee',])
@@ -208,7 +208,7 @@ def employee_profile_edit_view(request):
             form.save()
 
     context = {'form':form}
-    return render(request, 'employees/empSettingsPage.html', context)
+    return render(request, 'employee/empSettingsPage.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -227,7 +227,7 @@ def onboarding_add_employee_view(request):
             return redirect(onboarding_assign_hardware_view, instance.emp_id)
 
     context = {'form':form}
-    return render(request, 'onboard/onboarding_add_employee.html', context)
+    return render(request, 'employee/onboard/onboarding_add_employee.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -241,7 +241,7 @@ def onboarding_assign_hardware_view(request, pk):
     free_laptops = Laptop.objects.filter(laptop_branch=onboarded_emp.loc_id, laptop_status='Working', emp_id=None)
     
     context = {'onboarded_emp':onboarded_emp, 'free_laptops':free_laptops}
-    return render(request, 'onboard/onboarding_assign_hardware.html', context)
+    return render(request, 'employee/onboard/onboarding_assign_hardware.html', context)
 
 def onboarding_complete_view(request, pk):
     """

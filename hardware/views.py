@@ -37,7 +37,7 @@ def laptops_list_view(request):
     page_obj = paginator.get_page(page_number)
 
     context = {'myFilter':myFilter, 'page_obj': page_obj}
-    return render(request, 'laptops/laptops.html', context)
+    return render(request, 'hardware/laptops/laptops.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -60,7 +60,7 @@ def laptop(request, pk):
     changes = historical_changes(qry)
 
     context = {'laptop_info': laptop_info, 'changes':changes}
-    return render(request, 'laptops/laptop.html', context)
+    return render(request, 'hardware/laptops/laptop.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -77,7 +77,7 @@ def laptop_add_view(request):
     cancel_url = reverse('dash_laptops')
 
     context = {'form' : form, 'cancel_url': cancel_url}
-    return render(request, 'laptops/add_new_laptop.html', context)
+    return render(request, 'hardware/laptops/add_new_laptop.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -95,7 +95,7 @@ def laptop_edit_view(request, pk):
     cancel_url = reverse('laptop', args=(laptop.id,))
 
     context = {'form':form, 'laptop':laptop, 'cancel_url': cancel_url}
-    return render(request, 'laptops/add_new_laptop.html', context)
+    return render(request, 'hardware/laptops/add_new_laptop.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -107,7 +107,7 @@ def laptop_delete_view(request, pk):
         return redirect(laptops_list_view)
     
     context = {'laptop':laptop}
-    return render(request, 'laptops/laptop_delete_form.html', context)
+    return render(request, 'hardware/laptops/laptop_delete_form.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
@@ -158,7 +158,7 @@ def laptop_return(request, pk):
     context = {'employee_info':employee_info, 'hardware_type':hardware_type,
     'laptop_assigned':laptop_assigned, 'number_of_laptops':number_of_laptops, 
     'return_form': form}
-    return render(request, 'replace/replace_confirm.html', context)
+    return render(request, 'hardware/replace/replace_confirm.html', context)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
