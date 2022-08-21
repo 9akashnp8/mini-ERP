@@ -1,14 +1,12 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from rest_framework.authtoken.views import obtain_auth_token
 
-from .views import *
-urlpatterns = [
-    #Auth paths
-    path('auth/', obtain_auth_token),
+from .views import EmployeeViewSet
 
-    #Employee Paths
-    path('employee/<int:pk>/', GetEmployeeDetailAPIView.as_view(), name='GetEmployeeDetailAPIView'),
-    path('employee/', ListOrCreateEmployeeAPIView.as_view(), name='ListOrCreateEmployeeAPIView'),
-    path('employee/<int:pk>/update/', UpdateEmployeeAPIView.as_view(), name='UpdateEmployeeAPIView'),
-    path('employee/<int:pk>/delete/', DestroyEmployeeAPIView.as_view(), name='DestroyEmployeeAPIView')
+router = DefaultRouter()
+router.register(r'employee', EmployeeViewSet, basename='employee')
+
+urlpatterns = [
+    path('', include(router.urls))
 ]
