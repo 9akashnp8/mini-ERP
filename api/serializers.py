@@ -32,10 +32,10 @@ class LocationSerializer(serializers.ModelSerializer):
 
 class EmployeeSerializer(serializers.ModelSerializer):
 
-    dept_id = DepartmentSerializer(allow_null=True)
-    desig_id = DesignationSerializer()
-    loc_id = LocationSerializer()
-    user = UserSerializer()
+    dept_id = serializers.StringRelatedField()
+    desig_id = serializers.StringRelatedField()
+    loc_id = serializers.StringRelatedField()
+    user = serializers.StringRelatedField()
 
     class Meta:
         model = Employee
