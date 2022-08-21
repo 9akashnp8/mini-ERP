@@ -12,6 +12,8 @@ class DepartmentSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class DesignationSerializer(serializers.ModelSerializer):
+    
+    dept_id = serializers.StringRelatedField()
 
     class Meta:
         model = Designation
@@ -62,6 +64,8 @@ class LaptopBrandSerializer(serializers.ModelSerializer):
         fields = '__all__'
     
 class BuildingSerializer(serializers.ModelSerializer):
+
+    location = serializers.StringRelatedField()
 
     class Meta:
         model = Building
