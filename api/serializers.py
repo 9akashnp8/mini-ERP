@@ -37,28 +37,6 @@ class EmployeeSerializer(serializers.ModelSerializer):
     loc_id = LocationSerializer()
     user = UserSerializer()
 
-    def create(self, validated_data):
-        employee = Employee.objects.create(**validated_data)
-        return employee
-
-    def update(self, instance, validated_data):
-        print(validated_data)
-        instance.save()
-        return instance
-
     class Meta:
         model = Employee
-        fields = [
-            "emp_id",
-            "emp_status",
-            "emp_name",
-            "emp_email",
-            "emp_phone",
-            "emp_date_created",
-            "dept_id",
-            "desig_id",
-            "loc_id",
-            "user",
-            "lk_emp_id",
-            "profilePic",
-        ]
+        fields = '__all__'
