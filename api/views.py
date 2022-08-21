@@ -1,33 +1,35 @@
-from rest_framework import generics
-from rest_framework import authentication
+from rest_framework import viewsets
 
-from employee.models import Employee
-from employee.serializers import EmployeeSerializer
+from employee.models import Employee, Department, Designation, Location
+from hardware.models import Laptop, LaptopBrand, Building
+from .serializers import *
 
-class GetEmployeeDetailAPIView(generics.RetrieveAPIView):
-    queryset = Employee.objects.all()
-    serializer_class = EmployeeSerializer
-    lookup_field = 'pk'
-
-class ListOrCreateEmployeeAPIView(generics.ListCreateAPIView):
+# Employee Viewsets
+class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
 
-    def perform_create(self, serializer):
-        serializer.save()
+class DepartmentViewSet(viewsets.ModelViewSet):
+    queryset = Department.objects.all()
+    serializer_class = DepartmentSerializer
 
-class UpdateEmployeeAPIView(generics.UpdateAPIView):
-    queryset = Employee.objects.all()
-    serializer_class = EmployeeSerializer
-    lookup_field = 'pk'
+class DesignationViewSet(viewsets.ModelViewSet):
+    queryset = Designation.objects.all()
+    serializer_class = DesignationSerializer
 
-    def perform_update(self, serializer):
-        serializer.save()
+class LocationViewSet(viewsets.ModelViewSet):
+    queryset = Location.objects.all()
+    serializer_class = LocationSerializer
 
-class DestroyEmployeeAPIView(generics.DestroyAPIView):
-    queryset = Employee.objects.all()
-    serializer_class = EmployeeSerializer
-    lookup_field = 'pk'
+# Hardware Viewsets
+class LaptopViewSet(viewsets.ModelViewSet):
+    queryset = Laptop.objects.all()
+    serializer_class = LaptopSerializer
 
-    def perform_destroy(self, instance):
-        super().perform_destroy(instance)
+class LaptopBrandViewSet(viewsets.ModelViewSet):
+    queryset = LaptopBrand.objects.all()
+    serializer_class = LaptopBrandSerializer
+
+class BuildingViewSet(viewsets.ModelViewSet):
+    queryset = Building.objects.all()
+    serializer_class = BuildingSerializer

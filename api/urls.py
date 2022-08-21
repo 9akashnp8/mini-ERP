@@ -1,14 +1,21 @@
-from django.urls import path
-from rest_framework.authtoken.views import obtain_auth_token
-
+from django.urls import path, include
 from .views import *
-urlpatterns = [
-    #Auth paths
-    path('auth/', obtain_auth_token),
 
-    #Employee Paths
-    path('employee/<int:pk>/', GetEmployeeDetailAPIView.as_view(), name='GetEmployeeDetailAPIView'),
-    path('employee/', ListOrCreateEmployeeAPIView.as_view(), name='ListOrCreateEmployeeAPIView'),
-    path('employee/<int:pk>/update/', UpdateEmployeeAPIView.as_view(), name='UpdateEmployeeAPIView'),
-    path('employee/<int:pk>/delete/', DestroyEmployeeAPIView.as_view(), name='DestroyEmployeeAPIView')
+from rest_framework.routers import DefaultRouter
+router = DefaultRouter()
+
+# Employee routes
+router.register(r'employee', EmployeeViewSet, basename='employee')
+router.register(r'department', DepartmentViewSet, basename='department')
+router.register(r'designation', DesignationViewSet, basename='designation')
+router.register(r'location', LocationViewSet, basename='location')
+
+#Hardware routes
+router.register(r'laptop', LaptopViewSet, basename='laptop')
+router.register(r'laptop-brand', LaptopBrandViewSet, basename='laptop-brand')
+router.register(r'building', BuildingViewSet, basename='building')
+
+
+urlpatterns = [
+    path('', include(router.urls))
 ]
