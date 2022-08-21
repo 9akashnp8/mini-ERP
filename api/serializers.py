@@ -2,7 +2,9 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 
 from employee.models import Department, Designation, Employee, Location
+from hardware.models import Building, Laptop, LaptopBrand
 
+# Employee Serializers
 class DepartmentSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -39,4 +41,28 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Employee
+        fields = '__all__'
+
+# Hardware Serializers
+class LaptopSerializer(serializers.ModelSerializer):
+
+    brand = serializers.StringRelatedField()
+    laptop_branch = serializers.StringRelatedField()
+    laptop_building = serializers.StringRelatedField()
+    emp_id = serializers.ReadOnlyField(source='emp_id.lk_emp_id')
+
+    class Meta:
+        model = Laptop
+        fields = '__all__'
+
+class LaptopBrandSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = LaptopBrand
+        fields = '__all__'
+    
+class BuildingSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Building
         fields = '__all__'
