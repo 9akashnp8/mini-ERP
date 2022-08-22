@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'hardware.apps.HardwareConfig',
     'employee',
+    'finance',
     
     #3rd party
     'rest_framework',
