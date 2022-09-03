@@ -1,0 +1,28 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<form method="post" id="paymentForm" data-amount-url="{% url 'get_payment_amount' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Save">
+</form>
+{% endblock content %}
+
+{% block js %}
+<script>
+    $("#id_service").change(function () {
+      var url = $("#paymentForm").attr("data-amount-url");
+      var serviceId = $(this).val(); 
+      $.ajax({
+        url: url,
+        data: {
+          'service_id': serviceId
+        },
+        success: function (data) {
+          $("#id_amount").val(data);
+        }
+      });
+
+    });
+</script>
+{% endblock js%}
