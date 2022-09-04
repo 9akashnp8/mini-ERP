@@ -31,7 +31,7 @@ def employee_add_email(emp_id, emp_name, lk_emp_id, dept_id, desig_id, loc_id, r
         'desig_id': desig_id,
         'loc_id': loc_id
     }
-    MESSAGE = render_to_string('hardware/employee_add_email.html', context)
+    MESSAGE = render_to_string('employee/employee_add_email.html', context)
     FROM = 'notifications.miniERP@gmail.com'
     send_mail(SUBJECT, MESSAGE, FROM, env.list("EMAIL_RECIPIENTS"), fail_silently=True, html_message=MESSAGE)
 

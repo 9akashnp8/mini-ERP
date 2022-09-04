@@ -63,3 +63,13 @@ body {
 .laptop-filter-button {
     width: 90%;
 }
+
+td,
+th {
+    text-align: center;
+}
+
+td.finance-payment-paid {
+    color: #15803d;
+    font-weight: bold;
+}

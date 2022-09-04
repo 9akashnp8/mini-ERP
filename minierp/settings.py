@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'hardware.apps.HardwareConfig',
     'employee',
+    'finance',
     
     #3rd party
     'rest_framework',
@@ -54,6 +55,8 @@ INSTALLED_APPS = [
     'django_filters',
     'import_export',
     'crispy_forms',
+    'django_celery_results',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -163,6 +166,12 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 50
 }
+
+# Celery Settings
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_CACHE_BACKEND = 'django-cache'
+CELERY_TIMEZONE = "Asia/Kolkata"
+CELERY_BROKER_URL = "redis://localhost:6379"
 
 # Logging for Heroku/Production
 LOGGING = {

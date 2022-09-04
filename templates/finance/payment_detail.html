@@ -1,0 +1,60 @@
+{% extends 'main.html' %}
+{% load custom_finance_tags %}
+
+{% block content %}
+    <div class="container px-4">
+        <!--Laptop Payment ID Title with action buttons-->
+        <div class="d-flex py-3">
+            <div class="me-auto p-2 bd-highlight">
+              <h2>{{payment.payment_id}}</h2>
+            </div>
+            <div class="p-2 bd-highlight">
+              <p>
+                <a href="{% url 'payment_update' payment.id %}" class="btn btn-primary">
+                    <i class="bi bi-pencil-square"></i> Edit   
+                </a>
+              </p>
+            </div>
+            <div class="p-2 bd-highlight">
+              <a href="{% url 'payment_delete' payment.id %}" class="btn btn-danger">
+                <i class="bi bi-trash"></i> Delete
+              </a>
+            </div>
+        </div>
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{message.tags}} alert-dismissible" role="alert">
+                <div class="fw-bold">{{message}}</div>
+            </div>
+            {% endfor %}
+        {% endif %}
+        <!--3 card row with Payment info -->
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title fw-bold">Payment Info</h3>
+                    <hr>
+                    <p>Service : {{payment.service}}</p>
+                    <p>Payment for Month : {{payment.payment_for_month}}</p>
+                    <p>Status : {{payment.payment_status}}</p>
+                    <p>Amount : {{payment.amount|represent_as_currency}}</p>
+                </div>
+            </div>
+            <br>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">Transaction Info</h5>
+                    <hr>
+                    <p>Invoice : {{payment.invoice_no}}</p>
+                    <p>Invoice Date : {{payment.invoice_date}}</p>
+                    <p>Date of Payment : {{payment.payment_date}}</p>
+                    <p>Mode : {{payment.payment_mode}}</p>
+                    <p>Card No. : {{payment.card_no}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    
+{% endblock %}
