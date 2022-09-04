@@ -40,5 +40,7 @@ class CustomPaymentForm(forms.ModelForm):
         instance = super(CustomPaymentForm, self).save(commit=False)
         if self.cleaned_data['send_payment_mail'] is True:
             payment_mail.delay(instance.id)
+        if commit:
+            instance.save()
         return instance
         
