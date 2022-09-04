@@ -3,6 +3,7 @@ import datetime
 from django import forms
 
 from finance.models import Payment
+from finance.tasks import payment_mail
 
 current_year = datetime.datetime.today().year
 current_month = datetime.datetime.today().month
@@ -28,10 +29,16 @@ class CustomPaymentForm(forms.ModelForm):
         initial=datetime.date(current_year, current_month, 1),
         widget=forms.Select(choices=MONTH_SELECTION)
     )
+    send_payment_mail = forms.BooleanField(required=False)
 
     class Meta:
         model = Payment
         fields = '__all__'
         exclude = ['payment_id']
-
+    
+    def save(self, commit=True):
+        instance = super(CustomPaymentForm, self).save(commit=False)
+        if self.cleaned_data['send_payment_mail'] is True:
+            payment_mail.delay(instance.id)
+        return instance
         

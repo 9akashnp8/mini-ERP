@@ -82,6 +82,21 @@ def auto_add_payment():
                 payment_status = "Pending",
                 amount = service.current_cost
             )
+
+@shared_task
+def payment_mail(payment_id):
+    payment_obj = Payment.objects.get(id=payment_id) 
+    SUBJECT = f"[miniERP] IT Expense for {payment_obj.payment_for_month.strftime('%B')} - {payment_obj.service}"      
+    context = {
+        'service': payment_obj.service,
+        'payment_for_month': payment_obj.payment_for_month,
+        'amount': payment_obj.amount,
+        'invoice_no': payment_obj.invoice_no,
+        'card_no': payment_obj.card_no
+    }
+    MESSAGE = render_to_string('finance/payment_mail.html', context)
+    FROM = 'notifications.miniERP@gmail.com'
+    send_mail(SUBJECT, MESSAGE, FROM, env.list("EMAIL_RECIPIENTS"), fail_silently=True, html_message=MESSAGE)
     
     
             

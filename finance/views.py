@@ -28,7 +28,7 @@ class PaymentCreateView(CreateView):
 
 class PaymentUpdateView(UpdateView):
     model = Payment
-    fields = '__all__'
+    form_class = CustomPaymentForm
 
 class PaymentDeleteView(DeleteView):
     model = Payment
