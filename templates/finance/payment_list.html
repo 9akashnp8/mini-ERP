@@ -69,7 +69,11 @@
             <td><a href="{% url 'payment_detail' payment.id %}">{{payment.payment_id}}</a></td>
             <td>{{payment.service}}</td>
             <td>{{payment.payment_for_month|date:'F'}}</td>
-            <td>{{payment.payment_status}}</td>
+            {% if payment.payment_status == 'Pending' %}
+            <td> {{payment.payment_status}} <a href="{% url 'payment_update' payment.id %}"><i class="bi bi-pencil-square"></i></a> </td>
+            {% else %} 
+            <td class="finance-payment-paid">{{payment.payment_status}}</td>
+            {% endif %}
             <td>{{payment.amount}}</td>
             <td>{{payment.invoice_no|default_if_none:''}}</td>
             <td>{{ payment.invoice_date|default_if_none:'' }}</td>
