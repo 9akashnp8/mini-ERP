@@ -31,7 +31,7 @@ class Service(models.Model):
     end_user = models.ForeignKey(Department, null=True, on_delete=models.SET_NULL)
     payment_interval = models.CharField(max_length=20, choices=INTERVAL_CHOICES)
     current_cost = models.CharField(max_length=50)
-    estimated_due_date = models.IntegerField()
+    estimated_due_date = models.DateField()
     status = models.CharField(max_length=10, choices=(('Active', 'Active'), ('Inactive', 'Inactive')))
 
     def __str__(self):
