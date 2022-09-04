@@ -74,6 +74,15 @@
                       </a></li>
                     </ul>
                 </div>
+                <div class="dropdown">
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3 dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-bank"></i> Finance
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
+                      <li><a class="dropdown-item" href="{% url 'service_list' %}"><i class="bi bi-cloud-fill"></i> Services</a></li>
+                      <li><a class="dropdown-item" href="{% url 'payment_list' %}"><i class="bi bi-card-list"></i> Payments</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
 
