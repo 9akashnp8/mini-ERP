@@ -1,4 +1,5 @@
 {% extends 'main.html' %}
+{% load custom_finance_tags %}
 
 {% block content %}
     <div class="container px-4">
@@ -37,7 +38,7 @@
                     <p>Platform : {{service.platform}}</p>
                     <p>End User : {{service.end_user}}</p>
                     <p>Payment Interval : {{service.get_payment_interval_display}}</p>
-                    <p>Current Cost : {{service.current_cost}}</p>
+                    <p>Current Cost : {{service.current_cost|represent_as_currency}}</p>
                     <p>Due Date (Day of Month) : {{service.estimated_due_date}}</p>
                     <p>Status : {{service.status}}</p>
                 </div>

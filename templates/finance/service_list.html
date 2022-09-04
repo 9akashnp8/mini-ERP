@@ -1,6 +1,7 @@
 {% extends 'main.html' %}
 {% load crispy_forms_tags %}
 {% load custom_tags %}
+{% load custom_finance_tags %}
 
 {% block content %}
 
@@ -72,7 +73,7 @@
             <td>{{service.platform}}</td>
             <td>{{service.end_user}}</td>
             <td>{{service.get_payment_interval_display}}</td>
-            <td>{{service.current_cost}}</td>
+            <td>{{service.current_cost|represent_as_currency}}</td>
             <td>{{service.estimated_due_date}}</td>
             <td>{{service.status}}</td>
             <td><a href="{% url 'service_payments' service.id %}">View Transactions</a></td>

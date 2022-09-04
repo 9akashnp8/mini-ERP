@@ -1,6 +1,6 @@
 {% extends 'main.html' %}
-{% load crispy_forms_tags %}
 {% load custom_tags %}
+{% load custom_finance_tags %}
 
 {% block content %}
 
@@ -74,7 +74,7 @@
             {% else %} 
             <td class="finance-payment-paid">{{payment.payment_status}}</td>
             {% endif %}
-            <td>{{payment.amount}}</td>
+            <td>{{payment.amount|represent_as_currency}}</td>
             <td>{{payment.invoice_no|default_if_none:''}}</td>
             <td>{{ payment.invoice_date|default_if_none:'' }}</td>
             <td>{{payment.payment_date|default_if_none:'' }}</td>

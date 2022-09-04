@@ -1,4 +1,5 @@
 {% extends 'main.html' %}
+{% load custom_finance_tags %}
 
 {% block content %}
     <div class="container px-4">
@@ -36,7 +37,7 @@
                     <p>Service : {{payment.service}}</p>
                     <p>Payment for Month : {{payment.payment_for_month}}</p>
                     <p>Status : {{payment.payment_status}}</p>
-                    <p>Amount : {{payment.amount}}</p>
+                    <p>Amount : {{payment.amount|represent_as_currency}}</p>
                 </div>
             </div>
             <br>
