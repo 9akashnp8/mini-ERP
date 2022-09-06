@@ -189,20 +189,18 @@ LOGGING = {
         }
     },
     'handlers': {
-        'null': {
-            'level': 'DEBUG',
-            'class': 'logging.NullHandler',
-        },
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': '/var/log/django/django.log',
+            'formatter': 'app',
         }
     },
     'loggers': {
-        'testlogger': {
-            'handlers': ['console'],
+        'django': {
+            'handlers': ['file'],
             'level': 'INFO',
+            'propogate': True
         }
     }
 }
