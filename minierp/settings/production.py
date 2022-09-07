@@ -1,8 +1,4 @@
-from environs import Env
-env = Env()
-env.read_env()
-from pathlib import Path
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+from .defaults import *
 
 DEBUG = False
 
