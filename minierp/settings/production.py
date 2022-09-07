@@ -15,7 +15,7 @@ DATABASES = {
     }
 }
 
-STATIC_ROOT = str(BASE_DIR.joinpath('static/'))
+STATIC_ROOT = str(BASE_DIR.joinpath('staticfiles'))
 
 CELERY_BROKER_URL = f"redis://default:{env.str('REDIS_PASS')}@127.0.0.1:6379"
 
