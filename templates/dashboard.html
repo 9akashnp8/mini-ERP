@@ -1,12 +1,13 @@
 {% extends 'main.html' %}
 {% block content %}
-<div class="px-4 py-5 my-5 text-center">
-    <h1 class="display-5 fw-bold">miniERP</h1>
+<div class="text-center dashboard-jumbotron">
+    <h1 class="display-5 fw-bold">Welcome to miniERP</h1>
     <div class="col-lg-6 mx-auto">
-      <p class="lead mb-4">Get started with managing Employees, Laptops and Onboarding processes</p>
+      <p class="lead mb-4">Departmental Operations made easy.</p>
       <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
         <a href="{% url 'dash_employees' %}" class="btn btn-primary btn-lg px-4 gap-3">Employees</a>
-        <a href="{% url 'dash_laptops' %}" class="btn btn-primary btn-lg px-4 gap-3">Laptops</a>
+        <a href="{% url 'dash_laptops' %}" class="btn btn-primary btn-lg px-4 gap-3">Hardware</a>
+        <a href="{% url 'service_list' %}" class="btn btn-primary btn-lg px-4 gap-3">Finance</a>
       </div>
     </div>
 </div>

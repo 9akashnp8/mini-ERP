@@ -26,4 +26,11 @@ body {
   filter: drop-shadow(2px 5px 5px black);
 }
 
+.dashboard-jumbotron {
+  position: relative;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 /*# sourceMappingURL=main.css.map */
