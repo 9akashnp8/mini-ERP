@@ -1,5 +1,5 @@
 import locale
-locale.setlocale(locale.LC_ALL, '')
+locale.setlocale(locale.LC_ALL, 'en_IN.utf8')
 
 from django import template
 from django.template.defaultfilters import stringfilter
