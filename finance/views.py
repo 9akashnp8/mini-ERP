@@ -46,6 +46,12 @@ class ServiceCreateView(CreateView):
     model = Service
     fields = '__all__'
 
+    def get_form(self, form_class=None):
+        form = super(ServiceCreateView, self).get_form(form_class=form_class)
+        for key in form.fields:
+            form.fields[key].widget.attrs.update({'class': 'laptop-form-fields'})
+        return form
+
 class ServiceUpdateView(UpdateView):
     model = Service
     fields = '__all__'
