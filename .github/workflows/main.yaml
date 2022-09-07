@@ -43,6 +43,12 @@ jobs:
           echo EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER}} >> .env
           echo EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD}} >> .env
           echo EMAIL_RECIPIENTS=${{ secrets.EMAIL_RECIPIENTS}} >> .env
+          echo ENVIRONMENT=${{ secrets.ENVIRONMENT}} >> .env
+          echo DB_NAME=${{ secrets.DB_NAME}} >> .env
+          echo DB_USER=${{ secrets.DB_USER}} >> .env
+          echo DB_USER_PASS=${{ secrets.DB_USER_PASS}} >> .env
+          echo REDIS_PASS=${{ secrets.REDIS_PASS}} >> .env
+
           cat .env
 
       - name: Run Tests
