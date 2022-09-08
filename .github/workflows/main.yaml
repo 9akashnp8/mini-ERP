@@ -51,6 +51,10 @@ jobs:
 
           cat .env
 
+      - name: Install locales (for int to currency conversion)
+        run: |
+          sudo apt install language-pack-en-base
+
       - name: Run Tests
         env:
           DEBUG: "0"
