@@ -1,0 +1,22 @@
+.form-input {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    gap: 20px 50px;
+}
+
+.input-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.label {
+    margin-bottom: 10px;
+}
+
+.form-fields {
+    border: 1px solid grey;
+    border-radius: 8px;
+    height: 45px;
+    padding: 10px;
+}
