@@ -44,5 +44,5 @@ class ExitEmployeeFilter(django_filters.FilterSet):
 
     def __init__(self, *args, **kwargs):
         super(ExitEmployeeFilter, self).__init__(*args, **kwargs)
-        self.filters['lk_emp_id'].label = "Lakshya Employee ID"
+        self.filters['lk_emp_id'].label = "Employee ID"
 

@@ -117,6 +117,7 @@ def laptop_return(request, pk):
     employee_info = Employee.objects.get(emp_id=pk)
     hardware_type = Hardware._meta.get_field('hardware_id').remote_field.model.__name__
     assign_new = request.session['assign_new']
+    exit_condition = request.session['exit_condition']
 
     try:
         laptop_assigned = Laptop.objects.get(emp_id=pk)
@@ -151,7 +152,14 @@ def laptop_return(request, pk):
             if assign_new == 'true':
                 return redirect('onbrd_hw_assign', employee_info.emp_id)
             elif assign_new == 'false':
-                return redirect('employee', employee_info.emp_id )
+
+                if exit_condition == 'true':
+                    employee_info.emp_status = "InActive"
+                    employee_info.save()
+                    messages.info(request, f"Exit for {employee_info.emp_name} Complete.")
+                    return redirect('employee', employee_info.emp_id)
+                else:
+                    return redirect('employee', employee_info.emp_id )
             else:
                 return HttpResponse("'Assign New' condition not found")
     
@@ -203,6 +211,7 @@ def search_results_for_laptop_return(request):
 
     lk_emp_id = request.POST.get('lk_emp_id')
     request.session['assign_new'] = request.POST.get('assign_new')
+    request.session['exit_condition'] = request.POST.get('exit_condition')
 
     try:
         employee = Employee.objects.get(lk_emp_id=lk_emp_id)
