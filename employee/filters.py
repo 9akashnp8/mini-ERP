@@ -28,7 +28,7 @@ class EmployeeFilter(django_filters.FilterSet):
 
         #For Custom CSS        
         for field in self.form.fields:
-            self.form.fields[field].widget.attrs.update({'class': 'employee-filter-fields'})
+            self.form.fields[field].widget.attrs.update({'class': 'employee-filter-fields filter-fields'})
         
         #For Placeholders & Empty Labels
         self.form.fields['dept_id'].empty_label = "Select Department"

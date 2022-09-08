@@ -44,7 +44,7 @@ class EmployeeForm(ModelForm):
         
         #Custom class names for form fields styling
         for key in self.fields:
-            self.fields[key].widget.attrs.update({'class': 'employee-form-fields'})
+            self.fields[key].widget.attrs.update({'class': 'employee-form-fields form-fields'})
     
     def clean(self):
         '''Overide clean method to check if a 'User' object with same email

@@ -36,12 +36,12 @@
       <div class="card card-body">
         <form method="GET" class="laptop-filter-form">
           {% for field in myFilter.form %}
-          <div class="laptop-filter-field-parent">
+          <div class="laptop-filter-field-parent filter-field-parent">
             {{field}}
           </div>
           {% endfor %}
-          <div class="laptop-filter-field-parent">
-            <button class="btn btn-success laptop-filter-button" type="submit">Search</button>
+          <div class="laptop-filter-field-parent filter-field-parent">
+            <button class="btn btn-success laptop-filter-button filter-button" type="submit">Search</button>
           </div>
         </form>
       </div>
