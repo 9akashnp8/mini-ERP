@@ -6,40 +6,38 @@
     <br>
     <div class="row">
         <div class="col">
-            <div class="card card-body">
-                <h4>Available Laptops at <u>{{onboarded_emp.loc_id}}</u> for <u>{{onboarded_emp.emp_name}}</u></h4>
-                {% if messages %}
-                    {% for message in messages %}
-                    <div class="alert alert-{{message.tags}} alert-dismissible" role="alert">
-                        <div class="fw-bold">{{message}}</div>
-                    </div>
+            <h4>Available Laptops at <b>{{onboarded_emp.loc_id}}</b> for <b>{{onboarded_emp.emp_name}}</b></h4>
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{message.tags}} alert-dismissible" role="alert">
+                    <div class="fw-bold">{{message}}</div>
+                </div>
+                {% endfor %}
+            {% endif %}
+            <table class="table table-stripped">
+                <thead>
+                <tr>
+                    <th scope="col">Hardware ID</th>
+                    <th scope="col">Sr No</th>
+                    <th scope="col">Staus</th>
+                    <th scope="col">Age</th>
+                    <th scope="col">Location</th>
+                    <th scope="col">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for lap in free_laptops %}
+                        <tr>
+                            <td>{{lap.hardware_id}}</td>
+                            <td>{{lap.laptop_sr_no}}</td>
+                            <td>{{lap.laptop_status}}</td>
+                            <td>{{lap.laptop_age}}</td>
+                            <td>{{lap.laptop_branch}}</td>
+                            <td><a href="{% url 'onbrd_complete' lap.id %}" class="btn btn-primary btn-sm">Assign</a></td>
+                        </tr>
                     {% endfor %}
-                {% endif %}
-                <table class="table table-stripped">
-                    <thead>
-                    <tr>
-                        <th scope="col">Hardware ID</th>
-                        <th scope="col">Sr No</th>
-                        <th scope="col">Staus</th>
-                        <th scope="col">Age</th>
-                        <th scope="col">Location</th>
-                        <th scope="col">Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        {% for lap in free_laptops %}
-                            <tr>
-                                <td>{{lap.hardware_id}}</td>
-                                <td>{{lap.laptop_sr_no}}</td>
-                                <td>{{lap.laptop_status}}</td>
-                                <td>{{lap.laptop_age}}</td>
-                                <td>{{lap.laptop_branch}}</td>
-                                <td><a href="{% url 'onbrd_complete' lap.id %}" class="btn btn-primary btn-sm">Assign</a></td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            <div>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

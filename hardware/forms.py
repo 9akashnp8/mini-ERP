@@ -36,7 +36,7 @@ class LaptopForm(ModelForm):
 
         #Setting Custom class names for form field styling
         for key in self.fields:
-            self.fields[key].widget.attrs.update({'class': 'laptop-form-fields'})
+            self.fields[key].widget.attrs.update({'class': 'laptop-form-fields form-fields'})
         
         #Placeholder text for Hardware ID
         self.fields['hardware_id'].widget.attrs.update({'placeholder': 'Hardware ID is auto-generated.'}) 
@@ -61,7 +61,7 @@ class LaptopReturnForm(ModelForm):
         super(LaptopReturnForm, self).__init__(*args, **kwargs)
 
         for field in self.fields:
-            self.fields[field].widget.attrs.update({'class': 'return-form-fields'})
+            self.fields[field].widget.attrs.update({'class': 'return-form-fields form-fields'})
             self.fields[field].required = True
     
     def save(self, *args, **kwargs):

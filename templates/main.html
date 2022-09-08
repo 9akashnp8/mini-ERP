@@ -18,7 +18,7 @@
     
     <!-- Custom CSS Links -->
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
 
     <!-- Favicon -->
     <link rel="icon" href="{% static 'img/favicon.ico' %}">
@@ -53,7 +53,9 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
                       <li><a class="dropdown-item" href="{% url 'onbrd_emp_add' %}"><i class="bi bi-person-plus-fill"></i> Onboarding</a></li>
-                      <li><a class="dropdown-item" href="{% url 'emp_exit' %}"><i class="bi bi-person-dash-fill"></i> Exit</a></li>
+                      <li><a class="dropdown-item" data-bs-toggle="offcanvas" href="#employee-exit-canvas" role="button" aria-controls="employee-exit-canvas">
+                        <i class="bi bi-person-plus-fill"></i> IT Exit
+                      </a></li>
                     </ul>
                 </div>
                 <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{% url 'dash_employees' %}"><i class="bi bi-people"></i> Employees</a>
@@ -187,6 +189,33 @@
                         </button>
                     </form>
                     <div id="search-result-return">
+            
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Employee Exit Off-Canvas Canvas -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="employee-exit-canvas" aria-labelledby="employee-exit-canvas">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="offcanvasExampleLabel">Search Employee who's Exit is being processed</h5>
+          <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="search-form d-flex justify-content-center py-5">
+                <div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="text" name="lk_emp_id" placeholder="Enter Employee ID">
+                        <input type="hidden" name="assign_new" value="false">
+                        <input type="hidden" name="exit_condition" value="true">
+                        <button hx-post="{% url 'search_results_for_laptop_return' %}" hx-target="#search-result-exit"
+                                        class="btn btn-primary">
+                                        Search
+                        </button>
+                    </form>
+                    <div id="search-result-exit">
             
                     </div>
                 </div>

@@ -170,7 +170,7 @@ def emp_exit_confirm(request, pk):
 
     messages.success(request, f"{employee_info.emp_name}'s Exit Complete")
 
-    return redirect('laptop_return', employee_info.emp_id)
+    return redirect('replace_confirm', employee_info.emp_id)
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])

@@ -1,0 +1,30 @@
+@use 'global';
+
+body {
+    font-family: global.$font-stack;
+}
+
+@import 'login';
+@import 'form';
+@import 'filter';
+
+.dashboard-jumbotron {
+    position: relative;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+td.finance-payment-paid {
+    color: #15803d;
+    font-weight: bold;
+}
+
+table {
+    text-align: center;
+}
+
+.finance-table {
+    text-align: center;
+    font-size: 12px;
+}

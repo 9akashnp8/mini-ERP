@@ -1,0 +1,30 @@
+.login-main-section {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50% );
+
+    width: 40%;
+    
+    div {
+        div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            border-radius: 10px !important;
+
+            img {
+                width: 40%;
+            }
+
+            form {
+                width: 60%;
+            }
+        }
+    }
+}
+
+.login-card {
+    filter: drop-shadow(2px 5px 5px black);
+}

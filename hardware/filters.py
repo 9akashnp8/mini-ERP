@@ -32,7 +32,7 @@ class LaptopFilter(django_filters.FilterSet):
         
         #Custom CSS for styling
         for form in self.form.fields:
-            self.form.fields[form].widget.attrs.update({'class': 'laptop-filter-fields'})
+            self.form.fields[form].widget.attrs.update({'class': 'laptop-filter-fields filter-fields'})
         
         #Placeholders
         self.form.fields['laptop_sr_no'].widget.attrs.update({'placeholder': 'Serial No.'})

@@ -1,6 +1,7 @@
 import datetime
 
 from django import forms
+from django.forms import DateInput
 
 from finance.models import Payment
 from finance.tasks import payment_mail
@@ -31,11 +32,41 @@ class CustomPaymentForm(forms.ModelForm):
     )
     send_payment_mail = forms.BooleanField(required=False)
 
+
     class Meta:
         model = Payment
         fields = '__all__'
         exclude = ['payment_id']
+        widgets = {
+            'invoice_date': DateInput(attrs={'type':'date'}),
+            'payment_date': DateInput(attrs={'type':'date'})
+        }
+        labels = {
+            'payment_id': 'Payment ID',
+            'service': 'Service',
+            'payment_for_month': 'Payment for Month',
+            'payment_status': 'Payment Status',
+            'amount': 'Amount',
+            'invoice_no': 'Invoice No.',
+            'invoice_doc': 'Invoice Doc.',
+            'invoice_date': 'Invoice Date',
+            'payment_date': 'Payment Date',
+            'payment_mode': 'Payment Mode',
+            'card_no': 'Card No.',
+        }
     
+    def __init__(self, *args, **kwargs):
+
+        super(CustomPaymentForm, self).__init__(*args, **kwargs)
+
+        for key in self.fields:
+            if key == 'invoice_doc':
+                pass
+            elif key == 'send_payment_mail':
+                pass
+            else:
+                self.fields[key].widget.attrs.update({'class': 'payment-form-fields form-fields'})
+
     def save(self, commit=True):
         instance = super(CustomPaymentForm, self).save(commit=False)
         if self.cleaned_data['send_payment_mail'] is True:

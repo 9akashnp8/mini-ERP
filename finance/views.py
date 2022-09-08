@@ -1,6 +1,8 @@
+from sqlite3 import Date
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.urls import reverse_lazy
+from django.forms import DateInput
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 
 
@@ -46,9 +48,52 @@ class ServiceCreateView(CreateView):
     model = Service
     fields = '__all__'
 
+    def get_form(self, form_class=None):
+        form = super(ServiceCreateView, self).get_form(form_class)
+        
+        # Custom Class for styling
+        for key in form.fields:
+            form.fields[key].widget.attrs.update({'class': 'service-form-fields form-fields'})
+
+        # Better Labels
+        form.fields['service_id'].label = 'Service ID'
+        form.fields['category'].label = 'Category'
+        form.fields['platform'].label = 'Platform'
+        form.fields['end_user'].label = 'End User'
+        form.fields['payment_interval'].label = 'Payment Interval'
+        form.fields['current_cost'].label = 'Current Cost'
+        form.fields['estimated_due_date'].label = 'Next Due Date'
+        form.fields['status'].label = 'Service Status'
+
+        form.fields['estimated_due_date'].widget = DateInput(attrs={'type': 'date', 'class': 'service-form-fields form-fields'})
+
+        return form
+
 class ServiceUpdateView(UpdateView):
     model = Service
     fields = '__all__'
+
+    def get_form(self, form_class=None):
+        form = super(ServiceUpdateView, self).get_form(form_class)
+
+        # Custom class for styling
+        for key in form.fields:
+            form.fields[key].widget.attrs.update({'class': 'service-form-fields form-fields'})
+
+        # Better Labels
+        form.fields['service_id'].label = 'Service ID'
+        form.fields['category'].label = 'Category'
+        form.fields['platform'].label = 'Platform'
+        form.fields['end_user'].label = 'End User'
+        form.fields['payment_interval'].label = 'Payment Interval'
+        form.fields['current_cost'].label = 'Current Cost'
+        form.fields['estimated_due_date'].label = 'Next Due Date'
+        form.fields['status'].label = 'Service Status'
+
+        # Date Input
+        form.fields['estimated_due_date'].widget = DateInput(attrs={'type': 'date', 'class': 'service-form-fields form-fields'})
+
+        return form
 
 class ServiceDeleteView(DeleteView):
     model = Service
