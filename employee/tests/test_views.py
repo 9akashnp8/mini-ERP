@@ -1,11 +1,12 @@
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User, Group, Permission
+from django.contrib.contenttypes.models import ContentType
 from employee.models import Department, Designation, Employee, Location
 from django.test import TestCase
 from django.test.client import Client
 from django.urls import reverse
 from employee.views import *
 
-class LoginTestCase(TestCase):
+class LoginTestCase(TestCase): 
 
     def setUp(self):
         self.client = Client()
@@ -13,6 +14,13 @@ class LoginTestCase(TestCase):
         self.group.save()
         self.user = User.objects.create_user(username='test-user', email='test@test.com', password='test123')
         self.user.groups.add(Group.objects.get(name='admin'))
+        employee_perm_content_type = ContentType.objects.get(app_label='employee', model='employee')
+        hardware_perm_content_type = ContentType.objects.get(app_label='hardware', model='laptop')
+        can_exit_employee_perm = Permission.objects.create(codename='can_exit_employee', name=' Can Exit Employee', content_type=employee_perm_content_type)
+        can_return_laptop_perm = Permission.objects.create(codename='can_return_laptop', name='Can Return Laptop', content_type=hardware_perm_content_type)
+        self.user.groups.permissions.add(can_exit_employee_perm)
+        self.user.groups.permissions.add(can_return_laptop_perm)
+
         self.client.login(username='test-user', password='test123')
 
 class HomePageTest(LoginTestCase):
