@@ -5,7 +5,6 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import messages
 from django.core.paginator import Paginator
 
-from minierp.decorators import  allowed_users
 from .models import Laptop, Hardware, Building
 from .forms import LaptopForm, LaptopReturnForm
 from .filters import LaptopFilter
