@@ -187,6 +187,7 @@ def search_results_for_laptop_replacement(request):
 
     lk_emp_id = request.POST.get('lk_emp_id')
     request.session['assign_new'] = request.POST.get('assign_new')
+    request.session['exit_condition'] = "false"
 
     try:
         employee = Employee.objects.get(lk_emp_id=lk_emp_id)

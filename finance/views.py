@@ -18,7 +18,7 @@ def get_payment_amount(request):
 
 # Create your views here.
 class PaymentListView(PermissionRequiredMixin, ListView):
-    permission_required = 'finance.add_payment'
+    permission_required = 'finance.view_payment'
     model = Payment
     context_object_name = 'payments'
     
