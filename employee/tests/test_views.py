@@ -1,18 +1,17 @@
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User, Group, Permission
+from django.contrib.contenttypes.models import ContentType
 from employee.models import Department, Designation, Employee, Location
 from django.test import TestCase
 from django.test.client import Client
 from django.urls import reverse
 from employee.views import *
 
-class LoginTestCase(TestCase):
+class LoginTestCase(TestCase): 
 
     def setUp(self):
         self.client = Client()
-        self.group = Group(name='admin')
-        self.group.save()
-        self.user = User.objects.create_user(username='test-user', email='test@test.com', password='test123')
-        self.user.groups.add(Group.objects.get(name='admin'))
+        self.user = User.objects.create_superuser(username='test-user', email='test@test.com', password='test123')
+
         self.client.login(username='test-user', password='test123')
 
 class HomePageTest(LoginTestCase):

@@ -1,13 +1,12 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
-from minierp.decorators import allowed_users
 from employee.filters import EmployeeFilter, ExitEmployeeFilter
 from employee.forms import EmployeeForm
 from .models import Employee, Designation
@@ -43,7 +42,7 @@ def load_designations(request):
 
 # Create your views here.
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@permission_required('employee.view_employee', raise_exception=True)
 def employee_list_view(request):
 
     myFilter = EmployeeFilter(request.GET, queryset=Employee.objects.all())
@@ -56,7 +55,7 @@ def employee_list_view(request):
     return render(request, 'employee/employees.html', context)
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@permission_required('employee.view_employee', raise_exception=True)
 def employee(request, pk):
 
     employee_info = Employee.objects.get(emp_id=pk)
@@ -98,7 +97,7 @@ def employee(request, pk):
     return render(request, 'employee/employee.html', context)
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@permission_required('employee.add_employee', raise_exception=True)
 def employee_add_view(request):
 
     form = EmployeeForm()
@@ -119,7 +118,7 @@ def employee_add_view(request):
     return render(request, 'employee/add_new_employee.html', context)
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@permission_required('employee.change_employee', raise_exception=True)
 def employee_edit_view(request, pk):
     employee = Employee.objects.get(emp_id=pk)
     form = EmployeeForm(instance=employee)
@@ -137,7 +136,7 @@ def employee_edit_view(request, pk):
     return render(request, 'employee/add_new_employee.html', context)
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@permission_required('employee.delete_employee', raise_exception=True)
 def employee_delete_view(request, pk):
     employee = Employee.objects.get(emp_id=pk)
 
@@ -150,7 +149,7 @@ def employee_delete_view(request, pk):
     return render(request, 'employee/employee_delete_form.html', context)
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@permission_required('employee.can_exit_employee', raise_exception=True)
 def emp_exit(request):
     employees = Employee.objects.filter(emp_status='Active')
     myExitFilter = ExitEmployeeFilter(request.GET, queryset=employees)
@@ -160,7 +159,7 @@ def emp_exit(request):
     return render(request, 'employee/exit/emp_exit.html', context)
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@permission_required('employee.can_exit_employee', raise_exception=True)
 def emp_exit_confirm(request, pk):
 
     employee_info = Employee.objects.get(emp_id=pk)
@@ -173,7 +172,7 @@ def emp_exit_confirm(request, pk):
     return redirect('replace_confirm', employee_info.emp_id)
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@permission_required('employee.can_exit_employee', raise_exception=True)
 def emp_exit_complete(request, pk):
     employee = Employee.objects.get(emp_id=pk)
     laptop_assigned = Laptop.objects.get(emp_id=pk)
@@ -185,7 +184,6 @@ def emp_exit_complete(request, pk):
     return redirect('employee', employee.emp_id)
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['employee', 'admin'])
 def employee_profile_view(request):
     '''
     An 'employee self service' page where the employee can view all the hardware
@@ -197,7 +195,6 @@ def employee_profile_view(request):
     return render(request, 'employee/employee_profile.html', context)
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['employee',])
 def employee_profile_edit_view(request):
     employee = request.user.employee
     form = EmployeeForm(instance=employee)
@@ -211,7 +208,7 @@ def employee_profile_edit_view(request):
     return render(request, 'employee/empSettingsPage.html', context)
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@permission_required('employee.can_onboard_employee', raise_exception=True)
 def onboarding_add_employee_view(request):
     """
     View for Step 1/3 of 'Onboarding', adding the new employee details & saving it.
@@ -230,7 +227,7 @@ def onboarding_add_employee_view(request):
     return render(request, 'employee/onboard/onboarding_add_employee.html', context)
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@permission_required('employee.can_onboard_employee', raise_exception=True)
 def onboarding_assign_hardware_view(request, pk):
     """
     View for Step 2/3 of 'Onboarding', selecting a laptop for the newly added employee
@@ -243,6 +240,8 @@ def onboarding_assign_hardware_view(request, pk):
     context = {'onboarded_emp':onboarded_emp, 'free_laptops':free_laptops}
     return render(request, 'employee/onboard/onboarding_assign_hardware.html', context)
 
+@login_required(login_url='login')
+@permission_required('employee.can_onboard_employee', raise_exception=True)
 def onboarding_complete_view(request, pk):
     """
     View for Step 3/3 of 'Onboarding', assigining the selected laptop from previous

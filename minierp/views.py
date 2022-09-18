@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
-from .decorators import unauthenticated_user, allowed_users
+from .decorators import unauthenticated_user
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
@@ -27,6 +27,5 @@ def logoutPage(request):
     return redirect('login')
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
 def home(request):
     return render(request, 'dashboard.html')

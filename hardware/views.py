@@ -1,11 +1,10 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import messages
 from django.core.paginator import Paginator
 
-from minierp.decorators import  allowed_users
 from .models import Laptop, Hardware, Building
 from .forms import LaptopForm, LaptopReturnForm
 from .filters import LaptopFilter
@@ -27,7 +26,7 @@ def load_buildings(request):
 
 #Views
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@permission_required('hardware.view_laptop', raise_exception=True)
 def laptops_list_view(request):
 
     myFilter = LaptopFilter(request.GET, queryset=Laptop.objects.all())
@@ -40,7 +39,7 @@ def laptops_list_view(request):
     return render(request, 'hardware/laptops/laptops.html', context)
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@permission_required('hardware.view_laptop', raise_exception=True)
 def laptop(request, pk):
     laptop_info = Laptop.objects.get(id=pk)
     qry = laptop_info.history.all()
@@ -63,7 +62,7 @@ def laptop(request, pk):
     return render(request, 'hardware/laptops/laptop.html', context)
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@permission_required('hardware.add_laptop', raise_exception=True)
 def laptop_add_view(request):
     form = LaptopForm()
 
@@ -80,7 +79,7 @@ def laptop_add_view(request):
     return render(request, 'hardware/laptops/add_new_laptop.html', context)
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@permission_required('hardware.change_laptop', raise_exception=True)
 def laptop_edit_view(request, pk):
     laptop = Laptop.objects.get(id=pk)
     form = LaptopForm(instance=laptop)
@@ -98,7 +97,7 @@ def laptop_edit_view(request, pk):
     return render(request, 'hardware/laptops/add_new_laptop.html', context)
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@permission_required('hardware.delete_laptop', raise_exception=True)
 def laptop_delete_view(request, pk):
     laptop = Laptop.objects.get(id=pk)
     if request.method == 'POST':
@@ -110,7 +109,7 @@ def laptop_delete_view(request, pk):
     return render(request, 'hardware/laptops/laptop_delete_form.html', context)
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
+@permission_required('hardware.can_return_laptop', raise_exception=True)
 def laptop_return(request, pk):
 
     today = date.today()
@@ -168,8 +167,6 @@ def laptop_return(request, pk):
     'return_form': form}
     return render(request, 'hardware/replace/replace_confirm.html', context)
 
-@login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
 def search_results_for_laptop_assignment(request):
 
     lk_emp_id = request.POST.get('lk_emp_id')
@@ -186,12 +183,11 @@ def search_results_for_laptop_assignment(request):
     context = {'employee': employee, 'laptop': laptop, 'num_of_laptops':num_of_laptops}
     return render(request, 'partials/search-result-assign.html', context)
 
-@login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
 def search_results_for_laptop_replacement(request):
 
     lk_emp_id = request.POST.get('lk_emp_id')
     request.session['assign_new'] = request.POST.get('assign_new')
+    request.session['exit_condition'] = "false"
 
     try:
         employee = Employee.objects.get(lk_emp_id=lk_emp_id)
@@ -205,8 +201,6 @@ def search_results_for_laptop_replacement(request):
     context = {'employee': employee, 'laptop': laptop, 'num_of_laptops':num_of_laptops}
     return render(request, 'partials/search-result-replace.html', context)
 
-@login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
 def search_results_for_laptop_return(request):
 
     lk_emp_id = request.POST.get('lk_emp_id')
