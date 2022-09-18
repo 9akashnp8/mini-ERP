@@ -1,4 +1,5 @@
-from sqlite3 import Date
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.decorators import permission_required, login_required
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.urls import reverse_lazy
@@ -16,35 +17,44 @@ def get_payment_amount(request):
     return HttpResponse(amount)
 
 # Create your views here.
-class PaymentListView(ListView):
+class PaymentListView(PermissionRequiredMixin, ListView):
+    permission_required = 'finance.add_payment'
     model = Payment
     context_object_name = 'payments'
+    
 
-class PaymentDetailView(DetailView):
+class PaymentDetailView(PermissionRequiredMixin, DetailView):
+    permission_required = 'finance.view_payment'
     model = Payment
     context_object_name = 'payment'
 
-class PaymentCreateView(CreateView):
+class PaymentCreateView(PermissionRequiredMixin, CreateView):
+    permission_required = 'finance.add_payment'
     model = Payment
     form_class = CustomPaymentForm
 
-class PaymentUpdateView(UpdateView):
+class PaymentUpdateView(PermissionRequiredMixin, UpdateView):
+    permission_required = 'finance.change_payment'
     model = Payment
     form_class = CustomPaymentForm
 
-class PaymentDeleteView(DeleteView):
+class PaymentDeleteView(PermissionRequiredMixin, DeleteView):
+    permission_required = 'finance.delete_payment'
     model = Payment
     success_url = reverse_lazy('payment_list')
 
-class ServiceListView(ListView):
+class ServiceListView(PermissionRequiredMixin, ListView):
+    permission_required = 'finance.view_service'
     model = Service
     context_object_name = 'service'
 
-class ServiceDetailView(DetailView):
+class ServiceDetailView(PermissionRequiredMixin, DetailView):
+    permission_required = 'finance.view_service'
     model = Service
     context_object_name = 'service'
 
-class ServiceCreateView(CreateView):
+class ServiceCreateView(PermissionRequiredMixin, CreateView):
+    permission_required = 'finance.add_service'
     model = Service
     fields = '__all__'
 
@@ -69,7 +79,8 @@ class ServiceCreateView(CreateView):
 
         return form
 
-class ServiceUpdateView(UpdateView):
+class ServiceUpdateView(PermissionRequiredMixin, UpdateView):
+    permission_required = 'finance.change_service'
     model = Service
     fields = '__all__'
 
@@ -95,10 +106,13 @@ class ServiceUpdateView(UpdateView):
 
         return form
 
-class ServiceDeleteView(DeleteView):
+class ServiceDeleteView(PermissionRequiredMixin, DeleteView):
+    permission_required = 'finance.delete_service'
     model = Service
     success_url = reverse_lazy('service_list')
 
+@login_required(login_url='login')
+@permission_required('finance.view_payment')
 def service_payments_view(request, pk):
     payments = Payment.objects.filter(service=pk)
     context = {'payments': payments}

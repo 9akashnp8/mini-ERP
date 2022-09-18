@@ -27,6 +27,5 @@ def logoutPage(request):
     return redirect('login')
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['admin'])
 def home(request):
     return render(request, 'dashboard.html')
