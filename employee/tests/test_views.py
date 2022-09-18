@@ -10,16 +10,7 @@ class LoginTestCase(TestCase):
 
     def setUp(self):
         self.client = Client()
-        self.group = Group(name='admin')
-        self.group.save()
-        self.user = User.objects.create_user(username='test-user', email='test@test.com', password='test123')
-        self.user.groups.add(Group.objects.get(name='admin'))
-        employee_perm_content_type = ContentType.objects.get(app_label='employee', model='employee')
-        hardware_perm_content_type = ContentType.objects.get(app_label='hardware', model='laptop')
-        can_exit_employee_perm = Permission.objects.create(codename='can_exit_employee', name=' Can Exit Employee', content_type=employee_perm_content_type)
-        can_return_laptop_perm = Permission.objects.create(codename='can_return_laptop', name='Can Return Laptop', content_type=hardware_perm_content_type)
-        self.user.groups.permissions.add(can_exit_employee_perm)
-        self.user.groups.permissions.add(can_return_laptop_perm)
+        self.user = User.objects.create_superuser(username='test-user', email='test@test.com', password='test123')
 
         self.client.login(username='test-user', password='test123')
 
