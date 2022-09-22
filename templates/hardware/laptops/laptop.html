@@ -1,4 +1,5 @@
 {% extends 'main.html' %}
+{% load custom_emp_id_to_name_tag %}
 
 {% block content %}
     <div class="container px-4">
@@ -111,14 +112,14 @@
                                     {% if change_by_id.field == 'emp_id' %}
                                         The Laptop was transfered from
                                         {% if change_by_id.old %}
-                                            <b><a href="{% url 'employee' change_by_id.old %}">{{change_by_id.old}}</a></b>
+                                            <b><a href="{% url 'employee' change_by_id.old %}">{{change_by_id.old|emp_id_to_name}}</a></b>
                                         {% else %}
                                             the <b>Laptop Inventory</b>
                                         {% endif %}
                                         {% if change_by_id.new == None %}
                                             back to the <b>Laptop Inventory</b>
                                         {% else %}
-                                            to <b><a href="{% url 'employee' change_by_id.new %}">{{change_by_id.new}}</a></b>
+                                            to <b><a href="{% url 'employee' change_by_id.new %}">{{change_by_id.new|emp_id_to_name}}</a></b>
                                         {% endif %}
                                         <br>
                                     {% elif change_by_id.field == 'laptop_date_returned' %}
