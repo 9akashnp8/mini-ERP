@@ -59,6 +59,11 @@ class Laptop(models.Model):
         ('NC', 'NetCom'),
     )
 
+    LAPTOP_SCREEN_SIZES = (
+        ('14', '14 inch'),
+        ('15', '15 inch'),
+    )
+
     id = models.AutoField(primary_key=True, editable=False)
     hardware_id = models.CharField(max_length=50, null=True, default=None, blank=True, unique=True)
     emp_id = models.ForeignKey(Employee, null=True, blank=True, on_delete=models.SET_NULL)
@@ -67,6 +72,7 @@ class Laptop(models.Model):
     processor = models.CharField(max_length=15, default='i3 11th gen')
     ram_capacity = models.CharField(max_length=5, default='8GB')
     storage_capacity = models.CharField(max_length=10, default='512GB')
+    screen_size = models.CharField(max_length=15, choices=LAPTOP_SCREEN_SIZES)
     laptop_owner_type = models.CharField(max_length=30, null=True, choices=LAPTOP_OWNER_TYPES, default='Rental')
     laptop_rental_vendor = models.CharField(max_length=50, null=True, blank=True, choices=LAPTOP_RENTAL_VENDORS)
     laptop_status = models.CharField(max_length=20, null=True, choices=LAPTOP_STATUSES, default="Working")
