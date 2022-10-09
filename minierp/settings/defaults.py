@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'hardware.apps.HardwareConfig',
-    'employee',
+    'employee.apps.EmployeeConfig',
     'finance',
     
     #3rd party
