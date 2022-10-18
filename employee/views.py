@@ -18,22 +18,6 @@ from environs import Env
 env = Env()
 env.read_env()
 
-#Helpers
-def employee_add_email(emp_id, emp_name, lk_emp_id, dept_id, desig_id, loc_id, request):
-    URL = request.build_absolute_uri(reverse('onbrd_hw_assign', args=(emp_id,)))
-    SUBJECT = f"[miniERP] New Employee Added: {emp_name}"
-    context = {
-        'emp_name': emp_name,
-        'url': URL,
-        'lk_emp_id': lk_emp_id,
-        'dept_id': dept_id,
-        'desig_id': desig_id,
-        'loc_id': loc_id
-    }
-    MESSAGE = render_to_string('employee/employee_add_email.html', context)
-    FROM = 'notifications.miniERP@gmail.com'
-    send_mail(SUBJECT, MESSAGE, FROM, env.list("EMAIL_RECIPIENTS"), fail_silently=True, html_message=MESSAGE)
-
 def load_designations(request):
     dept_id = request.GET.get('dept_id')
     designations = Designation.objects.filter(dept_id=dept_id).order_by('designation')
