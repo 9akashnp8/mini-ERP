@@ -6,6 +6,7 @@
         <h2>Service Details</h2>
         <hr>
         <form method="post">
+            {% csrf_token %}
             <div class="form-input">
                 {% for field in form %}
                 <div class="input-item">
