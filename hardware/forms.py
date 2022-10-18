@@ -88,5 +88,5 @@ class LaptopReturnForm(ModelForm):
             else:
                 
                 pass
-
-        super(LaptopReturnForm, self).save(*args, **kwargs)
+        
+        return super(LaptopReturnForm, self).save(*args, **kwargs)
