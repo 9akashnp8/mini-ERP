@@ -9,6 +9,8 @@ from .models import Laptop, Hardware, Building
 from .forms import LaptopForm, LaptopReturnForm
 from .filters import LaptopFilter
 from employee.models import Employee
+from .tasks import laptop_add_notif, laptop_returned_notif
+from employee.tasks import employee_exit_email
 
 from datetime import date
 from environs import Env
@@ -70,6 +72,7 @@ def laptop_add_view(request):
         form = LaptopForm(request.POST)
         if form.is_valid():
             instance = form.save()
+            laptop_add_notif.delay(laptop_id=instance.id)
             messages.success(request, f"Successfully added {instance} to database.")
             return redirect(laptops_list_view)
     
@@ -145,8 +148,18 @@ def laptop_return(request, pk):
 
         if form.is_valid():
 
-            form.save(returning=True)
+            returning_laptop = form.save(returning=True)
             messages.info(request, f"Laptop Return for {employee_info.emp_name} Complete.")
+
+            laptop_returned_notif.delay(
+                emp_id=employee_info.lk_emp_id,
+                emp_name=employee_info.emp_name,
+                laptop_hardware_id=returning_laptop.hardware_id,
+                laptop_serial_number=returning_laptop.laptop_sr_no,
+                laptop_processor=returning_laptop.processor,
+                laptop_screen_size=returning_laptop.screen_size,
+                laptop_remarks=returning_laptop.laptop_return_remarks
+            )
 
             if assign_new == 'true':
                 return redirect('onbrd_hw_assign', employee_info.emp_id)
@@ -155,6 +168,7 @@ def laptop_return(request, pk):
                 if exit_condition == 'true':
                     employee_info.emp_status = "InActive"
                     employee_info.save()
+                    employee_exit_email.delay(emp_id=employee_info.emp_id, laptop_id=returning_laptop.id)
                     messages.info(request, f"Exit for {employee_info.emp_name} Complete.")
                     return redirect('employee', employee_info.emp_id)
                 else:
