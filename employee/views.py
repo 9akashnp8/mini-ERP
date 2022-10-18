@@ -10,7 +10,9 @@ from django.template.loader import render_to_string
 from employee.filters import EmployeeFilter, ExitEmployeeFilter
 from employee.forms import EmployeeForm
 from .models import Employee, Designation
+from .tasks import employee_add_email
 from hardware.models import Laptop, Building, Hardware
+from hardware.tasks import laptop_assigned_notif
 
 from datetime import date
 from environs import Env
@@ -89,8 +91,7 @@ def employee_add_view(request):
         form = EmployeeForm(request.POST)
         if form.is_valid():
             instance = form.save()
-            employee_add_email(instance.emp_id, instance.emp_name, lk_emp_id=instance.lk_emp_id,
-            dept_id=instance.dept_id, desig_id=instance.desig_id, loc_id=instance.loc_id, request=request)
+            employee_add_email.delay(emp_id=instance.emp_id)
             messages.success(request, "Successfully Added New Employee")
             return redirect(employee_list_view)
         else:
@@ -239,6 +240,15 @@ def onboarding_complete_view(request, pk):
 
     employee_to_assign.is_assigned = True
     employee_to_assign.save()
+
+    laptop_assigned_notif.delay(
+        emp_id=employee_to_assign.lk_emp_id,
+        emp_name=employee_to_assign.emp_name,
+        laptop_hardware_id=selected_laptop.hardware_id,
+        laptop_serial_number=selected_laptop.laptop_sr_no,
+        laptop_processor=selected_laptop.processor,
+        laptop_screen_size=selected_laptop.screen_size
+    )
 
     messages.success(request, f"Succesfully assigned the laptop: {selected_laptop} to {employee_to_assign}")
     return redirect(employee, employee_to_assign.emp_id)
