@@ -247,7 +247,8 @@ def onboarding_complete_view(request, pk):
         laptop_hardware_id=selected_laptop.hardware_id,
         laptop_serial_number=selected_laptop.laptop_sr_no,
         laptop_processor=selected_laptop.processor,
-        laptop_screen_size=selected_laptop.screen_size
+        laptop_screen_size=selected_laptop.screen_size,
+        laptop_remarks=selected_laptop.laptop_return_remarks
     )
 
     messages.success(request, f"Succesfully assigned the laptop: {selected_laptop} to {employee_to_assign}")

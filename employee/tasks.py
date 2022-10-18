@@ -15,7 +15,7 @@ env.read_env()
 @shared_task
 def employee_add_email(emp_id):
     employee_info = Employee.objects.get(emp_id=emp_id)
-    URL = f"https://erp.lakshyaca.com/{reverse('onbrd_hw_assign', args=(emp_id,))}"
+    URL = f"https://erp.lakshyaca.com{reverse('onbrd_hw_assign', args=(emp_id,))}"
     SUBJECT = f"[miniERP] New Employee Added: {employee_info.emp_name}"
     context = {
         'emp_name': employee_info.emp_name,

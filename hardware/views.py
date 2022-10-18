@@ -158,7 +158,7 @@ def laptop_return(request, pk):
                 laptop_serial_number=returning_laptop.laptop_sr_no,
                 laptop_processor=returning_laptop.processor,
                 laptop_screen_size=returning_laptop.screen_size,
-                laptop_remarks=returning_laptop.laptop_remarks
+                laptop_remarks=returning_laptop.laptop_return_remarks
             )
 
             if assign_new == 'true':

@@ -50,14 +50,14 @@ def laptop_returned_notif(emp_id, emp_name, laptop_hardware_id, laptop_serial_nu
 @shared_task
 def laptop_add_notif(laptop_id):
     laptop_info = Laptop.objects.get(id=laptop_id)
-    SUBJECT = f"[miniERP - Laptop Added] {laptop_info.laptop_serial_number} has been added to the database."
+    SUBJECT = f"[miniERP - Laptop Added] {laptop_info.laptop_sr_no} has been added to the database."
     context = {
-        'email_heading': f'Laptop [{laptop_info.laptop_serial_number} | {laptop_info.laptop_hardware_id}] has been added to the database.',
-        'laptop_hardware_id': laptop_info.laptop_hardware_id,
-        'laptop_serial_number': laptop_info.laptop_serial_number,
+        'email_heading': f'Laptop [{laptop_info.laptop_sr_no} | {laptop_info.hardware_id}] has been added to the database.',
+        'laptop_hardware_id': laptop_info.hardware_id,
+        'laptop_serial_number': laptop_info.laptop_sr_no,
         'laptop_processor': laptop_info.processor,
-        'laptop_screen_size': laptop_info.laptop_screen_size,
-        'laptop_remarks': laptop_info.laptop_remarks,
+        'laptop_screen_size': laptop_info.screen_size,
+        'laptop_remarks': laptop_info.laptop_return_remarks,
         'dated': datetime.today()
     }
     MESSAGE = render_to_string('hardware/laptops/laptop_add_mail.html', context)
