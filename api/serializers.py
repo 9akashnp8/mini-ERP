@@ -1,8 +1,10 @@
+from dataclasses import fields
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
 from employee.models import Department, Designation, Employee, Location
 from hardware.models import Building, Laptop, LaptopBrand
+from finance.models import Payment
 
 # Employee Serializers
 class DepartmentSerializer(serializers.ModelSerializer):
@@ -69,4 +71,11 @@ class BuildingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Building
+        fields = '__all__'
+
+# Finance Serializers
+class PaymentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Payment
         fields = '__all__'

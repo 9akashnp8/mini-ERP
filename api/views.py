@@ -2,6 +2,7 @@ from rest_framework import viewsets
 
 from employee.models import Employee, Department, Designation, Location
 from hardware.models import Laptop, LaptopBrand, Building
+from finance.models import Payment
 from .serializers import *
 
 # Employee Viewsets
@@ -33,3 +34,8 @@ class LaptopBrandViewSet(viewsets.ModelViewSet):
 class BuildingViewSet(viewsets.ModelViewSet):
     queryset = Building.objects.all()
     serializer_class = BuildingSerializer
+
+# Finance Viewsets
+class PaymentViewSet(viewsets.ModelViewSet):
+    queryset = Payment.objects.all()
+    serializer_class = PaymentSerializer
