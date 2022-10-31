@@ -15,10 +15,20 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 class DepartmentViewSet(viewsets.ModelViewSet):
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
+    pagination_class = FullResultsSetPagination
 
 class DesignationViewSet(viewsets.ModelViewSet):
     queryset = Designation.objects.all()
     serializer_class = DesignationSerializer
+    pagination_class = FullResultsSetPagination
+
+    def get_queryset(self):
+        # Capture department from query parameters
+        queryset = Designation.objects.all()
+        department = self.request.query_params.get('dept_id')
+        if department is not None:
+            queryset = queryset.filter(dept_id=department)
+        return queryset
 
 class LocationViewSet(viewsets.ModelViewSet):
     queryset = Location.objects.all()
