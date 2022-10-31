@@ -15,7 +15,7 @@ class DepartmentSerializer(serializers.ModelSerializer):
 
 class DesignationSerializer(serializers.ModelSerializer):
     
-    dept_id = serializers.StringRelatedField()
+    dept_id = serializers.PrimaryKeyRelatedField(queryset=Department.objects.all())
 
     class Meta:
         model = Designation
@@ -38,9 +38,9 @@ class LocationSerializer(serializers.ModelSerializer):
 
 class EmployeeSerializer(serializers.ModelSerializer):
 
-    dept_id = serializers.StringRelatedField()
-    desig_id = serializers.StringRelatedField()
-    loc_id = serializers.StringRelatedField()
+    dept_id = serializers.PrimaryKeyRelatedField(queryset=Department.objects.all())
+    desig_id = serializers.PrimaryKeyRelatedField(queryset=Designation.objects.all())
+    loc_id = serializers.PrimaryKeyRelatedField(queryset=Location.objects.all())
     user = serializers.StringRelatedField()
 
     class Meta:
