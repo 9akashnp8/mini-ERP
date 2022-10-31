@@ -3,7 +3,9 @@ from rest_framework import viewsets
 from employee.models import Employee, Department, Designation, Location
 from hardware.models import Laptop, LaptopBrand, Building
 from finance.models import Payment
+
 from .serializers import *
+from .custom_pagination import FullResultsSetPagination
 
 # Employee Viewsets
 class EmployeeViewSet(viewsets.ModelViewSet):
