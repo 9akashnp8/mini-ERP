@@ -40,7 +40,20 @@ services:
     command: celery -A minierp worker -l INFO
     volumes:
       - .:/code
-    container_name: celery
+    container_name: celery_worker
+    depends_on:
+      - db
+      - redis
+      - web
+
+  celery_beat:
+    restart: always
+    build:
+      context: .
+    command: celery -A minierp beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    volumes:
+      - .:/code
+    container_name: celery_beat
     depends_on:
       - db
       - redis
