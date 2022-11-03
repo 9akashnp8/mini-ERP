@@ -9,6 +9,17 @@
               <h2>{{laptop_info.hardware_id}}</h2>
             </div>
             <div class="p-2 bd-highlight">
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Generate Hardware Form
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href="{% url 'generate_hardware_form' laptop_info.id %}?type=assign"><i class="bi bi-plus"></i> Assignment Form</a></li>
+                      <li><a class="dropdown-item" href="{% url 'generate_hardware_form' laptop_info.id %}?type=return"><i class="bi bi-dash"></i> Return Form</a></li>
+                    </ul>
+                </div>
+              </div>
+            <div class="p-2 bd-highlight">
               <p>
                 <a href="{% url 'laptop_edit' laptop_info.id %}" class="btn btn-primary">
                     <i class="bi bi-pencil-square"></i> Edit   
