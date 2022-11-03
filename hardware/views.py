@@ -181,6 +181,24 @@ def laptop_return(request, pk):
     'return_form': form}
     return render(request, 'hardware/replace/replace_confirm.html', context)
 
+@login_required(login_url='login')
+@permission_required('employee.can_onboard_employee', raise_exception=True)
+def generate_hardware_form(request, pk):
+    type_of_form = request.GET.get('type', None)
+    if type_of_form == 'assign':
+        form_title = 'Hardware Assignment Form'
+    elif type_of_form == 'return':
+        form_title = 'Hardware Return Form'
+    else:
+        return HttpResponse("Type Query Param not present and/or is Invalid. Eg: laptop/123/form/?type=assign")
+    laptop = Laptop.objects.get(pk=pk)
+    try:
+        employee = Employee.objects.get(emp_id=laptop.emp_id.emp_id)
+    except AttributeError:
+        employee = None
+    context = {'form_title': form_title, 'laptop': laptop, 'employee': employee}
+    return render(request, 'hardware/hardware_form.html', context)
+
 def search_results_for_laptop_assignment(request):
 
     lk_emp_id = request.POST.get('lk_emp_id')
