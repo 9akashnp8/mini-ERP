@@ -1,6 +1,6 @@
 from django.forms import DateInput, ModelForm
 
-from hardware.models import Laptop
+from hardware.models import Laptop, HardwareAppSettings
 from employee.models import Employee
 
 class LaptopForm(ModelForm):
@@ -90,3 +90,24 @@ class LaptopReturnForm(ModelForm):
                 pass
         
         return super(LaptopReturnForm, self).save(*args, **kwargs)
+
+class HardwareAppSettingsForm(ModelForm):
+
+    class Meta:
+        model = HardwareAppSettings
+        fields = '__all__'
+        labels = {
+            'laptop_hardware_id_prefix': 'Hardware ID Prefix',
+            'laptop_default_processor': 'Default Laptop Processor',
+            'laptop_default_ram': 'Default Laptop RAM',
+            'laptop_default_storage': 'Default Laptop Storage',
+            'laptop_screen_sizes': 'Available Laptop Screen Sizes',
+            'laptop_rental_vendors': 'Available Laptop Rental Vendors'
+        }
+    
+    def __init__(self, *args, **kwargs):
+
+        super(HardwareAppSettingsForm, self).__init__(*args, **kwargs)
+
+        for key in self.fields:
+            self.fields[key].widget.attrs.update({'class': 'laptop-form-fields form-fields'})
