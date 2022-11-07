@@ -5,8 +5,8 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import messages
 from django.core.paginator import Paginator
 
-from .models import Laptop, Hardware, Building
-from .forms import LaptopForm, LaptopReturnForm
+from .models import Laptop, Hardware, Building, HardwareAppSettings
+from .forms import LaptopForm, LaptopReturnForm, HardwareAppSettingsForm
 from .filters import LaptopFilter
 from employee.models import Employee
 from .tasks import laptop_add_notif, laptop_returned_notif
@@ -250,3 +250,16 @@ def search_results_for_laptop_return(request):
 
     context = {'employee': employee, 'laptop': laptop, 'num_of_laptops':num_of_laptops}
     return render(request, 'partials/search-result-return.html', context)
+
+@login_required(login_url='login')
+def hardware_app_settings(request):
+    settings = HardwareAppSettings.objects.get(id=1)
+    form = HardwareAppSettingsForm(instance=settings)
+    if request.method == 'POST':
+        form = HardwareAppSettingsForm(request.POST, instance=settings)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"Successfully Updated Hardware Settings.")
+            return redirect(hardware_app_settings)
+    context = { 'form': form }
+    return render(request, 'hardware/settings.html', context)
