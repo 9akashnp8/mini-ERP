@@ -1,9 +1,27 @@
-from django.forms import DateInput, ModelForm
+from django.forms import DateInput, ModelForm, ChoiceField, CharField
 
 from hardware.models import Laptop, HardwareAppSettings
 from employee.models import Employee
 
+# Helpers
+def string_to_choice_tuple(string):
+    list_from_string = string.split(",")
+    final_list_for_tuple = []
+    for item in list_from_string:
+        temp_list = []
+        temp_list.append(item)
+        item_tuple = tuple(temp_list*2)
+        final_list_for_tuple.append(item_tuple)
+    return tuple(final_list_for_tuple)
+
+# Settings from the HardwareAppSettings model
+master_settings = HardwareAppSettings.objects.get(id=1)
+laptop_screen_sizes_choice = string_to_choice_tuple(master_settings.laptop_screen_sizes)
+laptop_rental_vendor_choice = string_to_choice_tuple(master_settings.laptop_rental_vendors)
+
 class LaptopForm(ModelForm):
+    screen_size = ChoiceField()
+    laptop_rental_vendor = ChoiceField()
 
     class Meta:
         model = Laptop
@@ -31,8 +49,15 @@ class LaptopForm(ModelForm):
         }
     
     def __init__(self, *args, **kwargs):
-
         super().__init__(*args, **kwargs)
+
+        # Set choices to be from the same set it Hardware Settings.
+        hardware_settings = HardwareAppSettings.objects.get(id=1)
+        self.fields['screen_size'].choices = string_to_choice_tuple(hardware_settings.laptop_screen_sizes)
+        self.fields['laptop_rental_vendor'].choices = string_to_choice_tuple(hardware_settings.laptop_rental_vendors)
+        self.fields['processor'].initial = hardware_settings.laptop_default_processor
+        self.fields['ram_capacity'].initial = hardware_settings.laptop_default_ram
+        self.fields['storage_capacity'].initial = hardware_settings.laptop_default_storage
 
         #Setting Custom class names for form field styling
         for key in self.fields:
