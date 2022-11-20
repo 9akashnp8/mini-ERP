@@ -26,6 +26,15 @@ class Building(models.Model):
     def __str__(self):
         return self.building
 
+class HardwareAppSettings(models.Model):
+    laptop_hardware_id_prefix = models.CharField(max_length=10)
+    laptop_default_processor = models.CharField(max_length=10)
+    laptop_default_ram = models.CharField(max_length=10)
+    laptop_default_storage = models.CharField(max_length=10)
+    laptop_screen_sizes = models.CharField(max_length=100)
+    laptop_screen_sizes = models.CharField(max_length=100)
+    laptop_rental_vendors = models.CharField(max_length=100)
+
 #Models for the Laptop side of the app
 class LaptopBrand(models.Model):
     id = models.AutoField(primary_key=True, editable=False)
@@ -54,16 +63,6 @@ class Laptop(models.Model):
         ('Rental', 'Rental'),
     )
 
-    LAPTOP_RENTAL_VENDORS = (
-        ('NG', 'NextGen'),
-        ('NC', 'NetCom'),
-    )
-
-    LAPTOP_SCREEN_SIZES = (
-        ('14', '14 inch'),
-        ('15', '15 inch'),
-    )
-
     LAPTOP_SCREEN_TYPES = (
         ('Touch', 'Touch'),
         ('Non-Touch', 'Non-Touch')
@@ -74,13 +73,13 @@ class Laptop(models.Model):
     emp_id = models.ForeignKey(Employee, null=True, blank=True, on_delete=models.SET_NULL)
     laptop_sr_no = models.CharField(max_length=100, unique=True)
     brand = models.ForeignKey(LaptopBrand, null=True, on_delete=models.SET_NULL)
-    processor = models.CharField(max_length=15, default='i3 11th gen')
-    ram_capacity = models.CharField(max_length=5, default='8GB')
-    storage_capacity = models.CharField(max_length=10, default='512GB')
-    screen_size = models.CharField(max_length=15, choices=LAPTOP_SCREEN_SIZES)
+    processor = models.CharField(max_length=15)
+    ram_capacity = models.CharField(max_length=5)
+    storage_capacity = models.CharField(max_length=10)
+    screen_size = models.CharField(max_length=15)
     screen_type = models.CharField(max_length=15, null=True, choices=LAPTOP_SCREEN_TYPES, default='Non-Touch')
     laptop_owner_type = models.CharField(max_length=30, null=True, choices=LAPTOP_OWNER_TYPES, default='Rental')
-    laptop_rental_vendor = models.CharField(max_length=50, null=True, blank=True, choices=LAPTOP_RENTAL_VENDORS)
+    laptop_rental_vendor = models.CharField(max_length=50, null=True, blank=True)
     laptop_status = models.CharField(max_length=20, null=True, choices=LAPTOP_STATUSES, default="Working")
     laptop_branch = models.ForeignKey(Location, null=True, blank=False, on_delete=models.SET_NULL)
     laptop_building = models.ForeignKey(Building, null=True, on_delete=models.SET_NULL)
@@ -132,11 +131,3 @@ class Hardware(models.Model):
     emp_id = models.ForeignKey(Employee, null=True, on_delete=models.SET_NULL)
     hardware_id = models.ForeignKey(Laptop, null=True, on_delete=models.SET_NULL)
 
-class HardwareAppSettings(models.Model):
-    laptop_hardware_id_prefix = models.CharField(max_length=10)
-    laptop_default_processor = models.CharField(max_length=10)
-    laptop_default_ram = models.CharField(max_length=10)
-    laptop_default_storage = models.CharField(max_length=10)
-    laptop_screen_sizes = models.CharField(max_length=100)
-    laptop_screen_sizes = models.CharField(max_length=100)
-    laptop_rental_vendors = models.CharField(max_length=100)
