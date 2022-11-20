@@ -52,3 +52,9 @@ class Employee(models.Model):
         if self.emp_name == None:
             return "NAME IS NULL"
         return self.emp_name
+
+class EmployeeAppSetting(models.Model):
+    org_emp_id_prefix = models.CharField(max_length=10)
+    
+    def __str__(self):
+        return self.org_emp_id_prefix
