@@ -263,4 +263,4 @@ def hardware_app_settings(request):
             messages.success(request, f"Successfully Updated Hardware Settings.")
             return redirect(hardware_app_settings)
     context = { 'form': form }
-    return render(request, 'hardware/settings.html', context)
+    return render(request, 'settings.html', context)
