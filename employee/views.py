@@ -8,8 +8,8 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
 from employee.filters import EmployeeFilter, ExitEmployeeFilter
-from employee.forms import EmployeeForm
-from .models import Employee, Designation
+from employee.forms import EmployeeForm, EmployeeAppSettingsForm
+from .models import Employee, Designation, EmployeeAppSetting
 from .tasks import employee_add_email
 from hardware.models import Laptop, Building, Hardware
 from hardware.tasks import laptop_assigned_notif
@@ -253,3 +253,16 @@ def onboarding_complete_view(request, pk):
 
     messages.success(request, f"Succesfully assigned the laptop: {selected_laptop} to {employee_to_assign}")
     return redirect(employee, employee_to_assign.emp_id)
+
+@login_required(login_url='login')
+def employee_app_settings(request):
+    settings = EmployeeAppSetting.objects.get(id=1)
+    form = EmployeeAppSettingsForm(instance=settings)
+    if request.method == 'POST':
+        form = EmployeeAppSettingsForm(request.POST, instance=settings)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"Successfully Updated Employee Settings.")
+            return redirect(employee_app_settings)
+    context = { 'form': form }
+    return render(request, 'settings.html', context)

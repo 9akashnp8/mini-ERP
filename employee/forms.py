@@ -2,12 +2,9 @@ from django.forms import ModelForm, DateInput, ValidationError
 from django.contrib.auth.models import User
 
 from .models import Employee, Designation, EmployeeAppSetting
-
-# Settings from EmployeeAppSettings
-employee_app_settings = EmployeeAppSetting.objects.get(id=1)
+from hardware.forms import HardwareAppSettingsForm
 
 class EmployeeForm(ModelForm):
-
     class Meta:
         model = Employee
         fields = '__all__'
@@ -31,10 +28,10 @@ class EmployeeForm(ModelForm):
         }
     
     def __init__(self, *args, **kwargs):
-
         super(EmployeeForm, self).__init__(*args, **kwargs)
 
-        # Initial Values
+        # Settings from EmployeeAppSettings
+        employee_app_settings = EmployeeAppSetting.objects.get(id=1)
         self.fields['lk_emp_id'].initial = employee_app_settings.org_emp_id_prefix
 
         #Department-Designation auto dependant dropdown
@@ -60,3 +57,9 @@ class EmployeeForm(ModelForm):
             email = self.cleaned_data['emp_email']
             if User.objects.filter(email=email).exists():
                 raise ValidationError("Email ID is already being used for an ERP User. Please use another email")
+
+class EmployeeAppSettingsForm(HardwareAppSettingsForm):
+    class Meta:
+        model = EmployeeAppSetting
+        fields = '__all__'
+        labels = {}

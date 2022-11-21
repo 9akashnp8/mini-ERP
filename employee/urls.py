@@ -16,6 +16,7 @@ urlpatterns = [
     #Main
     path('', views.employee_list_view, name='dash_employees'),
     path('add/', views.employee_add_view, name='employee_add'),
+    path('settings/', views.employee_app_settings, name='employee_app_settings'),
     path('<str:pk>/', views.employee, name='employee'),
     path('<str:pk>/edit/', views.employee_edit_view, name='employee_edit'),
     path('<str:pk>/delete/', views.employee_delete_view, name='employee_del'),
