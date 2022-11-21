@@ -196,7 +196,8 @@ def generate_hardware_form(request, pk):
         employee = Employee.objects.get(emp_id=laptop.emp_id.emp_id)
     except AttributeError:
         employee = None
-    context = {'form_title': form_title, 'laptop': laptop, 'employee': employee}
+    org_name = HardwareAppSettings.objects.get(id=1).organization_name
+    context = {'form_title': form_title, 'laptop': laptop, 'employee': employee, 'org_name': org_name}
     return render(request, 'hardware/hardware_form.html', context)
 
 def search_results_for_laptop_assignment(request):
