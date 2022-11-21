@@ -44,6 +44,7 @@ jobs:
           echo EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD}} >> .env
           echo EMAIL_RECIPIENTS=${{ secrets.EMAIL_RECIPIENTS}} >> .env
           echo ENVIRONMENT=${{ secrets.ENVIRONMENT}} >> .env
+          echo DB_ENGINE=${{ secrets.DB_ENGINE}} >> .env
           echo DB_NAME=${{ secrets.DB_NAME}} >> .env
           echo DB_USER=${{ secrets.DB_USER}} >> .env
           echo DB_USER_PASS=${{ secrets.DB_USER_PASS}} >> .env
