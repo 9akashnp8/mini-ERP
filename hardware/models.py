@@ -27,13 +27,14 @@ class Building(models.Model):
         return self.building
 
 class HardwareAppSettings(models.Model):
-    laptop_hardware_id_prefix = models.CharField(max_length=10)
-    laptop_default_processor = models.CharField(max_length=10)
+    laptop_hardware_id_prefix = models.CharField(max_length=30)
+    laptop_default_processor = models.CharField(max_length=30)
     laptop_default_ram = models.CharField(max_length=10)
     laptop_default_storage = models.CharField(max_length=10)
     laptop_screen_sizes = models.CharField(max_length=100)
     laptop_screen_sizes = models.CharField(max_length=100)
     laptop_rental_vendors = models.CharField(max_length=100)
+    organization_name = models.CharField(max_length=100)
 
 #Models for the Laptop side of the app
 class LaptopBrand(models.Model):
