@@ -70,4 +70,4 @@ jobs:
           POSTGRES_DB: test_db
           POSTGRES_PORT: 5432
         run: |
-          python manage.py test
+          sudo python manage.py test
