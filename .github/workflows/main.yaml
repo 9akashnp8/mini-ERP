@@ -58,8 +58,8 @@ jobs:
       
       - name: Create Log File
         run: |
-          sudo mkdir home/var/log/django
-          sudo touch home/var/log/django/django.log
+          mkdir /var/log/django
+          touch /var/log/django/django.log
 
       - name: Run Tests
         env:
