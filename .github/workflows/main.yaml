@@ -31,6 +31,9 @@ jobs:
 
       - name: Install Dependencies
         run: |
+          pip install virtualenv
+          virtualenv venv
+          source venv/bin/activate
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       
@@ -58,8 +61,8 @@ jobs:
       
       - name: Create Log File
         run: |
-          mkdir /var/log/django
-          touch /var/log/django/django.log
+          sudo mkdir /var/log/django
+          sudo touch /var/log/django/django.log
 
       - name: Run Tests
         env:
