@@ -31,9 +31,6 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          pip install virtualenv
-          virtualenv venv
-          source venv/bin/activate
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       
@@ -61,8 +58,8 @@ jobs:
       
       - name: Create Log File
         run: |
-          sudo mkdir /var/log/django
-          sudo touch /var/log/django/django.log
+          sudo mkdir home/var/log/django
+          sudo touch home/var/log/django/django.log
 
       - name: Run Tests
         env:
@@ -73,4 +70,4 @@ jobs:
           POSTGRES_DB: test_db
           POSTGRES_PORT: 5432
         run: |
-          sudo python manage.py test
+          python manage.py test
