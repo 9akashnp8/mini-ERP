@@ -1,6 +1,6 @@
 from django.forms import DateInput, ModelForm, ChoiceField, CharField
 
-from hardware.models import Laptop #, HardwareAppSettings
+from hardware.models import Laptop, HardwareAppSettings
 from employee.models import Employee
 
 # Helpers
@@ -14,11 +14,7 @@ def string_to_choice_tuple(string):
         final_list_for_tuple.append(item_tuple)
     return tuple(final_list_for_tuple)
 
-# Settings from the HardwareAppSettings model
-master_settings = "HardwareAppSettings.objects.get(id=1)"
-laptop_screen_sizes_choice = "string_to_choice_tuple(master_settings.laptop_screen_sizes)"
-laptop_rental_vendor_choice = "string_to_choice_tuple(master_settings.laptop_rental_vendors)"
-
+# Forms
 class LaptopForm(ModelForm):
     screen_size = ChoiceField()
     laptop_rental_vendor = ChoiceField()
@@ -52,9 +48,9 @@ class LaptopForm(ModelForm):
         super().__init__(*args, **kwargs)
 
         # Set choices to be from the same set it Hardware Settings.
-        hardware_settings = "HardwareAppSettings.objects.get(id=1)"
-        self.fields['screen_size'].choices = "string_to_choice_tuple(hardware_settings.laptop_screen_sizes)"
-        self.fields['laptop_rental_vendor'].choices = "string_to_choice_tuple(hardware_settings.laptop_rental_vendors)"
+        hardware_settings = HardwareAppSettings.objects.get(id=1)
+        self.fields['screen_size'].choices = string_to_choice_tuple(hardware_settings.laptop_screen_sizes)
+        self.fields['laptop_rental_vendor'].choices = string_to_choice_tuple(hardware_settings.laptop_rental_vendors)
         self.fields['processor'].initial = hardware_settings.laptop_default_processor
         self.fields['ram_capacity'].initial = hardware_settings.laptop_default_ram
         self.fields['storage_capacity'].initial = hardware_settings.laptop_default_storage
@@ -119,7 +115,7 @@ class LaptopReturnForm(ModelForm):
 class HardwareAppSettingsForm(ModelForm):
 
     class Meta:
-        model = Laptop
+        model = HardwareAppSettings
         fields = '__all__'
         labels = {
             'laptop_hardware_id_prefix': 'Hardware ID Prefix',
@@ -131,8 +127,6 @@ class HardwareAppSettingsForm(ModelForm):
         }
     
     def __init__(self, *args, **kwargs):
-
         super(HardwareAppSettingsForm, self).__init__(*args, **kwargs)
-
         for key in self.fields:
             self.fields[key].widget.attrs.update({'class': 'laptop-form-fields form-fields'})
