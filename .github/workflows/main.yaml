@@ -75,4 +75,4 @@ jobs:
           POSTGRES_PORT: 5432
         run: |
           . venv/bin/activate
-          python manage.py test
+          sudo python manage.py test
