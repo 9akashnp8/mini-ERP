@@ -1,7 +1,8 @@
 from django.db.models.signals import post_save
 from hardware.models import Laptop, HardwareAppSettings
 
-hardware_id_prefix = HardwareAppSettings.objects.get(id=1).laptop_hardware_id_prefix
+# hardware_id_prefix = HardwareAppSettings.objects.get(id=1).laptop_hardware_id_prefix
+hardware_id_prefix = "LAK-LAP"
 
 def createHardwareID(sender, instance, created, **kwargs):
     

@@ -8,7 +8,7 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
 from employee.filters import EmployeeFilter, ExitEmployeeFilter
-from employee.forms import EmployeeForm, EmployeeAppSettingsForm
+from employee.forms import EmployeeForm #, EmployeeAppSettingsForm
 from .models import Employee, Designation, EmployeeAppSetting
 from .tasks import employee_add_email
 from hardware.models import Laptop, Building, Hardware
@@ -257,9 +257,9 @@ def onboarding_complete_view(request, pk):
 @login_required(login_url='login')
 def employee_app_settings(request):
     settings = EmployeeAppSetting.objects.get(id=1)
-    form = EmployeeAppSettingsForm(instance=settings)
+    form = "EmployeeAppSettingsForm(instance=settings)"
     if request.method == 'POST':
-        form = EmployeeAppSettingsForm(request.POST, instance=settings)
+        form = "EmployeeAppSettingsForm(request.POST, instance=settings)"
         if form.is_valid():
             form.save()
             messages.success(request, f"Successfully Updated Employee Settings.")

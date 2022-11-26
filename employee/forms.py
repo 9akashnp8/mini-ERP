@@ -31,8 +31,8 @@ class EmployeeForm(ModelForm):
         super(EmployeeForm, self).__init__(*args, **kwargs)
 
         # Settings from EmployeeAppSettings
-        employee_app_settings = EmployeeAppSetting.objects.get(id=1)
-        self.fields['lk_emp_id'].initial = employee_app_settings.org_emp_id_prefix
+        # employee_app_settings = EmployeeAppSetting.objects.get(id=1)
+        self.fields['lk_emp_id'].initial = 'LAK-IND-' # employee_app_settings.org_emp_id_prefix
 
         #Department-Designation auto dependant dropdown
         self.fields['desig_id'].queryset = Designation.objects.none()
@@ -60,6 +60,6 @@ class EmployeeForm(ModelForm):
 
 class EmployeeAppSettingsForm(HardwareAppSettingsForm):
     class Meta:
-        model = EmployeeAppSetting
+        model = Employee
         fields = '__all__'
         labels = {}
