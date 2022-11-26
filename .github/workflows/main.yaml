@@ -63,7 +63,7 @@ jobs:
       - name: Create Log File
         run: |
           sudo mkdir /var/log/django
-          sudo touch /var/log/django/django.log
+          touch /var/log/django/django.log
 
       - name: Run Tests
         env:
@@ -75,4 +75,4 @@ jobs:
           POSTGRES_PORT: 5432
         run: |
           . venv/bin/activate
-          sudo python manage.py test
+          python manage.py test
