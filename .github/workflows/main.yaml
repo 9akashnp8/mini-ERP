@@ -57,7 +57,8 @@ jobs:
 
       - name: Install locales (for int to currency conversion)
         run: |
-          sudo apt install language-pack-en-base
+          sudo apt-get update
+          sudo apt-get -y install language-pack-en
       
       - name: Create Log File
         run: |
