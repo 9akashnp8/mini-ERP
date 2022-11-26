@@ -103,7 +103,9 @@
                                 <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{request.user}}</a>
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="#!"><i class="bi bi-person-circle"></i> Profile</a>
-                                    <a class="dropdown-item" href="#!"><i class="bi bi-gear"></i> Settings</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="{% url 'hardware_app_settings' %}"><i class="bi bi-gear"></i> Hardware Settings</a>
+                                    <a class="dropdown-item" href="{% url 'employee_app_settings' %}"><i class="bi bi-gear"></i> Employee Settings</a>
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="{% url 'logout' %}"><i class="bi bi-box-arrow-in-left"></i> Log out</a>
                                 </div>

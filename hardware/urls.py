@@ -12,6 +12,7 @@ urlpatterns = [
     path('laptop-return/<str:pk>/', views.laptop_return, name='replace_confirm'),
     path('laptop/<str:pk>/form/', views.generate_hardware_form, name='generate_hardware_form'),
 
+    path('settings/', views.hardware_app_settings, name='hardware_app_settings'),
     path('htmx/load-buildings/', views.load_buildings, name='load_buildings'),
     path('htmx/search-result-assign/', views.search_results_for_laptop_assignment, name='search_results_for_laptop_assignment'),
     path('htmx/search-result-replace/', views.search_results_for_laptop_replacement, name='search_results_for_laptop_replacement'),

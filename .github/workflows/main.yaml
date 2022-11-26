@@ -31,6 +31,9 @@ jobs:
 
       - name: Install Dependencies
         run: |
+          pip install virtualenv
+          virtualenv venv
+          . venv/bin/activate
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       
@@ -44,6 +47,7 @@ jobs:
           echo EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD}} >> .env
           echo EMAIL_RECIPIENTS=${{ secrets.EMAIL_RECIPIENTS}} >> .env
           echo ENVIRONMENT=${{ secrets.ENVIRONMENT}} >> .env
+          echo DB_ENGINE=${{ secrets.DB_ENGINE}} >> .env
           echo DB_NAME=${{ secrets.DB_NAME}} >> .env
           echo DB_USER=${{ secrets.DB_USER}} >> .env
           echo DB_USER_PASS=${{ secrets.DB_USER_PASS}} >> .env
@@ -53,7 +57,14 @@ jobs:
 
       - name: Install locales (for int to currency conversion)
         run: |
-          sudo apt install language-pack-en-base
+          sudo apt-get update
+          sudo apt-get -y install language-pack-en
+      
+      - name: Create Log File
+        run: |
+          sudo mkdir /var/log/django
+          sudo touch /var/log/django/django.log
+          sudo chown -R $USER:$USER /var/log/django/django.log
 
       - name: Run Tests
         env:
@@ -64,4 +75,5 @@ jobs:
           POSTGRES_DB: test_db
           POSTGRES_PORT: 5432
         run: |
+          . venv/bin/activate
           python manage.py test
