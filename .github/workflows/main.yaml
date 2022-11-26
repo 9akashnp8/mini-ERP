@@ -33,7 +33,7 @@ jobs:
         run: |
           pip install virtualenv
           virtualenv venv
-          source venv/bin/activate
+          . venv/bin/activate
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       
@@ -73,4 +73,5 @@ jobs:
           POSTGRES_DB: test_db
           POSTGRES_PORT: 5432
         run: |
+          . venv/bin/activate
           python manage.py test
