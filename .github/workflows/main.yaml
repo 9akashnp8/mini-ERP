@@ -62,8 +62,9 @@ jobs:
       
       - name: Create Log File
         run: |
-          mkdir /var/log/django
-          touch /var/log/django/django.log
+          sudo mkdir /var/log/django
+          sudo touch /var/log/django/django.log
+          sudo chown -R $USER:$USER /var/log/django/django.log
 
       - name: Run Tests
         env:
