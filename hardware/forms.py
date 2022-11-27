@@ -1,6 +1,6 @@
 from django.forms import DateInput, ModelForm, ChoiceField, CharField
 
-from hardware.models import Laptop, HardwareAppSettings
+from hardware.models import Laptop, HardwareAppSetting
 from employee.models import Employee
 
 # Helpers
@@ -49,13 +49,13 @@ class LaptopForm(ModelForm):
 
         # Set choices to be from the same set it Hardware Settings.
         try:
-            hardware_settings = HardwareAppSettings.objects.get(id=1)
+            hardware_settings = HardwareAppSetting.objects.get(id=1)
             self.fields['screen_size'].choices = string_to_choice_tuple(hardware_settings.laptop_screen_sizes)
             self.fields['laptop_rental_vendor'].choices = string_to_choice_tuple(hardware_settings.laptop_rental_vendors)
             self.fields['processor'].initial = hardware_settings.laptop_default_processor
             self.fields['ram_capacity'].initial = hardware_settings.laptop_default_ram
             self.fields['storage_capacity'].initial = hardware_settings.laptop_default_storage
-        except HardwareAppSettings.DoesNotExist:
+        except HardwareAppSetting.DoesNotExist:
             self.fields['screen_size'].choices = (('14', '14 inch'), ('15', '15 inch'))
             self.fields['laptop_rental_vendor'].choices = (('V1', 'Vendor 1'), ('V2', 'Vendor 2'))
             self.fields['processor'].initial = 'i3 12th gen'
@@ -122,7 +122,7 @@ class LaptopReturnForm(ModelForm):
 class HardwareAppSettingsForm(ModelForm):
 
     class Meta:
-        model = HardwareAppSettings
+        model = HardwareAppSetting
         fields = '__all__'
         labels = {
             'laptop_hardware_id_prefix': 'Hardware ID Prefix',
