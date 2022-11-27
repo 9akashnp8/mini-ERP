@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import messages
 from django.core.paginator import Paginator
 
-from .models import Laptop, Hardware, Building, HardwareAppSettings
+from .models import Laptop, Hardware, Building, HardwareAppSetting
 from .forms import LaptopForm, LaptopReturnForm, HardwareAppSettingsForm
 from .filters import LaptopFilter
 from employee.models import Employee
@@ -196,7 +196,7 @@ def generate_hardware_form(request, pk):
         employee = Employee.objects.get(emp_id=laptop.emp_id.emp_id)
     except AttributeError:
         employee = None
-    org_name = HardwareAppSettings.objects.get(id=1).organization_name
+    org_name = HardwareAppSetting.objects.get(id=1).organization_name
     context = {'form_title': form_title, 'laptop': laptop, 'employee': employee, 'org_name': org_name}
     return render(request, 'hardware/hardware_form.html', context)
 
@@ -254,7 +254,7 @@ def search_results_for_laptop_return(request):
 
 @login_required(login_url='login')
 def hardware_app_settings(request):
-    settings = HardwareAppSettings.objects.get(id=1)
+    settings = HardwareAppSetting.objects.get(id=1)
     form = HardwareAppSettingsForm(instance=settings)
     if request.method == 'POST':
         form = HardwareAppSettingsForm(request.POST, instance=settings)

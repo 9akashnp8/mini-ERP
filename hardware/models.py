@@ -26,7 +26,7 @@ class Building(models.Model):
     def __str__(self):
         return self.building
 
-class HardwareAppSettings(models.Model):
+class HardwareAppSetting(models.Model):
     laptop_hardware_id_prefix = models.CharField(max_length=30)
     laptop_default_processor = models.CharField(max_length=30)
     laptop_default_ram = models.CharField(max_length=10)

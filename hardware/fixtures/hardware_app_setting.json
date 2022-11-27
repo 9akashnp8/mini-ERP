@@ -1,0 +1,15 @@
+[
+    {
+        "model": "hardware.hardwareappsetting",
+        "pk": 1,
+        "fields": {
+            "laptop_hardware_id_prefix": "ANP-LAP",
+            "laptop_default_processor": "i3 12th Gen",
+            "laptop_default_ram": "8GB",
+            "laptop_default_storage": "512GB SSD",
+            "laptop_screen_sizes": "14 inch, 15 inch",
+            "laptop_rental_vendors": "Rental 1, Rental 2",
+            "organization_name": "Your Organization"
+        }
+    }
+]
