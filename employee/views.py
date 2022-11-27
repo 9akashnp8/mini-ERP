@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+from django.db.utils import OperationalError
 
 from employee.filters import EmployeeFilter, ExitEmployeeFilter
 from employee.forms import EmployeeForm, EmployeeAppSettingsForm
@@ -256,7 +257,10 @@ def onboarding_complete_view(request, pk):
 
 @login_required(login_url='login')
 def employee_app_settings(request):
-    settings = EmployeeAppSetting.objects.get(id=1)
+    try:
+        settings = EmployeeAppSetting.objects.get(id=1)
+    except OperationalError:
+        pass
     form = EmployeeAppSettingsForm(instance=settings)
     if request.method == 'POST':
         form = EmployeeAppSettingsForm(request.POST, instance=settings)

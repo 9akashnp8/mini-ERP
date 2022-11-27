@@ -1,5 +1,6 @@
 from django.forms import ModelForm, DateInput, ValidationError
 from django.contrib.auth.models import User
+from django.db.utils import OperationalError
 
 from .models import Employee, Designation, EmployeeAppSetting
 from hardware.forms import HardwareAppSettingsForm
@@ -31,8 +32,11 @@ class EmployeeForm(ModelForm):
         super(EmployeeForm, self).__init__(*args, **kwargs)
 
         # Settings from EmployeeAppSettings
-        employee_app_settings = EmployeeAppSetting.objects.get(id=1)
-        self.fields['lk_emp_id'].initial = employee_app_settings.org_emp_id_prefix
+        try:
+            employee_app_settings = EmployeeAppSetting.objects.get(id=1)
+            self.fields['lk_emp_id'].initial = employee_app_settings.org_emp_id_prefix
+        except (OperationalError, EmployeeAppSetting.DoesNotExist):
+            pass
 
         #Department-Designation auto dependant dropdown
         self.fields['desig_id'].queryset = Designation.objects.none()

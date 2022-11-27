@@ -76,5 +76,4 @@ jobs:
           POSTGRES_PORT: 5432
         run: |
           . venv/bin/activate
-          python manage.py migrate
           python manage.py test

@@ -1,7 +1,11 @@
 from django.db.models.signals import post_save
+from django.db.utils import OperationalError
 from hardware.models import Laptop, HardwareAppSettings
 
-hardware_id_prefix = HardwareAppSettings.objects.get(id=1).laptop_hardware_id_prefix
+try:
+    hardware_id_prefix = HardwareAppSettings.objects.get(id=1).laptop_hardware_id_prefix
+except OperationalError:
+    hardware_id_prefix = "LAPTOP"
 
 def createHardwareID(sender, instance, created, **kwargs):
     
