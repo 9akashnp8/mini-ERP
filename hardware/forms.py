@@ -48,12 +48,19 @@ class LaptopForm(ModelForm):
         super().__init__(*args, **kwargs)
 
         # Set choices to be from the same set it Hardware Settings.
-        hardware_settings = HardwareAppSettings.objects.get(id=1)
-        self.fields['screen_size'].choices = string_to_choice_tuple(hardware_settings.laptop_screen_sizes)
-        self.fields['laptop_rental_vendor'].choices = string_to_choice_tuple(hardware_settings.laptop_rental_vendors)
-        self.fields['processor'].initial = hardware_settings.laptop_default_processor
-        self.fields['ram_capacity'].initial = hardware_settings.laptop_default_ram
-        self.fields['storage_capacity'].initial = hardware_settings.laptop_default_storage
+        try:
+            hardware_settings = HardwareAppSettings.objects.get(id=1)
+            self.fields['screen_size'].choices = string_to_choice_tuple(hardware_settings.laptop_screen_sizes)
+            self.fields['laptop_rental_vendor'].choices = string_to_choice_tuple(hardware_settings.laptop_rental_vendors)
+            self.fields['processor'].initial = hardware_settings.laptop_default_processor
+            self.fields['ram_capacity'].initial = hardware_settings.laptop_default_ram
+            self.fields['storage_capacity'].initial = hardware_settings.laptop_default_storage
+        except HardwareAppSettings.DoesNotExist:
+            self.fields['screen_size'].choices = (('14', '14 inch'), ('15', '15 inch'))
+            self.fields['laptop_rental_vendor'].choices = (('V1', 'Vendor 1'), ('V2', 'Vendor 2'))
+            self.fields['processor'].initial = 'i3 12th gen'
+            self.fields['ram_capacity'].initial = '8GB'
+            self.fields['storage_capacity'].initial = '512GB SSD'
 
         #Setting Custom class names for form field styling
         for key in self.fields:
