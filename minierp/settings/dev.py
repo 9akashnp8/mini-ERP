@@ -16,7 +16,7 @@ else:
             'NAME': 'postgres',
             'USER': 'postgres',
             'PASSWORD': 'postgres',
-            'HOST': 'postgres_db'
+            'HOST': 'test_db'
         }
     }
 
