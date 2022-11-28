@@ -3,7 +3,7 @@
         "model": "employee.employeeappsetting",
         "pk": 1,
         "fields": {
-            "org_emp_id_prefix": "Your Organization Name"
+            "org_emp_id_prefix": "ANP-EMP-"
         }
     }
 ]
