@@ -52,6 +52,12 @@ class Employee(models.Model):
         if self.emp_name == None:
             return "NAME IS NULL"
         return self.emp_name
+    
+    class Meta:
+        permissions = [
+            ('can_onboard_employee', 'Can process new employee onboarding'),
+            ('can_exit_employee', 'Can process employee exit')
+        ]
 
 class EmployeeAppSetting(models.Model):
     org_emp_id_prefix = models.CharField(max_length=10)

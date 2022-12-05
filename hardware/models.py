@@ -115,6 +115,11 @@ class Laptop(models.Model):
                     return f"{age_int} days"
         else:
             return "0 days"
+    
+    class Meta:
+        permissions = [
+            ('can_return_laptop', 'Can process laptop return requests')
+        ]
 
 
 def path_and_rename(instance, filename):
