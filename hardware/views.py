@@ -185,11 +185,7 @@ def laptop_return(request, pk):
 @permission_required('employee.can_onboard_employee', raise_exception=True)
 def generate_hardware_form(request, pk):
     type_of_form = request.GET.get('type', None)
-    if type_of_form == 'assign':
-        form_title = 'Hardware Assignment Form'
-    elif type_of_form == 'return':
-        form_title = 'Hardware Return Form'
-    else:
+    if not type_of_form:
         return HttpResponse("Type Query Param not present and/or is Invalid. Eg: laptop/123/form/?type=assign")
     laptop = Laptop.objects.get(pk=pk)
     try:
@@ -197,7 +193,7 @@ def generate_hardware_form(request, pk):
     except AttributeError:
         employee = None
     org_name = HardwareAppSetting.objects.get(id=1).organization_name
-    context = {'form_title': form_title, 'laptop': laptop, 'employee': employee, 'org_name': org_name}
+    context = {'type_of_form': type_of_form, 'laptop': laptop, 'employee': employee, 'org_name': org_name}
     return render(request, 'hardware/hardware_form.html', context)
 
 def search_results_for_laptop_assignment(request):
