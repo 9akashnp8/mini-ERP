@@ -67,7 +67,15 @@
             <td><a href="{% url 'employee' pk=employee.emp_id %}">{{employee.emp_name}}</a></td>
             <td>{{employee.loc_id}}</td>
             <td>{{employee.dept_id}}</td>
-            <td>{{employee.is_assigned}}</td>
+            {% if employee.laptop_set.exists %}
+              {% if employee.laptop_set.all|length == 1 %}
+                <td>{{employee.laptop_set.first.laptop_sr_no}}</td>
+              {% else %}
+                <td>{{employee.laptop_set.first.laptop_sr_no}}, <a href="{% url 'employee' employee.emp_id %}">more...</a> </td>
+              {% endif %}
+            {% else %}
+              <td>❌</td>
+            {% endif%}
           </tr>
           {% endfor %}
         </tbody>
