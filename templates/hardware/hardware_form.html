@@ -22,8 +22,14 @@
         </div>
         <div class="mr-52">
             <ul>
-                <li class="py-1">Assigned Date:</li>
-                <li class="py-1">Assigned By:</li>
+                <li class="py-1">Assigned Date: {% now "jS F Y" %}</li>
+                <li class="py-1">Assigned By:
+                    {% if request.user.first_name %} 
+                        {{request.user.first_name}} {{request.user.last_name}}
+                    {% else %}
+                        {{request.user.username}}
+                    {% endif %}
+                </li>
             </ul>
         </div>
     </div>
