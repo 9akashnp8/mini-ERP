@@ -3,6 +3,17 @@ from django.urls import reverse
 
 from employee.models import Department
 
+# Helpers
+def dynamic_invoice_storage_path(instance, filename):
+    """
+    Generate Dynamic Paths (and inturn bucket folders)
+    Based on Date of Payment for better organized
+    storage in S3 bucket.
+    """
+    YEAR = instance.payment_date.strftime('%Y')
+    MONTH = instance.payment_date.strftime('%B')
+    return f"{YEAR}/{MONTH}/{instance.invoice_no}-{filename}"
+
 # Create your models here.
 class Category(models.Model):
     category = models.CharField(max_length=50)
@@ -57,7 +68,7 @@ class Payment(models.Model):
     payment_status = models.CharField(max_length=10, choices=PAYMENT_STATUSES, default="Pending")
     amount = models.CharField(max_length=50, null=True, blank=True)
     invoice_no = models.CharField(max_length=150, null=True, blank=True)
-    invoice_doc = models.FileField(null=True, blank=True)
+    invoice_doc = models.FileField(null=True, blank=True, upload_to=dynamic_invoice_storage_path)
     invoice_date = models.DateField(null=True, blank=True)
     payment_date = models.DateField(null=True, blank=True)
     payment_mode = models.CharField(max_length=20, choices=PAYMENT_MODES, null=True, blank=True)

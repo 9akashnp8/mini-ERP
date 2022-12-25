@@ -5,7 +5,7 @@
   <div class="col-md-8">
     <h2>Payment Details</h2>
     <hr>
-    <form method="post" id="paymentForm" data-amount-url="{% url 'get_payment_amount' %}">
+    <form method="post" enctype="multipart/form-data" id="paymentForm" data-amount-url="{% url 'get_payment_amount' %}">
       {% csrf_token %}
         <div class="form-input">
             {% for field in form %}

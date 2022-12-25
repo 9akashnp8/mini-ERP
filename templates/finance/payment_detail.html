@@ -45,7 +45,7 @@
                 <div class="card-body">
                     <h5 class="card-title fw-bold">Transaction Info</h5>
                     <hr>
-                    <p>Invoice : {{payment.invoice_no}}</p>
+                    <p>Invoice : <a href="{% url 'payment_download' payment.id %}">{{payment.invoice_no}}</a></p>
                     <p>Invoice Date : {{payment.invoice_date}}</p>
                     <p>Date of Payment : {{payment.payment_date}}</p>
                     <p>Mode : {{payment.payment_mode}}</p>

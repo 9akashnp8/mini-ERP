@@ -8,6 +8,7 @@ urlpatterns = [
     path('payments/<int:pk>/', views.PaymentDetailView.as_view(), name='payment_detail'),
     path('payments/<int:pk>/edit', views.PaymentUpdateView.as_view(), name='payment_update'),
     path('payments/<int:pk>/delete', views.PaymentDeleteView.as_view(), name='payment_delete'),
+    path('payments/<int:pk>/download', views.download, name='payment_download'),
 
     path('services/', views.ServiceListView.as_view(), name='service_list'),
     path('services/<int:pk>/', views.ServiceDetailView.as_view(), name='service_detail'),
