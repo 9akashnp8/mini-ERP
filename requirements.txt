@@ -3,7 +3,10 @@ arabic-reshaper==2.1.4
 asgiref==3.5.2
 asn1crypto==1.5.1
 async-timeout==4.0.2
+backports.zoneinfo==0.2.1
 billiard==3.6.4.0
+boto3==1.26.37
+botocore==1.29.37
 cachetools==5.2.0
 celery==5.2.7
 certifi==2022.5.18.1
@@ -32,6 +35,7 @@ django-extensions==3.1.5
 django-filter==21.1
 django-import-export==2.8.0
 django-simple-history==3.0.0
+django-storages==1.13.2
 django-timezone-field==5.0
 djangorestframework==3.13.1
 djangorestframework-simplejwt==5.2.2
@@ -50,6 +54,7 @@ html5lib==1.1
 httplib2==0.20.4
 idna==3.3
 Jinja2==3.1.2
+jmespath==1.0.1
 jose==1.0.0
 kombu==5.2.4
 lxml==4.9.1
@@ -90,6 +95,7 @@ reportlab==3.6.12
 requests==2.27.1
 requests-oauthlib==1.3.1
 rsa==4.8
+s3transfer==0.6.0
 sendgrid==6.9.7
 six==1.16.0
 sqlparse==0.2.4
