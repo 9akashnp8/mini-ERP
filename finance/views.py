@@ -6,9 +6,8 @@ from django.urls import reverse_lazy
 from django.forms import DateInput
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 
-
 from finance.models import Payment, Service
-from finance.forms import CustomPaymentForm
+from finance.forms import CustomPaymentForm, CustomPaymentUpdateForm
 
 #Helpers
 def get_payment_amount(request):
@@ -36,7 +35,7 @@ class PaymentCreateView(PermissionRequiredMixin, CreateView):
 class PaymentUpdateView(PermissionRequiredMixin, UpdateView):
     permission_required = 'finance.change_payment'
     model = Payment
-    form_class = CustomPaymentForm
+    form_class = CustomPaymentUpdateForm
 
 class PaymentDeleteView(PermissionRequiredMixin, DeleteView):
     permission_required = 'finance.delete_payment'
