@@ -117,3 +117,16 @@ def service_payments_view(request, pk):
     payments = Payment.objects.filter(service=pk)
     context = {'payments': payments}
     return render(request, 'finance/payment_list.html', context)
+
+@login_required(login_url='login')
+@permission_required('finance.change_payment')
+def download(request, pk):
+    payment = Payment.objects.get(id=pk)
+    doc = payment.invoice_doc
+    try:
+        response = HttpResponse(doc, headers={
+            'Content-Disposition': f'attachment; filename={doc.name}'
+        })
+    except ValueError:
+        response = HttpResponse("No File linked to this Payment. You must attach/upload the file for it to be downloadable.")
+    return response
