@@ -7,7 +7,7 @@ from django.forms import DateInput
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 
 from finance.models import Payment, Service
-from finance.forms import CustomPaymentForm, CustomPaymentUpdateForm
+from finance.forms import CustomPaymentForm
 
 #Helpers
 def get_payment_amount(request):
@@ -35,7 +35,7 @@ class PaymentCreateView(PermissionRequiredMixin, CreateView):
 class PaymentUpdateView(PermissionRequiredMixin, UpdateView):
     permission_required = 'finance.change_payment'
     model = Payment
-    form_class = CustomPaymentUpdateForm
+    form_class = CustomPaymentForm
 
 class PaymentDeleteView(PermissionRequiredMixin, DeleteView):
     permission_required = 'finance.delete_payment'

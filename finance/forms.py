@@ -74,12 +74,3 @@ class CustomPaymentForm(forms.ModelForm):
         if commit:
             instance.save()
         return instance
-
-class CustomPaymentUpdateForm(CustomPaymentForm):
-    """
-    Form with the invoice_doc field excluded
-    """
-    class Meta:
-        model = Payment
-        exclude = ['invoice_doc']
-        
