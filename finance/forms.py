@@ -2,6 +2,7 @@ import datetime
 
 from django import forms
 from django.forms import DateInput
+from django.core.exceptions import ValidationError
 
 from finance.models import Payment
 from finance.tasks import payment_mail
@@ -74,12 +75,19 @@ class CustomPaymentForm(forms.ModelForm):
         if commit:
             instance.save()
         return instance
-
-class CustomPaymentUpdateForm(CustomPaymentForm):
-    """
-    Form with the invoice_doc field excluded
-    """
-    class Meta:
-        model = Payment
-        exclude = ['invoice_doc']
-        
+    
+    def clean(self):
+        """
+        If payment is paid, ensure payment related fields are submitted
+        i.e., payment_date, payment_mode, inovice_doc etc.
+        """
+        cleaned_data = super().clean()
+        is_paid = cleaned_data.get('payment_status', False)
+        if is_paid and (
+            not cleaned_data['invoice_no'] or not cleaned_data['invoice_doc']
+            or not cleaned_data['invoice_date'] or not cleaned_data['payment_date']
+            or not cleaned_data['payment_mode'] or not cleaned_data['card_no']
+        ):
+            raise ValidationError(
+                "Please enter/attach all payment related information if the payment is 'Paid'"
+            )
