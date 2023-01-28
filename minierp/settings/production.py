@@ -1,5 +1,8 @@
 from .defaults import *
 
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 DEBUG = False
 
 ALLOWED_HOSTS = ['erp.lakshyaca.com', 'www.erp.lakshyaca.com', 'localhost', '127.0.0.1']
@@ -49,3 +52,12 @@ LOGGING = {
         }
     }
 }
+
+sentry_sdk.init(
+    dsn=env.str('SENTRY_DSN'),
+    integrations=[
+        DjangoIntegration(),
+    ],
+    traces_sample_rate=1.0,
+    send_default_pii=True
+)
