@@ -7,45 +7,21 @@
     <hr>
     <form enctype="multipart/form-data" method="POST">
       {% csrf_token %}
-      {% if number_of_laptops == ">1" %}
+      <div class="input-item">
+        <p class="label">Returning Laptop:</p>
+        {{return_form.returning_laptop}}
+      </div>
+      <br>
+      <div class="form-input">
         <div class="input-item">
-          <p class="label">Returning Laptop:</p>
-          <select name="returning_laptop" id="returning_laptop" class="return-form-fields">
-            {% for lap in laptop_assigned %}
-            <option value="{{lap.id}}">{{lap.hardware_id}} | {{lap.laptop_sr_no}}</option>
-            {% endfor %}
-          </select>
+          <div class="label">{{return_form.laptop_date_returned.label}}</div> 
+          {{return_form.laptop_date_returned}}
         </div>
-        <br>
-        <div class="form-input">
-          {% for field in return_form %}
-          <div class="input-item">
-            <div class="label">{{field.label}}</div> 
-            {{field}}
-          </div>
-          {% endfor %}
+        <div class="input-item">
+          <div class="label">{{return_form.laptop_return_remarks.label}}</div> 
+          {{return_form.laptop_return_remarks}}
         </div>
-      {% elif number_of_laptops == "1" %}
-        <div>
-          <p class="label">Returning Laptop:</p>
-          <ul class="list-group">
-            <li class="list-group-item">
-              <a href="{% url 'laptop' laptop_assigned.id %}">{{ laptop_assigned.hardware_id }} | {{ laptop_assigned.laptop_sr_no }}</a>
-            </li>
-          </ul>
-        </div>
-        <br>
-        <div class="form-input">
-          {% for field in return_form %}
-          <div class="input-item">
-            <div class="label">{{field.label}}</div> 
-            {{field}}
-          </div>
-          {% endfor %}
-        </div>
-      {% else %}
-      <h5>ERROR: number of laptops out of range</h5>
-      {% endif %}
+      </div>
       <br>
       <input type="submit" name="Submit" class="btn btn-success"></input>
     </form>
