@@ -1,23 +1,28 @@
 from django.urls import path, include
-from .views import *
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
+from .views import (
+    employee,
+    hardware,
+    finance
+)
 
 from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
 
 # Employee routes
-router.register(r'employee', EmployeeViewSet, basename='employee')
-router.register(r'department', DepartmentViewSet, basename='department')
-router.register(r'designation', DesignationViewSet, basename='designation')
-router.register(r'location', LocationViewSet, basename='location')
+router.register(r'employee',  employee.EmployeeViewSet, basename='employee')
+router.register(r'department', employee.DepartmentViewSet, basename='department')
+router.register(r'designation', employee.DesignationViewSet, basename='designation')
+router.register(r'location', employee.LocationViewSet, basename='location')
 
 # Hardware routes
-router.register(r'laptop', LaptopViewSet, basename='laptop')
-router.register(r'laptop-brand', LaptopBrandViewSet, basename='laptop-brand')
-router.register(r'building', BuildingViewSet, basename='building')
+router.register(r'laptop', hardware.LaptopViewSet, basename='laptop')
+router.register(r'laptop-brand', hardware.LaptopBrandViewSet, basename='laptop-brand')
+router.register(r'building', hardware.BuildingViewSet, basename='building')
 
 # Finance routes
-router.register(r'payment', PaymentViewSet, basename='payment')
+router.register(r'payment', finance.PaymentViewSet, basename='payment')
 
 
 urlpatterns = [
