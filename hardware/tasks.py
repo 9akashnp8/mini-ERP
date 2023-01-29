@@ -26,7 +26,7 @@ def laptop_assigned_notif(emp_id, emp_name, laptop_hardware_id, laptop_serial_nu
         'dated': datetime.today()
     }
     MESSAGE = render_to_string('hardware/laptops/laptop_assign_return_replace_notif_mail.html', context)
-    FROM = 'notifications.miniERP@gmail.com'
+    FROM = 'notification.minierp@gmail.com'
     send_mail(SUBJECT, MESSAGE, FROM, env.list("EMAIL_RECIPIENTS"), fail_silently=True, html_message=MESSAGE)
 
 @shared_task
@@ -44,7 +44,7 @@ def laptop_returned_notif(emp_id, emp_name, laptop_hardware_id, laptop_serial_nu
         'dated': datetime.today()
     }
     MESSAGE = render_to_string('hardware/laptops/laptop_assign_return_replace_notif_mail.html', context)
-    FROM = 'notifications.miniERP@gmail.com'
+    FROM = 'notification.minierp@gmail.com'
     send_mail(SUBJECT, MESSAGE, FROM, env.list("EMAIL_RECIPIENTS"), fail_silently=True, html_message=MESSAGE)
 
 @shared_task
@@ -61,7 +61,7 @@ def laptop_add_notif(laptop_id):
         'dated': datetime.today()
     }
     MESSAGE = render_to_string('hardware/laptops/laptop_add_mail.html', context)
-    FROM = 'notifications.miniERP@gmail.com'
+    FROM = 'notification.minierp@gmail.com'
     send_mail(SUBJECT, MESSAGE, FROM, env.list("EMAIL_RECIPIENTS"), fail_silently=True, html_message=MESSAGE)
 
     
