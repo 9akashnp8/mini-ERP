@@ -1,4 +1,5 @@
-from django.forms import DateInput, ModelForm, ChoiceField, CharField
+from django.forms import DateInput, ModelForm, ChoiceField, CharField, Textarea
+from django import forms
 
 from hardware.models import Laptop, HardwareAppSetting
 from employee.models import Employee
@@ -69,58 +70,27 @@ class LaptopForm(ModelForm):
         #Placeholder text for Hardware ID
         self.fields['hardware_id'].widget.attrs.update({'placeholder': 'Hardware ID is auto-generated.'}) 
 
-class LaptopReturnForm(ModelForm):
+class LaptopReturnForm(forms.Form):
+    laptop_date_returned = forms.DateField(
+        widget=DateInput(
+            attrs={'type':'date'}
+        )
+    )
+    laptop_return_remarks = forms.CharField(
+        max_length=200,
+        widget=Textarea(
+            attrs={'rows': '5', 'cols': '2'}
+        )
+    )
+    returning_laptop = forms.ChoiceField()
 
-    class Meta:
-        model = Laptop
-        fields = ['laptop_date_returned', 'laptop_return_remarks',]
-        widgets = {
-            'laptop_date_returned': DateInput(attrs={'type':'date'})
-        }
-        labels = {
-            'laptop_date_returned': 'Returning Date',
-            'laptop_return_remarks': 'Remarks'
-        }
-    
     def __init__(self, *args, **kwargs):
-
-        self.returning = None
-
-        super(LaptopReturnForm, self).__init__(*args, **kwargs)
-
+        super().__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].widget.attrs.update({'class': 'return-form-fields form-fields'})
             self.fields[field].required = True
-    
-    def save(self, *args, **kwargs):
-
-        self.returning = kwargs.pop('returning', None)
-        if self.returning:
-
-            count_of_laptops_assigned = Laptop.objects.filter(emp_id=self.instance.emp_id.emp_id).count()
-
-            if count_of_laptops_assigned > 1:
-
-                self.instance.emp_id = None
-                self.instance.save()
-            
-            elif count_of_laptops_assigned == 1:
-                        
-                employee = Employee.objects.get(emp_id=self.instance.emp_id.emp_id)
-                employee.is_assigned = False
-                employee.save()
-                
-                self.instance.emp_id = None
-                self.instance.save()
-
-            else:
-                
-                pass
-        
-        return super(LaptopReturnForm, self).save(*args, **kwargs)
 
 class HardwareAppSettingsForm(ModelForm):
-
     class Meta:
         model = HardwareAppSetting
         fields = '__all__'
