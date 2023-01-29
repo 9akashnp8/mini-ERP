@@ -6,7 +6,11 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 
 from .models import Laptop, Hardware, Building, HardwareAppSetting
-from .forms import LaptopForm, LaptopReturnForm, HardwareAppSettingsForm
+from .forms import (
+    LaptopForm,
+    LaptopReturnForm,
+    HardwareAppSettingsForm,
+)
 from .filters import LaptopFilter
 from employee.models import Employee
 from .tasks import laptop_add_notif, laptop_returned_notif
@@ -117,38 +121,35 @@ def laptop_return(request, pk):
 
     today = date.today()
     employee_info = Employee.objects.get(emp_id=pk)
-    hardware_type = Hardware._meta.get_field('hardware_id').remote_field.model.__name__
     assign_new = request.session['assign_new']
     exit_condition = request.session['exit_condition']
-
-    try:
-        laptop_assigned = Laptop.objects.get(emp_id=pk)
-        number_of_laptops = "1"
-    except Laptop.MultipleObjectsReturned:
-        number_of_laptops = ">1"
-        laptop_assigned = Laptop.objects.filter(emp_id=pk)
-    except Exception as e:
-        return HttpResponse(e)
+    laptop_assigned = Laptop.objects.filter(emp_id=pk)
     
     form = LaptopReturnForm(
-        initial={
-            'laptop_date_returned': today.strftime("%b %d, %Y")
-        }
+        initial={'laptop_date_returned': today.strftime("%b %d, %Y")}
     )
+    form.fields['returning_laptop'].choices = [
+        (laptop.id, f"{laptop.hardware_id} | {laptop.laptop_sr_no}") for laptop in laptop_assigned
+    ]
 
     if request.method == "POST":
-        
         form = LaptopReturnForm(
             request.POST,
             initial={
                 'laptop_date_returned': today.strftime("%b %d, %Y")
             },
-            instance=laptop_assigned
         )
+        form.fields['returning_laptop'].choices = [
+            (laptop.id, f"{laptop.hardware_id} | {laptop.laptop_sr_no}") for laptop in laptop_assigned
+        ]
 
         if form.is_valid():
+            returning_laptop = Laptop.objects.get(id=int(form.cleaned_data['returning_laptop']))
+            returning_laptop.laptop_date_returned = form.cleaned_data['laptop_date_returned']
+            returning_laptop.laptop_return_remarks = form.cleaned_data['laptop_return_remarks']
+            returning_laptop.emp_id = None
+            returning_laptop.save()
 
-            returning_laptop = form.save(returning=True)
             messages.info(request, f"Laptop Return for {employee_info.emp_name} Complete.")
 
             laptop_returned_notif.delay(
@@ -164,7 +165,6 @@ def laptop_return(request, pk):
             if assign_new == 'true':
                 return redirect('onbrd_hw_assign', employee_info.emp_id)
             elif assign_new == 'false':
-
                 if exit_condition == 'true':
                     employee_info.emp_status = "InActive"
                     employee_info.save()
@@ -176,9 +176,11 @@ def laptop_return(request, pk):
             else:
                 return HttpResponse("'Assign New' condition not found")
     
-    context = {'employee_info':employee_info, 'hardware_type':hardware_type,
-    'laptop_assigned':laptop_assigned, 'number_of_laptops':number_of_laptops, 
-    'return_form': form}
+    context = {
+        'employee_info':employee_info,
+        'laptop_assigned':laptop_assigned,
+        'return_form': form
+    }
     return render(request, 'hardware/replace/replace_confirm.html', context)
 
 @login_required(login_url='login')
