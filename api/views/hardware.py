@@ -1,4 +1,10 @@
+from datetime import datetime
+
 from rest_framework import viewsets
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+from django.db.models import Count
 
 from hardware.models import (
     Laptop,
@@ -22,3 +28,76 @@ class LaptopBrandViewSet(viewsets.ModelViewSet):
 class BuildingViewSet(viewsets.ModelViewSet):
     queryset = Building.objects.all()
     serializer_class = BuildingSerializer
+
+# Chart APIs
+class LaptopChartAPI(APIView):
+    def get(self, request):
+        response = {
+            "laptop_status": {
+                "labels": [],
+                "datasets": [{
+                    "label": "# of Laptops",
+                    "data": []
+                }]
+            },
+            "laptop_branch": {
+                "labels": [],
+                "datasets": [{
+                    "label": "# of Laptops",
+                    "data": []
+                }]
+            },
+            "laptop_availability": {
+                "labels": [],
+                "datasets": [{
+                    "label": "# of Laptops",
+                    "data": []
+                }]
+            },
+            "laptop_age": {
+                "labels": [],
+                "datasets": [{
+                    "label": "# of Laptops",
+                    "data": []
+                }]
+            }
+        }
+        laptop_status_data = Laptop.objects.values('laptop_status').annotate(total=Count('id'))
+        for data in laptop_status_data:
+            response['laptop_status']['labels'].append(data['laptop_status'])
+            response['laptop_status']['datasets'][0]['data'].append(data['total'])
+        
+        laptop_branch_data = Laptop.objects.values('laptop_branch__location').annotate(total=Count('id'))
+        for data in laptop_branch_data:
+            response['laptop_branch']['labels'].append(data['laptop_branch__location'])
+            response['laptop_branch']['datasets'][0]['data'].append(data['total'])
+        
+        laptop_assigned_data = Laptop.objects.values('emp_id').annotate(
+            total=Count('id'), assigned=Count('id', filter=Q(emp_id__isnull=False))
+        ).values('total', 'assigned')
+        response['laptop_availability']['labels'] = list(laptop_assigned_data[0].keys())
+        response['laptop_availability']['datasets'][0]['data'] = list(laptop_assigned_data[0].values())
+
+        current_year = datetime.now().year
+        three_years_before = current_year - 3
+        five_years_before = current_year - 5
+        all_laptops = Laptop.objects.all()
+        laptops_less_than_year = all_laptops.filter(
+            laptop_date_purchased__year=current_year # = 2023
+        ).count()
+        laptops_between_year_and_three = all_laptops.filter(
+            laptop_date_purchased__year__gte=three_years_before,
+            laptop_date_purchased__year__lt=current_year
+        ).count()
+        laptops_between_three_and_five = all_laptops.filter(
+            laptop_date_purchased__year__gte=five_years_before,
+            laptop_date_purchased__year__lt=three_years_before
+        ).count()
+        laptops_greater_than_five = all_laptops.filter(
+            laptop_date_purchased__year__lt=five_years_before
+        ).count()
+        response['laptop_age']['labels'] = ['< 1Y', '1-3Y', '3-5Y', '>5Y']
+        response['laptop_age']['datasets'][0]['data'] = [
+            laptops_less_than_year, laptops_between_year_and_three, laptops_between_three_and_five, laptops_greater_than_five
+        ]
+        return Response(response)
