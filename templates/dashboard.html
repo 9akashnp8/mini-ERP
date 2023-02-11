@@ -1,14 +1,73 @@
 {% extends 'main.html' %}
 {% block content %}
-<div class="text-center dashboard-jumbotron">
-    <h1 class="display-5 fw-bold">Welcome to miniERP</h1>
-    <div class="col-lg-6 mx-auto">
-      <p class="lead mb-4">Departmental Operations made easy.</p>
-      <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-        <a href="{% url 'dash_employees' %}" class="btn btn-primary btn-lg px-4 gap-3">Employees</a>
-        <a href="{% url 'dash_laptops' %}" class="btn btn-primary btn-lg px-4 gap-3">Hardware</a>
-        <a href="{% url 'service_list' %}" class="btn btn-primary btn-lg px-4 gap-3">Finance</a>
+<div class="container px-2">
+  <div class="pt-5">
+    <div class="text-center">
+      <h1 class="display-5 fw-bold">Welcome to miniERP</h1>
+    <div>
+  </div>
+  </div>
+  <div class="laptop-section">
+    <!-- Title and CTA -->
+    <div class="d-flex pt-3">
+      <div class="me-auto px-2 bd-highlight">
+        <h2>Laptops</h2>
+      </div>
+      <div class="px-2 bd-highlight">
+        <p>
+          <a class="btn btn-primary" href="{% url 'dash_laptops' %}">
+            View All <i class="bi bi-box-arrow-up-right"></i>
+          </a>
+        </p>
       </div>
     </div>
+
+    <!-- Charts -->
+    <div class="d-flex p-2">
+        <div class="flex-fill border" style="width: 250px;">
+            <canvas id="laptopByStatus"></canvas>
+        </div>
+        <div class="flex-fill border" style="width: 250px;">
+            <canvas id="laptopByBranch"></canvas>
+        </div>
+        <div class="flex-fill border" style="width: 250px;">
+            <canvas id="laptopByAvailability"></canvas>
+        </div>
+        <div class="flex-fill border" style="width: 250px;">
+            <canvas id="laptopByAage"></canvas>
+        </div>
+    </div>
+  </div>
 </div>
+
 {% endblock %}
+
+{% block js %}
+<script>
+    let laptopByStatus = createChartWithData(
+        "{% url 'general_laptop_chart_url' %}",
+        "laptopByStatus",
+        "laptop_status",
+        "Laptop Condition"
+    );
+    let laptopByBranch = createChartWithData(
+        "{% url 'general_laptop_chart_url' %}",
+        "laptopByBranch",
+        "laptop_branch",
+        "Laptop Branchwise"
+    );
+    let laptopByAvailability = createChartWithData(
+        "{% url 'general_laptop_chart_url' %}",
+        "laptopByAvailability",
+        "laptop_availability",
+        "Laptop Availability"
+    );
+    let laptopByAage = createChartWithData(
+        "{% url 'general_laptop_chart_url' %}",
+        "laptopByAage",
+        "laptop_age",
+        "Laptop Age"
+    );
+</script>
+
+{% endblock js%}
