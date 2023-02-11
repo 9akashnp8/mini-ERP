@@ -4,7 +4,7 @@ from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from django.db.models import Count
+from django.db.models import Count, Q
 
 from hardware.models import (
     Laptop,
