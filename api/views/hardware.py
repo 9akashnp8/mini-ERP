@@ -72,11 +72,12 @@ class LaptopChartAPI(APIView):
             response['laptop_branch']['labels'].append(data['laptop_branch__location'])
             response['laptop_branch']['datasets'][0]['data'].append(data['total'])
         
-        laptop_assigned_data = Laptop.objects.values('emp_id').annotate(
-            total=Count('id'), assigned=Count('id', filter=Q(emp_id__isnull=False))
-        ).values('total', 'assigned')
-        response['laptop_availability']['labels'] = list(laptop_assigned_data[0].keys())
-        response['laptop_availability']['datasets'][0]['data'] = list(laptop_assigned_data[0].values())
+        laptop_assigned_data = Laptop.objects.aggregate(
+            unassigned=Count('id', filter=Q(emp_id__isnull=True)),
+            assigned=Count('id', filter=Q(emp_id__isnull=False))
+        )
+        response['laptop_availability']['labels'] = list(laptop_assigned_data.keys())
+        response['laptop_availability']['datasets'][0]['data'] = list(laptop_assigned_data.values())
 
         current_year = datetime.now().year
         three_years_before = current_year - 3
