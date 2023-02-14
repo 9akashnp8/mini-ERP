@@ -25,6 +25,7 @@ urlpatterns = [
     #General Views
     path('login/', views.loginPage, name='login'),
     path('logout/', views.logoutPage, name='logout'),
+    path('admin-panel/', views.admin_panel, name='admin_panel'),
     path('', views.home, name='home'),
 
     #App Views

@@ -1,0 +1,21 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<div class="container px-4">
+    <div class="me-auto py-3 bd-highlight">
+        <h2>Admin Panel</h2>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item d-flex align-items-center gap-3">
+            <span class="flex-grow-1">Departments</span>
+            <a href="#" class="btn btn-primary">View All</a>
+            <a href="#" class="btn btn-primary">Create</a>
+        </li>
+        <li class="list-group-item d-flex align-items-center gap-3">
+            <span class="flex-grow-1">Designations</span>
+            <a href="#" class="btn btn-primary">View All</a>
+            <a href="#" class="btn btn-primary">Create</a>
+        </li>
+    </ul>
+</div>
+{% endblock content %}
