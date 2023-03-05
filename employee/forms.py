@@ -2,7 +2,7 @@ from django.forms import ModelForm, DateInput, ValidationError
 from django.contrib.auth.models import User
 from django.db.utils import OperationalError
 
-from .models import Employee, Designation, EmployeeAppSetting
+from .models import Employee, Department, Designation, EmployeeAppSetting
 from hardware.forms import HardwareAppSettingsForm
 
 class EmployeeForm(ModelForm):
@@ -62,7 +62,7 @@ class EmployeeForm(ModelForm):
             if User.objects.filter(email=email).exists():
                 raise ValidationError("Email ID is already being used for an ERP User. Please use another email")
 
-class EmployeeAppSettingsForm(HardwareAppSettingsForm):
+class EmployeeAppSettingsForm(ModelForm):
     class Meta:
         model = EmployeeAppSetting
         fields = '__all__'
