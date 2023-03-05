@@ -6,12 +6,13 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from django.views.generic import FormView
 
-from .models import Laptop, Hardware, Building, HardwareAppSetting
+from .models import Laptop, Hardware, Building, LaptopBrand, HardwareAppSetting
 from .forms import (
     LaptopForm,
     LaptopReturnForm,
     HardwareAppSettingsForm,
-    BuildingForm
+    BuildingForm,
+    BrandForm
 )
 from .filters import LaptopFilter
 from employee.models import Employee
@@ -277,6 +278,22 @@ class BuildingListCreateView(FormView):
 
     def get_success_url(self) -> str:
         return reverse('building_list_create')
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+
+class BrandListCreateView(FormView):
+    form_class = BrandForm
+    template_name = 'hardware/admin_panel/brands.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['brands'] = LaptopBrand.objects.all()
+        return context
+
+    def get_success_url(self) -> str:
+        return reverse('brand_list_create')
 
     def form_valid(self, form):
         form.save()
