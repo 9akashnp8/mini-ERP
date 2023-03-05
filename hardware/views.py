@@ -4,12 +4,14 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import messages
 from django.core.paginator import Paginator
+from django.views.generic import FormView
 
 from .models import Laptop, Hardware, Building, HardwareAppSetting
 from .forms import (
     LaptopForm,
     LaptopReturnForm,
     HardwareAppSettingsForm,
+    BuildingForm
 )
 from .filters import LaptopFilter
 from employee.models import Employee
@@ -262,3 +264,20 @@ def hardware_app_settings(request):
             return redirect(hardware_app_settings)
     context = { 'form': form }
     return render(request, 'settings.html', context)
+
+# Admin Panel Views
+class BuildingListCreateView(FormView):
+    form_class = BuildingForm
+    template_name = 'hardware/admin_panel/buildings.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['buildings'] = Building.objects.all()
+        return context
+
+    def get_success_url(self) -> str:
+        return reverse('building_list_create')
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
