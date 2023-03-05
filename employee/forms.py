@@ -66,4 +66,23 @@ class EmployeeAppSettingsForm(ModelForm):
     class Meta:
         model = EmployeeAppSetting
         fields = '__all__'
-        labels = {}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for key in self.fields:
+            self.fields[key].widget.attrs.update({'class': 'laptop-form-fields form-fields'})
+
+class DepartmentForm(ModelForm):
+    class Meta:
+        model = Department
+        fields = ['dept_name']
+
+    def clean_dept_name(self):
+        dept_name = self.cleaned_data['dept_name']
+        if Department.objects.filter(dept_name__iexact=dept_name).exists():
+            raise ValidationError(
+                ('Department with name "%(dept_name)s" already exists.'),
+                code='invalid',
+                params={'dept_name': dept_name},
+            )
+        return dept_name
