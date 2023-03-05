@@ -86,3 +86,19 @@ class DepartmentForm(ModelForm):
                 params={'dept_name': dept_name},
             )
         return dept_name
+
+class DesignationForm(ModelForm):
+    class Meta:
+        model = Designation
+        fields = ['dept_id', 'designation']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        department = cleaned_data.get('dept_id')
+        designation = cleaned_data.get('designation')
+        if Designation.objects.filter(dept_id=department, designation=designation).exists():
+            raise ValidationError(
+                ('Designation "%(designation)s" under "%(department)s" already exists.'),
+                code='invalid',
+                params={'designation': designation, 'department': department},
+            )

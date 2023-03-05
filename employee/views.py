@@ -10,7 +10,7 @@ from django.db.utils import OperationalError
 from django.views.generic import ListView, CreateView, FormView
 
 from employee.filters import EmployeeFilter, ExitEmployeeFilter
-from employee.forms import EmployeeForm, EmployeeAppSettingsForm, DepartmentForm
+from employee.forms import EmployeeForm, EmployeeAppSettingsForm, DepartmentForm, DesignationForm
 from .models import Employee, Department, Designation, EmployeeAppSetting
 from .tasks import employee_add_email
 from hardware.models import Laptop, Building, Hardware
@@ -284,6 +284,22 @@ class DepartmentListCreateView(FormView):
 
     def get_success_url(self) -> str:
         return reverse('department_list_create')
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+
+class DesignationListCreateView(FormView):
+    form_class = DesignationForm
+    template_name = 'employee/admin_panel/designations.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['designations'] = Designation.objects.all()
+        return context
+
+    def get_success_url(self) -> str:
+        return reverse('designation_list_create')
 
     def form_valid(self, form):
         form.save()
