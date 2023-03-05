@@ -10,8 +10,8 @@ from django.db.utils import OperationalError
 from django.views.generic import ListView, CreateView, FormView
 
 from employee.filters import EmployeeFilter, ExitEmployeeFilter
-from employee.forms import EmployeeForm, EmployeeAppSettingsForm, DepartmentForm, DesignationForm
-from .models import Employee, Department, Designation, EmployeeAppSetting
+from employee.forms import EmployeeForm, EmployeeAppSettingsForm, DepartmentForm, DesignationForm, LocationForm
+from .models import Employee, Department, Designation, Location, EmployeeAppSetting
 from .tasks import employee_add_email
 from hardware.models import Laptop, Building, Hardware
 from hardware.tasks import laptop_assigned_notif
@@ -300,6 +300,22 @@ class DesignationListCreateView(FormView):
 
     def get_success_url(self) -> str:
         return reverse('designation_list_create')
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+
+class LocationListCreateView(FormView):
+    form_class = LocationForm
+    template_name = 'employee/admin_panel/locations.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['locations'] = Location.objects.all()
+        return context
+
+    def get_success_url(self) -> str:
+        return reverse('location_list_create')
 
     def form_valid(self, form):
         form.save()

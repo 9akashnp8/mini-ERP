@@ -2,7 +2,7 @@ from django.forms import ModelForm, DateInput, ValidationError
 from django.contrib.auth.models import User
 from django.db.utils import OperationalError
 
-from .models import Employee, Department, Designation, EmployeeAppSetting
+from .models import Employee, Department, Designation, Location, EmployeeAppSetting
 from hardware.forms import HardwareAppSettingsForm
 
 class EmployeeForm(ModelForm):
@@ -102,3 +102,18 @@ class DesignationForm(ModelForm):
                 code='invalid',
                 params={'designation': designation, 'department': department},
             )
+
+class LocationForm(ModelForm):
+    class Meta:
+        model = Location
+        fields = ['location']
+
+    def clean_location(self):
+        location = self.cleaned_data['location']
+        if Location.objects.filter(location__iexact=location).exists():
+            raise ValidationError(
+                ('Location with name "%(location)s" already exists.'),
+                code='invalid',
+                params={'location': location},
+            )
+        return location

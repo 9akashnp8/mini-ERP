@@ -18,7 +18,7 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 from . import views
-from employee.views import DepartmentListCreateView, DesignationListCreateView
+from employee.views import DepartmentListCreateView, DesignationListCreateView, LocationListCreateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,6 +29,7 @@ urlpatterns = [
     path('admin-panel/', views.admin_panel, name='admin_panel'),
     path('admin-panel/department/', DepartmentListCreateView.as_view(), name='department_list_create'),
     path('admin-panel/designation/', DesignationListCreateView.as_view(), name='designation_list_create'),
+    path('admin-panel/location/', LocationListCreateView.as_view(), name='location_list_create'),
     path('', views.home, name='home'),
 
     #App Views
