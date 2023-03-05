@@ -1,0 +1,79 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<div class="container px-4">
+  <div class="d-flex py-3">
+    <div class="me-auto p-2 bd-highlight">
+      <h2>Buildings</h2>
+    </div>
+    <div class="p-2 bd-highlight">
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#departmentModal">
+        Create New
+      </button>
+    </div>
+  </div>
+  {% if messages %}
+    <br>
+    <div class="alert alert-success alert-dismissible" role="alert">
+        {% for message in messages %}
+          <div class="fw-bold">{{message}}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% if form.errors %}
+    <div class="alert alert-warning alert-dismissible" role="alert"> 
+        {% if form.non_field_errors %}
+            {{form.non_field_errors}}
+        {% endif %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                {{field.label}} : {{error|escape}}
+            {% endfor %}
+        {% endfor %}
+    </div>
+  {% endif %}
+
+  <!--Building List Table-->
+  <div class="card card-body">
+    <!-- Main Building Table -->
+    <table class="table table-stripped">
+        <thead>
+          <tr>
+            <th scope="col">Sl No.</th>
+            <th scope="col">Location</th>
+            <th scope="col">Building</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for building in buildings %}
+          <tr>
+            <td>{{building.id}}</td>
+            <td>{{building.location}}</td>
+            <td>{{building.building}}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+    </table>
+  </div>
+  <br>
+</div>
+
+<div class="modal fade" id="departmentModal" tabindex="-1" aria-labelledby="departmentModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="departmentModalLabel">Create Building</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="POST">
+          {% csrf_token %}
+          {{form.as_p}}
+          <button type="submit" class="btn btn-primary">Create</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

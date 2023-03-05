@@ -1,7 +1,7 @@
-from django.forms import DateInput, ModelForm, ChoiceField, CharField, Textarea
+from django.forms import DateInput, ModelForm, ChoiceField, CharField, Textarea, ValidationError
 from django import forms
 
-from hardware.models import Laptop, HardwareAppSetting
+from hardware.models import Laptop, HardwareAppSetting, Building, LaptopBrand
 from employee.models import Employee
 
 # Helpers
@@ -107,3 +107,34 @@ class HardwareAppSettingsForm(ModelForm):
         super(HardwareAppSettingsForm, self).__init__(*args, **kwargs)
         for key in self.fields:
             self.fields[key].widget.attrs.update({'class': 'laptop-form-fields form-fields'})
+
+class BuildingForm(ModelForm):
+    class Meta:
+        model = Building
+        fields = ['building', 'location']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        building = cleaned_data.get('building')
+        location = cleaned_data.get('location')
+        if Building.objects.filter(building=building, location=location).exists():
+            raise ValidationError(
+                ('Building "%(building)s" at "%(location)s" already exists.'),
+                code='invalid',
+                params={ 'building': building, 'location': location},
+            )
+
+class BrandForm(ModelForm):
+    class Meta:
+        model = LaptopBrand
+        fields = ['brand_name']
+
+    def clean_brand_name(self):
+        brand_name = self.cleaned_data['brand_name']
+        if LaptopBrand.objects.filter(brand_name__iexact=brand_name).exists():
+            raise ValidationError(
+                ('Laptop Brand with name "%(brand_name)s" already exists.'),
+                code='invalid',
+                params={'brand_name': brand_name},
+            )
+        return brand_name

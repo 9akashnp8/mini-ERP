@@ -1,0 +1,24 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<div class="container px-4">
+    <div class="me-auto py-3 bd-highlight">
+        <h2>Admin Panel</h2>
+    </div>
+    <div class="me-auto">
+        <h4>Employee App</h4>
+    </div>
+    <div class="list-group pb-3">
+        <a href="{% url 'department_list_create' %}" class="list-group-item list-group-item-action">Departments</a>
+        <a href="{% url 'designation_list_create' %}" class="list-group-item list-group-item-action">Designations</a>
+        <a href="{% url 'location_list_create' %}" class="list-group-item list-group-item-action">Locations</a>
+    </div>
+    <div class="me-auto">
+        <h4>Hardware App</h4>
+    </div>
+    <div class="list-group">
+        <a href="{% url 'building_list_create' %}" class="list-group-item list-group-item-action">Buildings</a>
+        <a href="{% url 'brand_list_create' %}" class="list-group-item list-group-item-action">Brands</a>
+    </div>
+</div>
+{% endblock content %}

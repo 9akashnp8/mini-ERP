@@ -29,3 +29,8 @@ def logoutPage(request):
 @login_required(login_url='login')
 def home(request):
     return render(request, 'dashboard.html')
+
+@login_required(login_url='login')
+def admin_panel(request):
+    return render(request, 'admin_panel_home.html')
+
