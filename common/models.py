@@ -25,6 +25,9 @@ class BaseSetting(models.Model):
 class EmployeeAppSetting(BaseSetting):
     emp_id_prefix = models.CharField(max_length=200)
 
+    def __str__(self) -> str:
+        return 'Employee App Setting'
+
 class HardwareAppSetting(BaseSetting):
     hardware_id_prefix = models.CharField(max_length=200)
     default_processor = models.CharField(max_length=30)
@@ -33,3 +36,6 @@ class HardwareAppSetting(BaseSetting):
     screen_sizes = models.CharField(max_length=100)
     rental_vendors = models.CharField(max_length=500)
     organization_name = models.CharField(max_length=100)
+
+    def __str__(self) -> str:
+        return 'Hardware App Setting'
