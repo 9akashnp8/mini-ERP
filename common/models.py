@@ -9,6 +9,7 @@ class BaseSetting(models.Model):
     def save(self, *args, **kwargs):
         self.pk = 1
         super().save(*args, **kwargs)
+        self.set_cache()
 
     def delete(self, *args, **kwargs):
         """
@@ -19,8 +20,14 @@ class BaseSetting(models.Model):
 
     @classmethod
     def load(cls):
-        obj, _ = cls.objects.get_or_create(pk=1)
-        return obj
+        if cache.get(cls.__name__) is None:
+            obj, created = cls.objects.get_or_create(pk=1)
+            if not created:
+                obj.set_cache()
+        return cache.get(cls.__name__)
+
+    def set_cache(self):
+        cache.set(self.__class__.__name__, self)
 
 class EmployeeAppSetting(BaseSetting):
     emp_id_prefix = models.CharField(max_length=200)
