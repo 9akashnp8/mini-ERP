@@ -2,6 +2,10 @@ from django.db import models
 from django.core.cache import cache
 from django.contrib.postgres.fields import ArrayField
 
+# Helpers
+def get_default_screen_sizes():
+    return ['14 inch, 15 inch']
+
 # Create your models here.
 class BaseSetting(models.Model):
 
@@ -67,7 +71,7 @@ class HardwareAppSetting(BaseSetting):
     )
     screen_sizes = ArrayField(
         base_field=models.CharField(max_length=255),
-        default=['14 inch, 15 inch']
+        default=get_default_screen_sizes
     )
     rental_vendors = ArrayField(
         base_field=models.CharField(max_length=255),
