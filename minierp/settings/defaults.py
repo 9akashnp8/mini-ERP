@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'hardware.apps.HardwareConfig',
     'employee.apps.EmployeeConfig',
     'finance',
+    'common',
     
     #3rd party
     'rest_framework',
