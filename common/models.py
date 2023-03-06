@@ -1,4 +1,6 @@
 from django.db import models
+from django.core.cache import cache
+from django.contrib.postgres.fields import ArrayField
 
 # Create your models here.
 class BaseSetting(models.Model):
@@ -30,19 +32,52 @@ class BaseSetting(models.Model):
         cache.set(self.__class__.__name__, self)
 
 class EmployeeAppSetting(BaseSetting):
-    emp_id_prefix = models.CharField(max_length=200)
+    emp_id_prefix = models.CharField(
+        max_length=255,
+        default='MYORG'
+    )
 
     def __str__(self) -> str:
         return 'Employee App Setting'
 
 class HardwareAppSetting(BaseSetting):
-    hardware_id_prefix = models.CharField(max_length=200)
-    default_processor = models.CharField(max_length=30)
-    default_ram = models.CharField(max_length=10)
-    default_storage = models.CharField(max_length=10)
-    screen_sizes = models.CharField(max_length=100)
-    rental_vendors = models.CharField(max_length=500)
-    organization_name = models.CharField(max_length=100)
+    hardware_id_prefix = models.CharField(
+        max_length=255,
+        default='LAP'
+    )
+    default_processor = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True
+    )
+    default_ram = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True
+    )
+    default_storage = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True
+    )
+    screen_sizes = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True
+    )
+    screen_sizes = ArrayField(
+        base_field=models.CharField(max_length=255),
+        default=['14 inch, 15 inch']
+    )
+    rental_vendors = ArrayField(
+        base_field=models.CharField(max_length=255),
+        blank=True,
+        null=True
+    )
+    organization_name = models.CharField(
+        max_length=255,
+        default='My Organization'
+    )
 
     def __str__(self) -> str:
         return 'Hardware App Setting'
