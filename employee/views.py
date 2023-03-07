@@ -8,6 +8,7 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.db.utils import OperationalError
 from django.views.generic import ListView, CreateView, FormView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from employee.filters import EmployeeFilter, ExitEmployeeFilter
 from employee.forms import EmployeeForm, EmployeeAppSettingsForm, DepartmentForm, DesignationForm, LocationForm
@@ -273,7 +274,7 @@ def employee_app_settings(request):
     return render(request, 'settings.html', context)
 
 # Admin Panel Views
-class DepartmentListCreateView(FormView):
+class DepartmentListCreateView(LoginRequiredMixin, FormView):
     form_class = DepartmentForm
     template_name = 'employee/admin_panel/departments.html'
 
@@ -289,7 +290,7 @@ class DepartmentListCreateView(FormView):
         form.save()
         return super().form_valid(form)
 
-class DesignationListCreateView(FormView):
+class DesignationListCreateView(LoginRequiredMixin, FormView):
     form_class = DesignationForm
     template_name = 'employee/admin_panel/designations.html'
 
@@ -305,7 +306,7 @@ class DesignationListCreateView(FormView):
         form.save()
         return super().form_valid(form)
 
-class LocationListCreateView(FormView):
+class LocationListCreateView(LoginRequiredMixin, FormView):
     form_class = LocationForm
     template_name = 'employee/admin_panel/locations.html'
 
