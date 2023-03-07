@@ -4,7 +4,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-from .decorators import unauthenticated_user
+from .decorators import (
+    unauthenticated_user,
+    allowed_admins
+)
 
 @unauthenticated_user
 def login_page(request):
@@ -32,6 +35,7 @@ def home(request):
     return render(request, 'dashboard.html')
 
 @login_required(login_url='login')
+@allowed_admins(allowed_admins=['employee-admin', 'hardware-admin', 'finance-admin'])
 def admin_panel(request):
     return render(request, 'common/admin_panel_home.html')
 
