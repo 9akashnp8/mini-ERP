@@ -11,6 +11,9 @@ from hardware.models import (
     LaptopBrand,
     Building
 )
+from hardware.functions import (
+    api_get_laptop_count_by_value
+)
 from api.serializers import (
     LaptopSerializer,
     LaptopBrandSerializer,
@@ -31,43 +34,45 @@ class BuildingViewSet(viewsets.ModelViewSet):
 
 # Chart APIs
 class LaptopChartAPI(APIView):
+    chart_label = '# of Laptops'
+
     def get(self, request):
         response = {
             "laptop_status": {
                 "labels": [],
                 "datasets": [{
-                    "label": "# of Laptops",
+                    "label": self.chart_label,
                     "data": []
                 }]
             },
             "laptop_branch": {
                 "labels": [],
                 "datasets": [{
-                    "label": "# of Laptops",
+                    "label": self.chart_label,
                     "data": []
                 }]
             },
             "laptop_availability": {
                 "labels": [],
                 "datasets": [{
-                    "label": "# of Laptops",
+                    "label": self.chart_label,
                     "data": []
                 }]
             },
             "laptop_age": {
                 "labels": [],
                 "datasets": [{
-                    "label": "# of Laptops",
+                    "label": self.chart_label,
                     "data": []
                 }]
             }
         }
-        laptop_status_data = Laptop.objects.values('laptop_status').annotate(total=Count('id'))
+        laptop_status_data = api_get_laptop_count_by_value(value='laptop_status')
         for data in laptop_status_data:
             response['laptop_status']['labels'].append(data['laptop_status'])
             response['laptop_status']['datasets'][0]['data'].append(data['total'])
         
-        laptop_branch_data = Laptop.objects.values('laptop_branch__location').annotate(total=Count('id'))
+        laptop_branch_data = api_get_laptop_count_by_value(value='laptop_branch__location')
         for data in laptop_branch_data:
             response['laptop_branch']['labels'].append(data['laptop_branch__location'])
             response['laptop_branch']['datasets'][0]['data'].append(data['total'])
