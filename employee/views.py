@@ -16,6 +16,7 @@ from .models import Employee, Department, Designation, Location, EmployeeAppSett
 from .tasks import employee_add_email
 from hardware.models import Laptop, Building, Hardware
 from hardware.tasks import laptop_assigned_notif
+from common.permissions import AllowedGroupsMixin
 
 from datetime import date
 from environs import Env
@@ -274,9 +275,10 @@ def employee_app_settings(request):
     return render(request, 'settings.html', context)
 
 # Admin Panel Views
-class DepartmentListCreateView(LoginRequiredMixin, FormView):
+class DepartmentListCreateView(AllowedGroupsMixin, FormView):
     form_class = DepartmentForm
     template_name = 'employee/admin_panel/departments.html'
+    allowed_groups = ['employee-admin', 'hardware-admin', 'finance-admin']
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -290,9 +292,10 @@ class DepartmentListCreateView(LoginRequiredMixin, FormView):
         form.save()
         return super().form_valid(form)
 
-class DesignationListCreateView(LoginRequiredMixin, FormView):
+class DesignationListCreateView(AllowedGroupsMixin, FormView):
     form_class = DesignationForm
     template_name = 'employee/admin_panel/designations.html'
+    allowed_groups = ['employee-admin', 'hardware-admin', 'finance-admin']
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -306,9 +309,10 @@ class DesignationListCreateView(LoginRequiredMixin, FormView):
         form.save()
         return super().form_valid(form)
 
-class LocationListCreateView(LoginRequiredMixin, FormView):
+class LocationListCreateView(AllowedGroupsMixin, FormView):
     form_class = LocationForm
     template_name = 'employee/admin_panel/locations.html'
+    allowed_groups = ['employee-admin', 'hardware-admin', 'finance-admin']
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
