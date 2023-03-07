@@ -1,4 +1,5 @@
 {% load static %}
+{% load auth_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -105,8 +106,10 @@
                                 <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{request.user}}</a>
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="#!"><i class="bi bi-person-circle"></i> Profile</a>
+                                    {% if request.user|has_group:"employee-admin" %}
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="{% url 'admin_panel' %}"><i class="bi bi-gear"></i> Admin Panel</a>
+                                    {% endif %}
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="{% url 'logout' %}"><i class="bi bi-box-arrow-in-left"></i> Log out</a>
                                 </div>

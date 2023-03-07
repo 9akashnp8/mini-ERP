@@ -18,6 +18,7 @@ from .filters import LaptopFilter
 from employee.models import Employee
 from .tasks import laptop_add_notif, laptop_returned_notif
 from employee.tasks import employee_exit_email
+from common.permissions import AllowedGroupsMixin
 
 from datetime import date
 from environs import Env
@@ -267,9 +268,10 @@ def hardware_app_settings(request):
     return render(request, 'settings.html', context)
 
 # Admin Panel Views
-class BuildingListCreateView(FormView):
+class BuildingListCreateView(AllowedGroupsMixin, FormView):
     form_class = BuildingForm
     template_name = 'hardware/admin_panel/buildings.html'
+    allowed_groups = ['employee-admin', 'hardware-admin', 'finance-admin']
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -283,9 +285,10 @@ class BuildingListCreateView(FormView):
         form.save()
         return super().form_valid(form)
 
-class BrandListCreateView(FormView):
+class BrandListCreateView(AllowedGroupsMixin, FormView):
     form_class = BrandForm
     template_name = 'hardware/admin_panel/brands.html'
+    allowed_groups = ['employee-admin', 'hardware-admin', 'finance-admin']
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

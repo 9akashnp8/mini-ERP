@@ -8,6 +8,7 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.db.utils import OperationalError
 from django.views.generic import ListView, CreateView, FormView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from employee.filters import EmployeeFilter, ExitEmployeeFilter
 from employee.forms import EmployeeForm, EmployeeAppSettingsForm, DepartmentForm, DesignationForm, LocationForm
@@ -15,6 +16,7 @@ from .models import Employee, Department, Designation, Location, EmployeeAppSett
 from .tasks import employee_add_email
 from hardware.models import Laptop, Building, Hardware
 from hardware.tasks import laptop_assigned_notif
+from common.permissions import AllowedGroupsMixin
 
 from datetime import date
 from environs import Env
@@ -273,9 +275,10 @@ def employee_app_settings(request):
     return render(request, 'settings.html', context)
 
 # Admin Panel Views
-class DepartmentListCreateView(FormView):
+class DepartmentListCreateView(AllowedGroupsMixin, FormView):
     form_class = DepartmentForm
     template_name = 'employee/admin_panel/departments.html'
+    allowed_groups = ['employee-admin', 'hardware-admin', 'finance-admin']
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -289,9 +292,10 @@ class DepartmentListCreateView(FormView):
         form.save()
         return super().form_valid(form)
 
-class DesignationListCreateView(FormView):
+class DesignationListCreateView(AllowedGroupsMixin, FormView):
     form_class = DesignationForm
     template_name = 'employee/admin_panel/designations.html'
+    allowed_groups = ['employee-admin', 'hardware-admin', 'finance-admin']
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -305,9 +309,10 @@ class DesignationListCreateView(FormView):
         form.save()
         return super().form_valid(form)
 
-class LocationListCreateView(FormView):
+class LocationListCreateView(AllowedGroupsMixin, FormView):
     form_class = LocationForm
     template_name = 'employee/admin_panel/locations.html'
+    allowed_groups = ['employee-admin', 'hardware-admin', 'finance-admin']
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
