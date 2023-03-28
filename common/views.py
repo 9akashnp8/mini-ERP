@@ -67,7 +67,7 @@ class UserListCreateView(AllowedGroupsMixin, FormView):
         user = User.objects.create(**form.cleaned_data)
         password = form.cleaned_data['password']
         user.set_password(password)
-        user.groups.add(groups)
+        user.groups.set(groups)
         user.save()
         return super().form_valid(form)
 
