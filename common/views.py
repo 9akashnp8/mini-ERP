@@ -3,11 +3,16 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.auth.models import User
+from django.views.generic import FormView
+from django.urls import reverse
 
 from .decorators import (
     unauthenticated_user,
     allowed_admins
 )
+from .permissions import AllowedGroupsMixin
+from .forms import UserForm
 
 @unauthenticated_user
 def login_page(request):
@@ -38,4 +43,32 @@ def home(request):
 @allowed_admins(allowed_admins=['employee-admin', 'hardware-admin', 'finance-admin'])
 def admin_panel(request):
     return render(request, 'common/admin_panel_home.html')
+
+class UserListCreateView(AllowedGroupsMixin, FormView):
+    form_class = UserForm
+    template_name = 'common/admin_panel/users_list.html'
+    allowed_groups = ['employee-admin', 'hardware-admin', 'finance-admin']
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['users'] = User.objects.all()
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({"user": self.request.user })
+        return kwargs
+
+    def get_success_url(self) -> str:
+        return reverse('user_list_create')
+
+    def form_valid(self, form):
+        groups = form.cleaned_data.pop("groups")
+        user = User.objects.create(**form.cleaned_data)
+        password = form.cleaned_data['password']
+        user.set_password(password)
+        user.groups.add(groups)
+        user.save()
+        return super().form_valid(form)
+
 

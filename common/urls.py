@@ -33,4 +33,9 @@ urlpatterns = [
         hardware_views.BrandListCreateView.as_view(),
         name='brand_list_create'
     ),
+    path(
+        'admin-panel/users/',
+        views.UserListCreateView.as_view(),
+        name='user_list_create'
+    ),
 ]

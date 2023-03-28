@@ -17,10 +17,16 @@
     <div class="me-auto">
         <h4>Hardware App</h4>
     </div>
-    <div class="list-group">
+    <div class="list-group pb-3">
         <a href="{% url 'building_list_create' %}" class="list-group-item list-group-item-action">Buildings</a>
         <a href="{% url 'brand_list_create' %}" class="list-group-item list-group-item-action">Brands</a>
         <a href="{% url 'hardware_app_settings' %}" class="list-group-item list-group-item-action">Settings</a>
+    </div>
+    <div class="me-auto">
+        <h4>Core</h4>
+    </div>
+    <div class="list-group">
+        <a href="{% url 'user_list_create' %}" class="list-group-item list-group-item-action">Users</a>
     </div>
 </div>
 {% endblock content %}
