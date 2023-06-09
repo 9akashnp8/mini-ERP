@@ -6,8 +6,10 @@ from employee.models import (
     Designation,
     Location
 )
+from employee.filters import EmployeeAPIFilter
 from api.serializers import (
-    EmployeeSerializer,
+    BaseEmployeeSerializer,
+    EmployeeDetailSerializer,
     DepartmentSerializer,
     DesignationSerializer,
     LocationSerializer,
@@ -16,7 +18,14 @@ from api.custom_pagination import FullResultsSetPagination
 
 class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
-    serializer_class = EmployeeSerializer
+    serializer_class = BaseEmployeeSerializer
+    filterset_class = EmployeeAPIFilter
+
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            return EmployeeDetailSerializer
+        return BaseEmployeeSerializer
+        
 
 class DepartmentViewSet(viewsets.ModelViewSet):
     queryset = Department.objects.all()

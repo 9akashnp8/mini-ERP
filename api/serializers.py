@@ -36,28 +36,28 @@ class LocationSerializer(serializers.ModelSerializer):
         model = Location
         fields = '__all__'
 
-class EmployeeSerializer(serializers.ModelSerializer):
-
-    dept_id = serializers.PrimaryKeyRelatedField(queryset=Department.objects.all())
-    desig_id = serializers.PrimaryKeyRelatedField(queryset=Designation.objects.all())
-    loc_id = serializers.PrimaryKeyRelatedField(queryset=Location.objects.all())
-    user = serializers.StringRelatedField()
+class BaseEmployeeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Employee
-        fields = '__all__'
+        exclude = ['user']
+        depth = 1
+
+class EmployeeDetailSerializer(BaseEmployeeSerializer):
+    laptops = serializers.SerializerMethodField()
+
+    def get_laptops(self, employee):
+        laptops = Laptop.objects.filter(emp_id=employee.emp_id)
+        serializer = LaptopSerializer(laptops, many=True)
+        return serializer.data
 
 # Hardware Serializers
 class LaptopSerializer(serializers.ModelSerializer):
 
-    brand = serializers.StringRelatedField()
-    laptop_branch = serializers.StringRelatedField()
-    laptop_building = serializers.StringRelatedField()
-    emp_id = serializers.ReadOnlyField(source='emp_id.lk_emp_id')
-
     class Meta:
         model = Laptop
         fields = '__all__'
+        depth=1
 
 class LaptopBrandSerializer(serializers.ModelSerializer):
     
