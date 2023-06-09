@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "mini-erp"
+version = "0.1.0"
+description = "open source erp to manage laptops, employees and departmental finances"
+authors = ["Akash NP <akashnp1998@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "mini_erp"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+Django = "^4.2.1"
+djangorestframework = "^3.14.0"
+django-filter = "^23.2"
+django-simple-history = "^3.3.0"
+celery = "^5.2.7"
+django-celery-results = "^2.5.0"
+django-celery-beat = "^2.5.0"
+django-import-export = "^3.2.0"
+djangorestframework-simplejwt = "^5.2.2"
+environs = "^9.5.0"
+pillow = "^9.5.0"
+psycopg2-binary = "^2.9.6"
+redis = "^4.5.4"
+whitenoise = "^6.4.0"
+gunicorn = "^20.1.0"
+dj-database-url = "^2.0.0"
+django-cors-headers = "^3.14.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
