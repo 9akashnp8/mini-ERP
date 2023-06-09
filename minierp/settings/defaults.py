@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     'simple_history',
     'django_filters',
     'import_export',
-    'crispy_forms',
     'django_celery_results',
     'django_celery_beat',
     'corsheaders',
@@ -144,17 +143,20 @@ EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD')
 
 #DRF Settings
 REST_FRAMEWORK = {
-    # 'DEFAULT_AUTHENTICATION_CLASSES': [
-    #     'rest_framework.authentication.BasicAuthentication',
-    #     'rest_framework_simplejwt.authentication.JWTAuthentication',
-    # ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'DEFAULT_PAGINATION_CLASS': 'api.custom_pagination.FullResultsSetPagination',
     'PAGE_SIZE': 10
 }
 
-# SIMPLE_JWT = {
-#     'ACCESS_TOKEN_LIFETIME': timedelta(days=7), # Change this!
-# }
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1)
+}
 
 # Celery Settings
 CELERY_RESULT_BACKEND = 'django-db'
@@ -166,8 +168,12 @@ COMPRESS_ENABLED = os.environ.get('COMPRESS_ENABLED', False)
 
 # CORS Settings
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
+    "http://localhost:5173",
 ]
+CORS_ALLOW_CREDENTIALS = True
+
+# CSRF Setting
+# CSRF_TRUSTED_ORIGINS = ['http://localhost:5173']
 
 # django-storages settings (File Storage Backend)
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
