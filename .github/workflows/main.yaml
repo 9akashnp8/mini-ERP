@@ -24,18 +24,28 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Set up Python 3.10
+      - name: Set up Python 3.11
         uses: actions/setup-python@v3
         with:
-          python-version: '3.10'
+          python-version: '3.11'
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+          installer-parallel: true
+
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v3
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
 
       - name: Install Dependencies
-        run: |
-          pip install virtualenv
-          virtualenv venv
-          . venv/bin/activate
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction --no-root
       
       - name: Create env file
         run: |
@@ -75,6 +85,6 @@ jobs:
           POSTGRES_DB: test_db
           POSTGRES_PORT: 5432
         run: |
-          . venv/bin/activate
+          source .venv/bin/activate
           python manage.py migrate
           python manage.py test
