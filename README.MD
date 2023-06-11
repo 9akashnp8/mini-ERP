@@ -2,6 +2,7 @@
 Your Departmental Routine Tasks, Made Easy.
 
 [![minitests](https://github.com/9akashnp8/mini-ERP/actions/workflows/main.yaml/badge.svg)](https://github.com/9akashnp8/mini-ERP/actions/workflows/main.yaml)
+[![PEP8](https://img.shields.io/badge/code%20style-pep8-orange.svg)](https://www.python.org/dev/peps/pep-0008/)
 
 # About
 ---
