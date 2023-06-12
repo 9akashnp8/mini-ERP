@@ -10,11 +10,13 @@ from employee.filters import EmployeeAPIFilter
 from api.serializers import (
     BaseEmployeeSerializer,
     EmployeeDetailSerializer,
+    EmployeeCreateSerializer,
     DepartmentSerializer,
     DesignationSerializer,
     LocationSerializer,
 )
 from api.custom_pagination import FullResultsSetPagination
+
 
 class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
@@ -24,13 +26,17 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == 'retrieve':
             return EmployeeDetailSerializer
+        elif self.action == 'create':
+            return EmployeeCreateSerializer
         return BaseEmployeeSerializer
-        
+
 
 class DepartmentViewSet(viewsets.ModelViewSet):
+
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
     pagination_class = FullResultsSetPagination
+
 
 class DesignationViewSet(viewsets.ModelViewSet):
     queryset = Designation.objects.all()
@@ -41,9 +47,10 @@ class DesignationViewSet(viewsets.ModelViewSet):
         # Capture department from query parameters
         queryset = Designation.objects.all()
         department = self.request.query_params.get('dept_id')
-        if department is not None:
+        if department:
             queryset = queryset.filter(dept_id=department)
         return queryset
+
 
 class LocationViewSet(viewsets.ModelViewSet):
     queryset = Location.objects.all()

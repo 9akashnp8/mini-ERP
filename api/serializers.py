@@ -1,10 +1,10 @@
-from dataclasses import fields
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
 from employee.models import Department, Designation, Employee, Location
 from hardware.models import Building, Laptop, LaptopBrand
 from finance.models import Payment
+
 
 # Employee Serializers
 class DepartmentSerializer(serializers.ModelSerializer):
@@ -13,13 +13,17 @@ class DepartmentSerializer(serializers.ModelSerializer):
         model = Department
         fields = '__all__'
 
+
 class DesignationSerializer(serializers.ModelSerializer):
-    
-    dept_id = serializers.PrimaryKeyRelatedField(queryset=Department.objects.all())
+
+    dept_id = serializers.PrimaryKeyRelatedField(
+        queryset=Department.objects.all()
+    )
 
     class Meta:
         model = Designation
         fields = '__all__'
+
 
 class UserSerializer(serializers.ModelSerializer):
 
@@ -30,11 +34,13 @@ class UserSerializer(serializers.ModelSerializer):
             'email'
         ]
 
+
 class LocationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Location
         fields = '__all__'
+
 
 class BaseEmployeeSerializer(serializers.ModelSerializer):
 
@@ -42,6 +48,7 @@ class BaseEmployeeSerializer(serializers.ModelSerializer):
         model = Employee
         exclude = ['user']
         depth = 1
+
 
 class EmployeeDetailSerializer(BaseEmployeeSerializer):
     laptops = serializers.SerializerMethodField()
@@ -51,20 +58,29 @@ class EmployeeDetailSerializer(BaseEmployeeSerializer):
         serializer = LaptopSerializer(laptops, many=True)
         return serializer.data
 
+
+class EmployeeCreateSerializer(BaseEmployeeSerializer):
+
+    class Meta(BaseEmployeeSerializer.Meta):
+        depth = 0
+
+
 # Hardware Serializers
 class LaptopSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Laptop
         fields = '__all__'
-        depth=1
+        depth = 1
+
 
 class LaptopBrandSerializer(serializers.ModelSerializer):
-    
+
     class Meta:
         model = LaptopBrand
         fields = '__all__'
-    
+
+
 class BuildingSerializer(serializers.ModelSerializer):
 
     location = serializers.StringRelatedField()
@@ -72,6 +88,7 @@ class BuildingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Building
         fields = '__all__'
+
 
 # Finance Serializers
 class PaymentSerializer(serializers.ModelSerializer):
