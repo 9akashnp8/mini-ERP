@@ -1,5 +1,6 @@
-from rest_framework import serializers
 from django.contrib.auth.models import User
+from django.db.utils import IntegrityError
+from rest_framework import serializers
 
 from employee.models import Department, Designation, Employee, Location
 from hardware.models import Building, Laptop, LaptopBrand
@@ -63,6 +64,22 @@ class EmployeeCreateSerializer(BaseEmployeeSerializer):
 
     class Meta(BaseEmployeeSerializer.Meta):
         depth = 0
+
+    def create(self, validated_data):
+        """
+        create and link corresponding User object to Employee.
+        """
+        email = validated_data.get('emp_email')
+        try:
+            # move default password to settings
+            user = User.objects.create_user(email, email, 'lakshya123')
+        except IntegrityError:
+            raise serializers.ValidationError({
+                "emp_email": ["User with username/email already exists"]
+            })
+        else:
+            employee = Employee.objects.create(user=user, **validated_data)
+            return employee
 
 
 # Hardware Serializers
