@@ -18,6 +18,23 @@ DATABASES = {
     }
 }
 
+#DRF Settings
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'DEFAULT_PAGINATION_CLASS': 'api.custom_pagination.FullResultsSetPagination',
+    'PAGE_SIZE': 10
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1)
+}
+
 STATIC_ROOT = str(BASE_DIR.joinpath('staticfiles'))
 
 CELERY_BROKER_URL = f"redis://default:{env.str('REDIS_PASS')}@127.0.0.1:6379"

@@ -20,6 +20,15 @@ else:
         }
     }
 
+#DRF Settings
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [],
+    'DEFAULT_PERMISSION_CLASSES': [],
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'DEFAULT_PAGINATION_CLASS': 'api.custom_pagination.FullResultsSetPagination',
+    'PAGE_SIZE': 10
+}
+
 STATICFILES_DIRS = [str(BASE_DIR.joinpath('static'))]  # noqa: F405
 STATIC_ROOT = str(BASE_DIR.joinpath('staticfiles'))  # noqa: F405
 
