@@ -1,0 +1,24 @@
+[
+    {
+        "model": "employee.department",
+        "pk": 1,
+        "fields": {
+            "dept_name": "HR"
+        }
+    },
+    {
+        "model": "employee.designation",
+        "pk": 1,
+        "fields": {
+            "dept_id": 1,
+            "designation": "Manager"
+        }
+    },
+    {
+        "model": "employee.location",
+        "pk": 1,
+        "fields": {
+            "location": "Kochi"
+        }
+    }
+]

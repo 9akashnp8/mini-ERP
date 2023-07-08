@@ -1,4 +1,6 @@
 from rest_framework import viewsets
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 from employee.models import (
     Employee,
@@ -7,6 +9,7 @@ from employee.models import (
     Location
 )
 from employee.filters import EmployeeAPIFilter
+from employee.functions import api_get_employee_history
 from api.serializers import (
     BaseEmployeeSerializer,
     EmployeeDetailSerializer,
@@ -29,6 +32,18 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         elif self.action == 'create':
             return EmployeeCreateSerializer
         return BaseEmployeeSerializer
+
+
+class EmployeeHistoryAPIView(APIView):
+
+    def get(self, *args, **kwargs):
+        employee_id = kwargs.get('id')
+        employee = Employee.objects.get(emp_id=employee_id)
+        history = api_get_employee_history(employee)
+        return Response({
+            "employee": employee.emp_name,
+            "history": history
+        })
 
 
 class DepartmentViewSet(viewsets.ModelViewSet):
