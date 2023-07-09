@@ -2,6 +2,7 @@ from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+from common.functions import api_get_history
 from employee.models import (
     Employee,
     Department,
@@ -9,7 +10,6 @@ from employee.models import (
     Location
 )
 from employee.filters import EmployeeAPIFilter
-from employee.functions import api_get_employee_history
 from api.serializers import (
     BaseEmployeeSerializer,
     EmployeeDetailSerializer,
@@ -39,7 +39,8 @@ class EmployeeHistoryAPIView(APIView):
     def get(self, *args, **kwargs):
         employee_id = kwargs.get('id')
         employee = Employee.objects.get(emp_id=employee_id)
-        history = api_get_employee_history(employee)
+        employee_history = employee.history.all()
+        history = api_get_history(employee_history)
         return Response({
             "employee": employee.emp_name,
             "history": history
