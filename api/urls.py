@@ -56,6 +56,13 @@ router.register(
     hardware.BuildingViewSet,
     basename='building'
 )
+hardware_urls = [
+    path(
+        'laptop/<str:id>/history/',
+        hardware.LaptopHistoryAPIView.as_view(),
+        name='laptop_history_api',
+    )
+]
 
 # Hardware Chart URLs
 hardware_chart_urls = [
@@ -91,4 +98,4 @@ urlpatterns = [
         TokenVerifyView.as_view(),
         name='token_verify'
     ),
-] + hardware_chart_urls + employee_urls
+] + hardware_chart_urls + employee_urls + hardware_urls

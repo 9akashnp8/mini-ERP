@@ -7,9 +7,14 @@ from rest_framework.filters import SearchFilter
 
 from django.db.models import Count, Q
 
+from common.functions import api_get_history
 from hardware.models import Laptop, LaptopBrand, Building
 from hardware.functions import api_get_laptop_count_by_value
-from api.serializers import LaptopSerializer, LaptopBrandSerializer, BuildingSerializer
+from api.serializers import (
+    LaptopSerializer,
+    LaptopBrandSerializer,
+    BuildingSerializer
+)
 
 
 class LaptopViewSet(viewsets.ModelViewSet):
@@ -17,6 +22,19 @@ class LaptopViewSet(viewsets.ModelViewSet):
     serializer_class = LaptopSerializer
     filter_backends = [SearchFilter]
     search_fields = ["laptop_sr_no", "hardware_id"]
+
+
+class LaptopHistoryAPIView(APIView):
+
+    def get(self, *args, **kwargs):
+        laptop_id = kwargs.get('id')
+        laptop = Laptop.objects.get(id=laptop_id)
+        laptop_history = laptop.history.all()
+        history = api_get_history(laptop_history)
+        return Response({
+            "laptop": laptop.hardware_id,
+            "history": history
+        })
 
 
 class LaptopBrandViewSet(viewsets.ModelViewSet):
@@ -52,23 +70,33 @@ class LaptopChartAPI(APIView):
                 "datasets": [{"label": self.chart_label, "data": []}],
             },
         }
-        laptop_status_data = api_get_laptop_count_by_value(value="laptop_status")
+        laptop_status_data = api_get_laptop_count_by_value(
+            value="laptop_status"
+        )
         for data in laptop_status_data:
             response["laptop_status"]["labels"].append(data["laptop_status"])
-            response["laptop_status"]["datasets"][0]["data"].append(data["total"])
+            response["laptop_status"]["datasets"][0]["data"].append(
+                data["total"]
+            )
 
         laptop_branch_data = api_get_laptop_count_by_value(
             value="laptop_branch__location"
         )
         for data in laptop_branch_data:
-            response["laptop_branch"]["labels"].append(data["laptop_branch__location"])
-            response["laptop_branch"]["datasets"][0]["data"].append(data["total"])
+            response["laptop_branch"]["labels"].append(
+                data["laptop_branch__location"]
+            )
+            response["laptop_branch"]["datasets"][0]["data"].append(
+                data["total"]
+            )
 
         laptop_assigned_data = Laptop.objects.aggregate(
             unassigned=Count("id", filter=Q(emp_id__isnull=True)),
             assigned=Count("id", filter=Q(emp_id__isnull=False)),
         )
-        response["laptop_availability"]["labels"] = list(laptop_assigned_data.keys())
+        response["laptop_availability"]["labels"] = list(
+            laptop_assigned_data.keys()
+        )
         response["laptop_availability"]["datasets"][0]["data"] = list(
             laptop_assigned_data.values()
         )
