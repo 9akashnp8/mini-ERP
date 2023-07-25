@@ -5,7 +5,6 @@ description = "open source erp to manage laptops, employees and departmental fin
 authors = ["Akash NP <akashnp1998@gmail.com>"]
 license = "MIT"
 readme = "README.md"
-packages = [{include = "mini_erp"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
