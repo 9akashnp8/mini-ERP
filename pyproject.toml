@@ -8,7 +8,7 @@ readme = "README.md"
 packages = [{include = "mini_erp"}]
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.10"
 Django = "^4.2.1"
 djangorestframework = "^3.14.0"
 django-filter = "^23.2"
