@@ -126,6 +126,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+    },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"
     }
@@ -164,7 +167,6 @@ CORS_ALLOW_CREDENTIALS = True
 # CSRF_TRUSTED_ORIGINS = ['http://localhost:5173']
 
 # django-storages settings (File Storage Backend)
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 AWS_STORAGE_BUCKET_NAME = 'test-minierp-bucket'
 AWS_S3_REGION_NAME = 'ap-south-1'
 AWS_ACCESS_KEY_ID = env.str('AWS_ACCESS_KEY_ID')
