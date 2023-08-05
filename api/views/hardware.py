@@ -1,13 +1,16 @@
 from datetime import datetime
 
 from rest_framework import viewsets
+from rest_framework.decorators import action
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.filters import SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 from django.db.models import Count, Q
 
 from common.functions import api_get_history
+from employee.models import Employee
 from hardware.models import Laptop, LaptopBrand, Building
 from hardware.functions import api_get_laptop_count_by_value
 from api.serializers import (
@@ -21,9 +24,40 @@ from api.serializers import (
 class LaptopViewSet(viewsets.ModelViewSet):
     queryset = Laptop.objects.all()
     serializer_class = LaptopSerializer
-    filter_backends = [SearchFilter]
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_fields = {
+        "laptop_status": ['exact'],
+        "emp_id": ['isnull']
+    }
     search_fields = ["laptop_sr_no", "hardware_id"]
 
+    @action(
+        detail=True,
+        methods=['post'],
+        url_path='return',
+        url_name='return'
+    )
+    def return_laptop(self, request, pk=None):
+        laptop = self.get_object()  # TODO: get remarks and update object
+        laptop.emp_id = None
+        laptop.save()
+        return Response({"success": True})
+
+    @action(
+        detail=True,
+        methods=['post'],
+        url_path='assign',
+        url_name='assign'
+    )
+    def assign_laptop(self, request, pk=None):
+        laptop = self.get_object()
+        payload = request.data
+        employee_id = payload.get('employee_id')
+        # TODO: handle employee does not exist
+        employee = Employee.objects.get(emp_id=employee_id)
+        laptop.emp_id = employee
+        laptop.save()
+        return Response({"success": True})
 
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
