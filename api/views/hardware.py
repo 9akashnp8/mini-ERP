@@ -12,6 +12,7 @@ from hardware.models import Laptop, LaptopBrand, Building
 from hardware.functions import api_get_laptop_count_by_value
 from api.serializers import (
     LaptopSerializer,
+    LaptopCreateSerializer,
     LaptopBrandSerializer,
     BuildingSerializer
 )
@@ -22,6 +23,12 @@ class LaptopViewSet(viewsets.ModelViewSet):
     serializer_class = LaptopSerializer
     filter_backends = [SearchFilter]
     search_fields = ["laptop_sr_no", "hardware_id"]
+
+
+    def get_serializer_class(self):
+        if self.action in ['create', 'update', 'partial_update']:
+            return LaptopCreateSerializer
+        return LaptopSerializer
 
 
 class LaptopHistoryAPIView(APIView):

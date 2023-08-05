@@ -90,6 +90,11 @@ class LaptopSerializer(serializers.ModelSerializer):
         fields = '__all__'
         depth = 1
 
+class LaptopCreateSerializer(LaptopSerializer):
+
+    class Meta(LaptopSerializer.Meta):
+        depth = 0
+
 
 class LaptopBrandSerializer(serializers.ModelSerializer):
 
