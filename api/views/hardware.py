@@ -88,6 +88,44 @@ class BuildingViewSet(viewsets.ModelViewSet):
     serializer_class = BuildingSerializer
 
 
+# Choice Field APIS TODO: move all choices to model
+class BaseModelChoicesAPI(APIView):
+    model = None
+    choice_attr_name = ''
+    response_key = ''
+
+    def __init__(self, **kwargs):
+        if not all([self.model, self.choice_attr_name, self.response_key]):
+            raise AttributeError("Compulsory Attributes Missing")
+        super().__init__(**kwargs)
+
+    def get(self, request):
+        choices = getattr(self.model, self.choice_attr_name)
+        result = [
+            {"id": index, "value": choice[0], "label": choice[1]}
+            for index, choice in enumerate(choices, start=1)
+        ]
+        return Response({self.response_key: result})
+
+
+class LaptopScreenTypeAPI(BaseModelChoicesAPI):
+    model = Laptop
+    choice_attr_name = 'LAPTOP_SCREEN_TYPES'
+    response_key = 'laptop_screen_types'
+
+
+class LaptopStatusAPI(BaseModelChoicesAPI):
+    model = Laptop
+    choice_attr_name = 'LAPTOP_STATUSES'
+    response_key = 'laptop_statuses'
+
+
+class LaptopOwnerAPI(BaseModelChoicesAPI):
+    model = Laptop
+    choice_attr_name = 'LAPTOP_OWNER_TYPES'
+    response_key = 'laptop_owner_types'
+
+
 # Chart APIs
 class LaptopChartAPI(APIView):
     chart_label = "# of Laptops"

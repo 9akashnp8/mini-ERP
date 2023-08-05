@@ -61,7 +61,22 @@ hardware_urls = [
         'laptop/<str:id>/history/',
         hardware.LaptopHistoryAPIView.as_view(),
         name='laptop_history_api',
-    )
+    ),
+    path(
+        'laptop-screen-types/',
+        hardware.LaptopScreenTypeAPI.as_view(),
+        name='laptop_screen_types',
+    ),
+    path(
+        'laptop-statuses/',
+        hardware.LaptopStatusAPI.as_view(),
+        name='laptop_status',
+    ),
+    path(
+        'laptop-owner-types/',
+        hardware.LaptopOwnerAPI.as_view(),
+        name='laptop_owner_types',
+    ),
 ]
 
 # Hardware Chart URLs
