@@ -13,7 +13,7 @@ from employee.filters import EmployeeAPIFilter
 from api.serializers import (
     BaseEmployeeSerializer,
     EmployeeDetailSerializer,
-    EmployeeCreateSerializer,
+    EmployeeCreateUpdateSerializer,
     DepartmentSerializer,
     DesignationSerializer,
     LocationSerializer,
@@ -29,8 +29,8 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == 'retrieve':
             return EmployeeDetailSerializer
-        elif self.action == 'create':
-            return EmployeeCreateSerializer
+        elif self.action in ['create', 'update', 'partial_update']:
+            return EmployeeCreateUpdateSerializer
         return BaseEmployeeSerializer
 
 

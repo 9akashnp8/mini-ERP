@@ -60,7 +60,7 @@ class EmployeeDetailSerializer(BaseEmployeeSerializer):
         return serializer.data
 
 
-class EmployeeCreateSerializer(BaseEmployeeSerializer):
+class EmployeeCreateUpdateSerializer(BaseEmployeeSerializer):
 
     class Meta(BaseEmployeeSerializer.Meta):
         depth = 0
@@ -78,8 +78,13 @@ class EmployeeCreateSerializer(BaseEmployeeSerializer):
                 "emp_email": ["User with username/email already exists"]
             })
         else:
-            employee = Employee.objects.create(user=user, **validated_data)
+            employee = super().create({**validated_data, 'user': user})
             return employee
+
+    def update(self, instance, validated_data):
+        # TODO: validate if user with email exists,
+        # TODO: update email of related user
+        return super().update(instance, validated_data)
 
 
 # Hardware Serializers
@@ -89,6 +94,7 @@ class LaptopSerializer(serializers.ModelSerializer):
         model = Laptop
         fields = '__all__'
         depth = 1
+
 
 class LaptopCreateSerializer(LaptopSerializer):
 
