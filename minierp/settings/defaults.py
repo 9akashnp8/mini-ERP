@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 from environs import Env
 import os
-from datetime import timedelta
 env = Env()
 env.read_env()
 
@@ -41,8 +40,8 @@ INSTALLED_APPS = [
     'employee.apps.EmployeeConfig',
     'finance',
     'common',
-    
-    #3rd party
+
+    # 3rd party
     'rest_framework',
     'rest_framework.authtoken',
     'simple_history',
@@ -64,7 +63,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    #3rd party
+    # 3rd party
     'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
@@ -94,16 +93,16 @@ WSGI_APPLICATION = 'minierp.wsgi.application'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',  # noqa: E501
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',  # noqa: E501
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',  # noqa: E501
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',  # noqa: E501
     },
 ]
 
@@ -124,7 +123,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = '/static/'
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 STORAGES = {
     "default": {
         "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
@@ -141,7 +140,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-#Email Settings:
+# Email Settings:
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
@@ -162,9 +161,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
 ]
 CORS_ALLOW_CREDENTIALS = True
-
-# CSRF Setting
-# CSRF_TRUSTED_ORIGINS = ['http://localhost:5173']
 
 # django-storages settings (File Storage Backend)
 AWS_STORAGE_BUCKET_NAME = 'test-minierp-bucket'
