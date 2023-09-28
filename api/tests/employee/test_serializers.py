@@ -2,14 +2,14 @@ from django.contrib.auth.models import User
 from rest_framework.test import APITestCase
 from rest_framework.exceptions import ValidationError
 
-from api.serializers import EmployeeCreateSerializer
+from api.serializers import EmployeeCreateUpdateSerializer
 
 
-class EmployeeCreateSerializerTestCase(APITestCase):
+class EmployeeCreateUpdateSerializerTestCase(APITestCase):
     fixtures = ["initial_data.json"]
 
     def setUp(self):
-        self.serializer = EmployeeCreateSerializer
+        self.serializer = EmployeeCreateUpdateSerializer
         self.data = {
             'emp_email': 'test@example.com',
             'emp_name': 'John Doe',
