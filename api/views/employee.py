@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from common.functions import api_get_history
+from hardware.functions import get_laptops_assigned
 from employee.models import (
     Employee,
     Department,
@@ -17,6 +18,7 @@ from api.serializers import (
     DepartmentSerializer,
     DesignationSerializer,
     LocationSerializer,
+    LaptopSerializer,
 )
 from api.custom_pagination import FullResultsSetPagination
 
@@ -32,6 +34,15 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         elif self.action in ['create', 'update', 'partial_update']:
             return EmployeeCreateUpdateSerializer
         return BaseEmployeeSerializer
+
+
+class EmployeeLaptopListView(APIView):
+
+    def get(self, request, **kwargs):
+        employee_id = kwargs.get("id", "_")
+        laptops = get_laptops_assigned(employee_id)
+        result = LaptopSerializer(laptops, many=True)
+        return Response(result.data)
 
 
 class EmployeeHistoryAPIView(APIView):

@@ -15,3 +15,14 @@ def api_get_laptop_count_by_value(value: str) -> QuerySet:
     """
     queryset = Laptop.objects.values(value).annotate(total=Count('id'))
     return queryset
+
+def get_laptops_assigned(employee_id: str | int) -> QuerySet:
+    """
+    Returns queryset of laptops assigned to given employee.
+    """
+    try:
+        queryset = Laptop.objects.filter(emp_id=employee_id)
+    except ValueError:
+        return []
+    else:
+        return queryset
