@@ -37,7 +37,12 @@ employee_urls = [
         'employee/<str:id>/history/',
         employee.EmployeeHistoryAPIView.as_view(),
         name='employee_histoy_api'
-    )
+    ),
+    path(
+        'employee/<str:id>/laptops/',
+        employee.EmployeeLaptopListView.as_view(),
+        name="employee_laptop_list"
+    ),
 ]
 
 # Hardware routes
