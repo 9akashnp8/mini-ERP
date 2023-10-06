@@ -41,6 +41,13 @@ class LaptopViewSet(viewsets.ModelViewSet):
         laptop = self.get_object()  # TODO: get remarks and update object
         laptop.emp_id = None
         laptop.save()
+        payload = request.data
+        employee_id = payload.get('employee_id')
+        # TODO: handle employee does not exist
+        employee = Employee.objects.get(emp_id=employee_id)
+        if not employee.laptop_set.all():
+            employee.is_assigned = False
+            employee.save()
         return Response({"success": True})
 
     @action(
@@ -55,6 +62,8 @@ class LaptopViewSet(viewsets.ModelViewSet):
         employee_id = payload.get('employee_id')
         # TODO: handle employee does not exist
         employee = Employee.objects.get(emp_id=employee_id)
+        employee.is_assigned = True
+        employee.save()
         laptop.emp_id = employee
         laptop.save()
         return Response({"success": True})
