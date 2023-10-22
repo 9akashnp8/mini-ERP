@@ -5,7 +5,8 @@ from .authentication import CookieTokenObtainPairView, CookieTokenRefreshView
 from .views import (
     employee,
     hardware,
-    finance
+    finance,
+    common,
 )
 
 from rest_framework.routers import DefaultRouter
@@ -42,6 +43,11 @@ employee_urls = [
         'employee/<str:id>/laptops/',
         employee.EmployeeLaptopListView.as_view(),
         name="employee_laptop_list"
+    ),
+    path(
+        'employee-app-settings/',
+        common.EmployeeAppSettingsAPI.as_view(),
+        name="employee_app_settings"
     ),
 ]
 
@@ -81,6 +87,11 @@ hardware_urls = [
         'laptop-owner-types/',
         hardware.LaptopOwnerAPI.as_view(),
         name='laptop_owner_types',
+    ),
+    path(
+        'hardware-app-settings/',
+        common.HardwareAppSettingsAPI.as_view(),
+        name="hardware_app_settings"
     ),
 ]
 

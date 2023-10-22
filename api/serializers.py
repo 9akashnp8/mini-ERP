@@ -5,6 +5,7 @@ from rest_framework import serializers
 from employee.models import Department, Designation, Employee, Location
 from hardware.models import Building, Laptop, LaptopBrand
 from finance.models import Payment
+from common.models import EmployeeAppSetting, HardwareAppSetting
 
 
 # Employee Serializers
@@ -123,4 +124,18 @@ class PaymentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Payment
+        fields = '__all__'
+
+
+class EmployeeAppSettingsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = EmployeeAppSetting
+        fields = '__all__'
+
+
+class HardwareAppSettingsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = HardwareAppSetting
         fields = '__all__'
