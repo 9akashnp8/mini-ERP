@@ -18,6 +18,7 @@ from api.serializers import (
     EmployeeDetailSerializer,
     EmployeeCreateUpdateSerializer,
     DepartmentSerializer,
+    DesignationCreateSerializer,
     DesignationSerializer,
     LocationSerializer,
     LaptopSerializer,
@@ -80,6 +81,11 @@ class DesignationViewSet(viewsets.ModelViewSet):
         if department:
             queryset = queryset.filter(dept_id=department)
         return queryset
+
+    def get_serializer_class(self):
+        if self.action in ['create', 'update', 'partial_update']:
+            return DesignationCreateSerializer
+        return self.serializer_class
 
 
 class LocationViewSet(viewsets.ModelViewSet):

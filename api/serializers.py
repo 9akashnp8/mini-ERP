@@ -18,9 +18,14 @@ class DepartmentSerializer(serializers.ModelSerializer):
 
 class DesignationSerializer(serializers.ModelSerializer):
 
-    dept_id = serializers.PrimaryKeyRelatedField(
-        queryset=Department.objects.all()
-    )
+    dept_id = DepartmentSerializer()
+
+    class Meta:
+        model = Designation
+        fields = '__all__'
+
+
+class DesignationCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Designation
