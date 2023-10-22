@@ -125,12 +125,29 @@ class LaptopBrandSerializer(serializers.ModelSerializer):
 
 class BuildingSerializer(serializers.ModelSerializer):
 
-    location = serializers.StringRelatedField()
+    location = LocationSerializer()
 
     class Meta:
         model = Building
         fields = '__all__'
 
+class BuildingRetrieveListDeleteSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Building
+        fields = '__all__'
+        depth = 1
+
+
+class BuildingCreateUpdateSerializer(serializers.ModelSerializer):
+
+    location = serializers.PrimaryKeyRelatedField(
+        queryset=Location.objects.all()
+    )
+
+    class Meta:
+        model = Building
+        fields = '__all__'
 
 # Finance Serializers
 class PaymentSerializer(serializers.ModelSerializer):

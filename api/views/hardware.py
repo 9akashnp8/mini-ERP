@@ -17,7 +17,8 @@ from api.serializers import (
     LaptopSerializer,
     LaptopCreateSerializer,
     LaptopBrandSerializer,
-    BuildingSerializer
+    BuildingCreateUpdateSerializer,
+    BuildingRetrieveListDeleteSerializer,
 )
 
 
@@ -94,7 +95,11 @@ class LaptopBrandViewSet(viewsets.ModelViewSet):
 
 class BuildingViewSet(viewsets.ModelViewSet):
     queryset = Building.objects.all()
-    serializer_class = BuildingSerializer
+
+    def get_serializer_class(self):
+        if self.action in ['create', 'update']:
+            return BuildingCreateUpdateSerializer
+        return BuildingRetrieveListDeleteSerializer
 
 
 # Choice Field APIS TODO: move all choices to model
