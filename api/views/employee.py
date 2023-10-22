@@ -1,6 +1,8 @@
 from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.generics import ListCreateAPIView
+from django.contrib.auth.models import User
 
 from common.functions import api_get_history
 from hardware.functions import get_laptops_assigned
@@ -19,6 +21,7 @@ from api.serializers import (
     DesignationSerializer,
     LocationSerializer,
     LaptopSerializer,
+    UserSerializer
 )
 from api.custom_pagination import FullResultsSetPagination
 
@@ -82,3 +85,16 @@ class DesignationViewSet(viewsets.ModelViewSet):
 class LocationViewSet(viewsets.ModelViewSet):
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
+
+
+class UserCreateView(ListCreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def create(self, request, *args, **kwargs):
+        body = request.data
+        user = User.objects.create_user(**body)
+        return Response({
+            "status": "success",
+            "data": f"{user.username} successfully created"
+        })

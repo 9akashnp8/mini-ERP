@@ -45,6 +45,11 @@ employee_urls = [
         name="employee_laptop_list"
     ),
     path(
+        'user/',
+        employee.UserCreateView.as_view(),
+        name="user_list_create_api"
+    ),
+    path(
         'employee-app-settings/',
         common.EmployeeAppSettingsAPI.as_view(),
         name="employee_app_settings"
