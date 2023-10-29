@@ -1,1 +1,0 @@
-web: gunicorn minierp.wsgi --log-file -
