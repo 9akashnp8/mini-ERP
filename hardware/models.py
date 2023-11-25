@@ -221,3 +221,28 @@ class LaptopV2(models.Model):
             self.laptop_id = laptop_id
             self.save(*args, **kwargs)
 
+class MobileType(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self) -> str:
+        return self.name
+
+class Mobile(models.Model):
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True)
+    hardware_id = models.OneToOneField(Hardware, on_delete=models.CASCADE)
+    mobile_id = models.CharField(max_length=100, null=True, blank=True, unique=True)
+    brand = models.CharField(max_length=100)
+    type = models.ForeignKey(MobileType, null=True, on_delete=models.SET_NULL)
+    imei = models.CharField(max_length=15, unique=True)
+
+    def __str__(self) -> str:
+        return self.mobile_id
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if not self.mobile_id:
+            mobile_id = generate_unique_identifier(
+                self.__class__.__name__, self.id
+            )
+            self.mobile_id = mobile_id
+            self.save(*args, **kwargs)
