@@ -1,8 +1,10 @@
-from datetime import date
 import os
+import uuid
+from datetime import date, datetime
 
 from django.db import models
 from simple_history.models import HistoricalRecords
+from common.functions import generate_unique_identifier
 from employee.models import Location, Employee
 
 class Building(models.Model):
@@ -112,9 +114,68 @@ def path_and_rename(instance, filename):
         filename = '{}-for-{}.{}'.format(date.today(), instance.laptop_id, ext)
     return os.path.join(upload_to, filename)
 
-#Model linking the Employee to the various hardwares (Eg: Laptops, Tablets)
+class HardwareType(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+class HardwareOwner(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+class HardwareCondition(models.Model):
+    condition = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.condition
+
 class Hardware(models.Model):
-    id = models.AutoField(primary_key=True, editable=False)
-    emp_id = models.ForeignKey(Employee, null=True, on_delete=models.SET_NULL)
-    hardware_id = models.ForeignKey(Laptop, null=True, on_delete=models.SET_NULL)
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True)
+    hardware_id = models.CharField(max_length=255, null=True, blank=True, unique=True)
+    serial_no = models.CharField(max_length=255, unique=True)
+    type = models.ForeignKey(HardwareType, null=True, on_delete=models.SET_NULL)
+    owner = models.ForeignKey(HardwareOwner, null=True, on_delete=models.SET_NULL)
+    condition = models.ForeignKey(HardwareCondition, null=True, blank=True, on_delete=models.SET_NULL)
+    location = models.ForeignKey(Location, null=True, on_delete=models.SET_NULL)
+    building = models.ForeignKey(Building, null=True, on_delete=models.SET_NULL)
+    purchased_date = models.DateField(default=datetime.now)
+    sold_date = models.DateField(null=True, blank=True)
+    created_date = models.DateField(auto_now_add=True)
+    modified_date = models.DateField(auto_now=True)
+
+    def __str__(self) -> str:
+        return self.hardware_id
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if not self.hardware_id:
+            hardware_id = generate_unique_identifier(
+                self.__class__.__name__, self.id
+            )
+            self.hardware_id = hardware_id
+            self.save(*args, **kwargs)
+
+class HardwareAssignment(models.Model):
+    assignment_id = models.CharField(max_length=10, null=True, blank=True)
+    hardware = models.ForeignKey(Hardware, null=True, on_delete=models.SET_NULL, related_name="employees_assigned")
+    employee = models.ForeignKey(Employee, null=True, on_delete=models.SET_NULL, related_name="assigned_hardwares")
+    assignment_date = models.DateField(default=datetime.now)
+    returned_date = models.DateField(null=True)
+    created_date = models.DateField(auto_now_add=True)
+    modified_date = models.DateField(auto_now=True)
+
+    def __str__(self) -> str:
+        return self.assignment_id
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if not self.assignment_id:
+            assignment_id = generate_unique_identifier(
+                self.__class__.__name__, self.id
+            )
+            self.assignment_id = assignment_id
+            self.save(*args, **kwargs)
 
