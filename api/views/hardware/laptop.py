@@ -13,10 +13,12 @@ from common.functions import api_get_history
 from employee.models import Employee
 from hardware.models import Laptop, LaptopBrand, Building
 from hardware.functions import api_get_laptop_count_by_value
-from api.serializers import (
+from api.serializers.hardware import (
     LaptopSerializer,
     LaptopCreateSerializer,
     LaptopBrandSerializer,
+)
+from api.serializers.common import (
     BuildingCreateUpdateSerializer,
     BuildingRetrieveListDeleteSerializer,
 )
@@ -26,24 +28,16 @@ class LaptopViewSet(viewsets.ModelViewSet):
     queryset = Laptop.objects.all()
     serializer_class = LaptopSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter]
-    filterset_fields = {
-        "laptop_status": ['exact'],
-        "emp_id": ['isnull']
-    }
+    filterset_fields = {"laptop_status": ["exact"], "emp_id": ["isnull"]}
     search_fields = ["laptop_sr_no", "hardware_id"]
 
-    @action(
-        detail=True,
-        methods=['post'],
-        url_path='return',
-        url_name='return'
-    )
+    @action(detail=True, methods=["post"], url_path="return", url_name="return")
     def return_laptop(self, request, pk=None):
         laptop = self.get_object()  # TODO: get remarks and update object
         laptop.emp_id = None
         laptop.save()
         payload = request.data
-        employee_id = payload.get('employee_id')
+        employee_id = payload.get("employee_id")
         # TODO: handle employee does not exist
         employee = Employee.objects.get(emp_id=employee_id)
         if not employee.laptop_set.all():
@@ -51,16 +45,11 @@ class LaptopViewSet(viewsets.ModelViewSet):
             employee.save()
         return Response({"success": True})
 
-    @action(
-        detail=True,
-        methods=['post'],
-        url_path='assign',
-        url_name='assign'
-    )
+    @action(detail=True, methods=["post"], url_path="assign", url_name="assign")
     def assign_laptop(self, request, pk=None):
         laptop = self.get_object()
         payload = request.data
-        employee_id = payload.get('employee_id')
+        employee_id = payload.get("employee_id")
         # TODO: handle employee does not exist
         employee = Employee.objects.get(emp_id=employee_id)
         employee.is_assigned = True
@@ -70,22 +59,18 @@ class LaptopViewSet(viewsets.ModelViewSet):
         return Response({"success": True})
 
     def get_serializer_class(self):
-        if self.action in ['create', 'update', 'partial_update']:
+        if self.action in ["create", "update", "partial_update"]:
             return LaptopCreateSerializer
         return LaptopSerializer
 
 
 class LaptopHistoryAPIView(APIView):
-
     def get(self, *args, **kwargs):
-        laptop_id = kwargs.get('id')
+        laptop_id = kwargs.get("id")
         laptop = Laptop.objects.get(id=laptop_id)
         laptop_history = laptop.history.all()
         history = api_get_history(laptop_history)
-        return Response({
-            "laptop": laptop.hardware_id,
-            "history": history
-        })
+        return Response({"laptop": laptop.hardware_id, "history": history})
 
 
 class LaptopBrandViewSet(viewsets.ModelViewSet):
@@ -97,7 +82,7 @@ class BuildingViewSet(viewsets.ModelViewSet):
     queryset = Building.objects.all()
 
     def get_serializer_class(self):
-        if self.action in ['create', 'update']:
+        if self.action in ["create", "update"]:
             return BuildingCreateUpdateSerializer
         return BuildingRetrieveListDeleteSerializer
 
@@ -105,8 +90,8 @@ class BuildingViewSet(viewsets.ModelViewSet):
 # Choice Field APIS TODO: move all choices to model
 class BaseModelChoicesAPI(APIView):
     model = None
-    choice_attr_name = ''
-    response_key = ''
+    choice_attr_name = ""
+    response_key = ""
 
     def __init__(self, **kwargs):
         if not all([self.model, self.choice_attr_name, self.response_key]):
@@ -124,20 +109,20 @@ class BaseModelChoicesAPI(APIView):
 
 class LaptopScreenTypeAPI(BaseModelChoicesAPI):
     model = Laptop
-    choice_attr_name = 'LAPTOP_SCREEN_TYPES'
-    response_key = 'laptop_screen_types'
+    choice_attr_name = "LAPTOP_SCREEN_TYPES"
+    response_key = "laptop_screen_types"
 
 
 class LaptopStatusAPI(BaseModelChoicesAPI):
     model = Laptop
-    choice_attr_name = 'LAPTOP_STATUSES'
-    response_key = 'laptop_statuses'
+    choice_attr_name = "LAPTOP_STATUSES"
+    response_key = "laptop_statuses"
 
 
 class LaptopOwnerAPI(BaseModelChoicesAPI):
     model = Laptop
-    choice_attr_name = 'LAPTOP_OWNER_TYPES'
-    response_key = 'laptop_owner_types'
+    choice_attr_name = "LAPTOP_OWNER_TYPES"
+    response_key = "laptop_owner_types"
 
 
 # Chart APIs
@@ -163,33 +148,23 @@ class LaptopChartAPI(APIView):
                 "datasets": [{"label": self.chart_label, "data": []}],
             },
         }
-        laptop_status_data = api_get_laptop_count_by_value(
-            value="laptop_status"
-        )
+        laptop_status_data = api_get_laptop_count_by_value(value="laptop_status")
         for data in laptop_status_data:
             response["laptop_status"]["labels"].append(data["laptop_status"])
-            response["laptop_status"]["datasets"][0]["data"].append(
-                data["total"]
-            )
+            response["laptop_status"]["datasets"][0]["data"].append(data["total"])
 
         laptop_branch_data = api_get_laptop_count_by_value(
             value="laptop_branch__location"
         )
         for data in laptop_branch_data:
-            response["laptop_branch"]["labels"].append(
-                data["laptop_branch__location"]
-            )
-            response["laptop_branch"]["datasets"][0]["data"].append(
-                data["total"]
-            )
+            response["laptop_branch"]["labels"].append(data["laptop_branch__location"])
+            response["laptop_branch"]["datasets"][0]["data"].append(data["total"])
 
         laptop_assigned_data = Laptop.objects.aggregate(
             unassigned=Count("id", filter=Q(emp_id__isnull=True)),
             assigned=Count("id", filter=Q(emp_id__isnull=False)),
         )
-        response["laptop_availability"]["labels"] = list(
-            laptop_assigned_data.keys()
-        )
+        response["laptop_availability"]["labels"] = list(laptop_assigned_data.keys())
         response["laptop_availability"]["datasets"][0]["data"] = list(
             laptop_assigned_data.values()
         )

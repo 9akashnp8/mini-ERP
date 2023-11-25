@@ -2,13 +2,13 @@ from rest_framework import serializers
 from django.db.utils import IntegrityError
 
 
-from .hardware import LaptopSerializer
 from employee.models import (
     Department,
     Designation,
     Location,
     Employee,
 )
+from .hardware import LaptopSerializer
 from django.contrib.auth.models import User
 from hardware.models import Laptop
 
