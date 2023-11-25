@@ -1,3 +1,4 @@
+from typing import Union
 from simple_history.manager import HistoricalQuerySet
 from simple_history.models import ModelDelta
 
@@ -55,3 +56,14 @@ def api_get_history(history: HistoricalQuerySet) -> list[dict]:
     changes = get_history_deltas(history)
     result = extract_delta_details(changes)
     return result
+
+def generate_unique_identifier(model_name: str, id: Union[str, int]) -> str:
+    prefix_mapping = {
+        "Employee": "EMP-",
+        "Hardware": "HW-",
+        "Laptop": "LAP-",
+        "Mobile": "MOB-",
+        "HardwareAssignment": "HA-"
+    }
+    prefix = prefix_mapping.get(model_name, "")
+    return f"{prefix}{id:04d}"
