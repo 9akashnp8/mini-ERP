@@ -5,20 +5,6 @@ from django.db import models
 from simple_history.models import HistoricalRecords
 from employee.models import Location, Employee
 
-#Models for Employee side of the app
-class Userz(models.Model):
-    #Delete this
-    USER_TYPES = (
-        ('User', 'User'),
-        ('Staff', 'Staff'),
-    )
-    user_id = models.AutoField(primary_key=True, editable=False)
-    user_name = models.CharField(max_length=20, null=True, unique=True)
-    user_type = models.CharField(max_length=20, null=True, choices=USER_TYPES)
-    
-    def __str__(self):
-        return self.user_name
-
 class Building(models.Model):
     location = models.ForeignKey(Location, null=True, on_delete=models.SET_NULL)
     building = models.CharField(max_length=50)
@@ -43,14 +29,6 @@ class LaptopBrand(models.Model):
 
     def __str__(self):
         return self.brand_name
-
-class LaptopModel(models.Model):
-    id = models.AutoField(primary_key=True, editable=False)
-    brand_id = models.ForeignKey(LaptopBrand, null=True, on_delete=models.SET_NULL)
-    model_name = models.CharField(max_length=50, null=True, blank=True)
-
-    def __str__(self):
-        return self.model_name
 
 class Laptop(models.Model):
     LAPTOP_STATUSES = (
