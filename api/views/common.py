@@ -4,16 +4,18 @@ from common.models import (
     EmployeeAppSetting,
     HardwareAppSetting,
 )
-from api.serializers import (
+from api.serializers.common import (
     EmployeeAppSettingsSerializer,
     HardwareAppSettingsSerializer,
 )
+
 
 class EmployeeAppSettingsAPI(RetrieveUpdateAPIView):
     serializer_class = EmployeeAppSettingsSerializer
 
     def get_object(self):
         return EmployeeAppSetting.load()
+
 
 class HardwareAppSettingsAPI(RetrieveUpdateAPIView):
     serializer_class = HardwareAppSettingsSerializer
