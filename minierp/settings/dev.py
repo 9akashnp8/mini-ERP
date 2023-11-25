@@ -13,9 +13,9 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'minierpdb',
-            'USER': 'minierpuser',
-            'PASSWORD': 'minierppassword',
+            'NAME': 'minierp_db',
+            'USER': 'minierp_user',
+            'PASSWORD': 'minierp_passowrd',
             'HOST': 'localhost'
         }
     }
