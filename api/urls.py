@@ -2,9 +2,9 @@ from django.urls import path, include
 from rest_framework_simplejwt.views import TokenVerifyView
 
 from .authentication import CookieTokenObtainPairView, CookieTokenRefreshView
+from .views.hardware import laptop
 from .views import (
     employee,
-    hardware,
     finance,
     common,
 )
@@ -59,38 +59,38 @@ employee_urls = [
 # Hardware routes
 router.register(
     r'laptop',
-    hardware.LaptopViewSet,
+    laptop.LaptopViewSet,
     basename='laptop'
 )
 router.register(
     r'laptop-brand',
-    hardware.LaptopBrandViewSet,
+    laptop.LaptopBrandViewSet,
     basename='laptop-brand'
 )
 router.register(
     r'building',
-    hardware.BuildingViewSet,
+    laptop.BuildingViewSet,
     basename='building'
 )
 hardware_urls = [
     path(
         'laptop/<str:id>/history/',
-        hardware.LaptopHistoryAPIView.as_view(),
+        laptop.LaptopHistoryAPIView.as_view(),
         name='laptop_history_api',
     ),
     path(
         'laptop-screen-types/',
-        hardware.LaptopScreenTypeAPI.as_view(),
+        laptop.LaptopScreenTypeAPI.as_view(),
         name='laptop_screen_types',
     ),
     path(
         'laptop-statuses/',
-        hardware.LaptopStatusAPI.as_view(),
+        laptop.LaptopStatusAPI.as_view(),
         name='laptop_status',
     ),
     path(
         'laptop-owner-types/',
-        hardware.LaptopOwnerAPI.as_view(),
+        laptop.LaptopOwnerAPI.as_view(),
         name='laptop_owner_types',
     ),
     path(
@@ -104,7 +104,7 @@ hardware_urls = [
 hardware_chart_urls = [
     path(
         'laptop/chart/general/',
-        hardware.LaptopChartAPI.as_view(),
+        laptop.LaptopChartAPI.as_view(),
         name='general_laptop_chart_url'
     )
 ]
