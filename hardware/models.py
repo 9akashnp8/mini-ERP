@@ -179,3 +179,45 @@ class HardwareAssignment(models.Model):
             self.assignment_id = assignment_id
             self.save(*args, **kwargs)
 
+class LaptopOwner(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self) -> str:
+        return self.name
+
+class LaptopScreenSize(models.Model):
+    size_range = models.CharField(max_length=255)
+
+    def __str__(self) -> str:
+        return self.size_range
+
+
+class LaptopV2(models.Model):
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True)
+    hardware_id = models.OneToOneField(Hardware, on_delete=models.CASCADE)
+    laptop_id = models.CharField(max_length=100, null=True, blank=True, unique=True)
+    brand = models.ForeignKey(LaptopBrand, null=True, on_delete=models.SET_NULL)
+    processor = models.CharField(max_length=255)
+    ram_capacity = models.IntegerField(verbose_name='RAM (GB)')
+    storage_capacity = models.IntegerField(verbose_name='Storage (GB)')
+    screen_size = models.ForeignKey(LaptopScreenSize, null=True, on_delete=models.SET_NULL)
+    is_touch = models.BooleanField(default=False)
+    created_date = models.DateField(auto_now_add=True)
+    modified_date = models.DateField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Laptop"
+        verbose_name_plural = "Laptops"
+
+    def __str__(self) -> str:
+        return self.laptop_id
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if not self.laptop_id:
+            laptop_id = generate_unique_identifier(
+                self.__class__.__name__, self.id
+            )
+            self.laptop_id = laptop_id
+            self.save(*args, **kwargs)
+
