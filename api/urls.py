@@ -44,6 +44,16 @@ router.register(
     hardware.HardwareTypeViewSet,
     basename="hardware-type",
 )
+router.register(
+    r"hardware-owner",
+    hardware.HardwareOwnerViewSet,
+    basename="hardware-owner",
+)
+router.register(
+    r"hardware-condition",
+    hardware.HardwareConditionViewSet,
+    basename="hardware-condition",
+)
 router.register(r"laptop", laptop.LaptopViewSet, basename="laptop")
 router.register(r"laptop-brand", laptop.LaptopBrandViewSet, basename="laptop-brand")
 router.register(r"building", laptop.BuildingViewSet, basename="building")
