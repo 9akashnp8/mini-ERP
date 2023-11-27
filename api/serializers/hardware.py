@@ -1,11 +1,29 @@
 from rest_framework import serializers
 
-from hardware.models import Laptop, LaptopBrand, HardwareType
+from hardware.models import (
+    Laptop,
+    LaptopBrand,
+    HardwareType,
+    HardwareOwner,
+    HardwareCondition,
+)
 
 
 class HardwareTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = HardwareType
+        fields = "__all__"
+
+
+class HardwareOwnerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HardwareOwner
+        fields = "__all__"
+
+
+class HardwareConditionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HardwareCondition
         fields = "__all__"
 
 
