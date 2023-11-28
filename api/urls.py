@@ -40,6 +40,11 @@ employee_urls = [
 
 # Hardware routes
 router.register(
+    r"hardware",
+    hardware.HardwareViewSet,
+    basename="hardware",
+)
+router.register(
     r"hardware-type",
     hardware.HardwareTypeViewSet,
     basename="hardware-type",
