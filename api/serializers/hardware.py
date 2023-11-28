@@ -3,10 +3,31 @@ from rest_framework import serializers
 from hardware.models import (
     Laptop,
     LaptopBrand,
+    Hardware,
     HardwareType,
     HardwareOwner,
     HardwareCondition,
 )
+
+
+class HardwareListRetrieveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Hardware
+        exclude = ["id"]
+        depth = 1
+
+
+class HardwareCreateUpdateDestroySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Hardware
+        exclude = ["id"]
+        extra_kwargs = {
+            "type": {"required": True},
+            "owner": {"required": True},
+            "condition": {"required": True},
+            "location": {"required": True},
+            "building": {"required": True},
+        }
 
 
 class HardwareTypeSerializer(serializers.ModelSerializer):
