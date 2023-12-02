@@ -1,9 +1,11 @@
 import os
+from typing import Any
 import uuid
 from datetime import date, datetime
 
-from django.db import models
+from django.db import models, transaction
 from simple_history.models import HistoricalRecords
+
 from common.functions import generate_unique_identifier
 from employee.models import Location, Employee
 
@@ -217,6 +219,22 @@ class LaptopScreenSize(models.Model):
         return self.size_range
 
 
+class LaptopManager(models.Manager):
+    @transaction.atomic
+    def create(self, hardware_data, laptop_data) -> Any:
+        """
+        Custom manager method that creates Laptop
+        and related Hardware records
+
+        Ensure only validated data (either via Forms
+        or Serializers) is passed to this method.
+        """
+        hardware = Hardware.objects.create(**hardware_data)
+        laptop = LaptopV2(hardware_id=hardware, **laptop_data)
+        laptop.save()
+        return laptop
+
+
 class LaptopV2(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, unique=True)
     hardware_id = models.OneToOneField(Hardware, on_delete=models.CASCADE)
@@ -231,6 +249,8 @@ class LaptopV2(models.Model):
     is_touch = models.BooleanField(default=False)
     created_date = models.DateField(auto_now_add=True)
     modified_date = models.DateField(auto_now=True)
+
+    objects = LaptopManager()
 
     class Meta:
         verbose_name = "Laptop"
