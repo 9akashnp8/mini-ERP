@@ -11,11 +11,13 @@ from django.db.models import Count, Q
 
 from common.functions import api_get_history
 from employee.models import Employee
-from hardware.models import Laptop, LaptopBrand, Building
+from hardware.models import Laptop, LaptopV2, LaptopBrand, Building
 from hardware.functions import api_get_laptop_count_by_value
 from api.serializers.hardware import (
-    LaptopSerializer,
-    LaptopCreateSerializer,
+    LaptopV1CreateSerializer,
+    LaptopV1ListRetrieveSerializer,
+    LaptopV2CreateSerializer,
+    LaptopV2ListRetrieveSerializer,
     LaptopBrandSerializer,
 )
 from api.serializers.common import (
@@ -25,10 +27,7 @@ from api.serializers.common import (
 
 
 class LaptopViewSet(viewsets.ModelViewSet):
-    queryset = Laptop.objects.all()
-    serializer_class = LaptopSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter]
-    filterset_fields = {"laptop_status": ["exact"], "emp_id": ["isnull"]}
     search_fields = ["laptop_sr_no", "hardware_id"]
 
     @action(detail=True, methods=["post"], url_path="return", url_name="return")
@@ -58,10 +57,25 @@ class LaptopViewSet(viewsets.ModelViewSet):
         laptop.save()
         return Response({"success": True})
 
+    def get_queryset(self):
+        if self.request.version == "2":
+            return LaptopV2.objects.all()
+        return Laptop.objects.all()
+
+    def get_object(self):
+        if self.request.version == "2":
+            self.lookup_field = "uuid"
+            self.kwargs.update({"uuid": self.kwargs["pk"]})
+        return super().get_object()
+
     def get_serializer_class(self):
+        if self.request.version == "2":
+            if self.action in ["create", "update", "partial_update"]:
+                return LaptopV2CreateSerializer
+            return LaptopV2ListRetrieveSerializer
         if self.action in ["create", "update", "partial_update"]:
-            return LaptopCreateSerializer
-        return LaptopSerializer
+            return LaptopV1CreateSerializer
+        return LaptopV1ListRetrieveSerializer
 
 
 class LaptopHistoryAPIView(APIView):
