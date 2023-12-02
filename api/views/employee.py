@@ -17,7 +17,7 @@ from api.serializers.employee import (
     DesignationSerializer,
     LocationSerializer,
 )
-from api.serializers.hardware import LaptopSerializer
+from api.serializers.hardware import LaptopV1ListRetrieveSerializer
 from api.serializers.common import UserSerializer
 from api.custom_pagination import FullResultsSetPagination
 
@@ -39,7 +39,7 @@ class EmployeeLaptopListView(APIView):
     def get(self, request, **kwargs):
         employee_id = kwargs.get("id", "_")
         laptops = get_laptops_assigned(employee_id)
-        result = LaptopSerializer(laptops, many=True)
+        result = LaptopV1ListRetrieveSerializer(laptops, many=True)
         return Response(result.data)
 
 
