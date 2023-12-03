@@ -252,3 +252,276 @@ def test_delete_hardware(
 
     delete_404_response = api_client.delete("/api/hardware/5/", format="json")
     assert delete_404_response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_create_laptop_v1(
+    api_client,
+    seed_laptop_brand,
+    seed_laptop_screen_size,
+) -> None:
+    payload = {
+        "hardware_id": "",
+        "laptop_sr_no": "SR-001",
+        "processor": "i3 13th Gen",
+        "ram_capacity": 4,
+        "storage_capacity": 5,
+        "brand": seed_laptop_brand,
+        "screen_size": seed_laptop_screen_size,
+    }
+    post_response = api_client.post(
+        "/api/laptop/",
+        data=payload,
+        format="json",
+        HTTP_ACCEPT="application/json; version=1",
+    )
+    laptop_id = post_response.data["id"]
+    assert post_response.status_code == 201
+    assert post_response.data["laptop_sr_no"] == payload["laptop_sr_no"]
+
+    get_response = api_client.get(f"/api/laptop/{laptop_id}/", format="json")
+    assert get_response.status_code == 200
+    assert get_response.data["laptop_sr_no"] == payload["laptop_sr_no"]
+
+
+@pytest.mark.django_db
+def test_update_laptop_v1(
+    api_client,
+    seed_laptop_brand,
+    seed_laptop_screen_size,
+) -> None:
+    payload = {
+        "hardware_id": "",
+        "laptop_sr_no": "SR-001",
+        "processor": "i3 13th Gen",
+        "ram_capacity": 4,
+        "storage_capacity": 5,
+        "brand": seed_laptop_brand,
+        "screen_size": seed_laptop_screen_size,
+    }
+    post_response = api_client.post(
+        "/api/laptop/",
+        data=payload,
+        format="json",
+        HTTP_ACCEPT="application/json; version=1",
+    )
+    laptop_id = post_response.data["id"]
+    assert post_response.status_code == 201
+    assert post_response.data["laptop_sr_no"] == payload["laptop_sr_no"]
+
+    patch_payload = {"laptop_sr_no": "SR-002"}
+    patch_response = api_client.patch(
+        f"/api/laptop/{laptop_id}/",
+        data=patch_payload,
+        format="json",
+        HTTP_ACCEPT="application/json; version=1",
+    )
+    assert patch_response.status_code == 200
+    assert patch_response.data["laptop_sr_no"] == patch_payload["laptop_sr_no"]
+
+    patch_404_response = api_client.patch(
+        "/api/hardware/4/", data=payload, format="json"
+    )
+    assert patch_404_response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_delete_laptop_v1(
+    api_client,
+    seed_laptop_brand,
+    seed_laptop_screen_size,
+) -> None:
+    payload = {
+        "hardware_id": "",
+        "laptop_sr_no": "SR-001",
+        "processor": "i3 13th Gen",
+        "ram_capacity": 4,
+        "storage_capacity": 5,
+        "brand": seed_laptop_brand,
+        "screen_size": seed_laptop_screen_size,
+    }
+    post_response = api_client.post(
+        "/api/laptop/",
+        data=payload,
+        format="json",
+        HTTP_ACCEPT="application/json; version=1",
+    )
+    laptop_id = post_response.data["id"]
+    assert post_response.status_code == 201
+    assert post_response.data["laptop_sr_no"] == payload["laptop_sr_no"]
+
+    delete_response = api_client.delete(
+        f"/api/laptop/{laptop_id}/",
+        format="json",
+        HTTP_ACCEPT="application/json; version=1",
+    )
+    assert delete_response.status_code == 204
+
+    delete_404_response = api_client.delete("/api/hardware/5/", format="json")
+    assert delete_404_response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_create_laptop_v2(
+    api_client,
+    seed_hardware_type,
+    seed_hardware_owner,
+    seed_hardware_condition,
+    seed_employee_location,
+    seed_hardware_building,
+    seed_laptop_brand,
+    seed_laptop_screen_size,
+) -> None:
+    payload = {
+        "hardware_id": {
+            "serial_no": "SRL100",
+            "type": seed_hardware_type,
+            "owner": seed_hardware_owner,
+            "condition": seed_hardware_condition,
+            "location": seed_employee_location,
+            "building": seed_hardware_building,
+        },
+        "processor": "i3 13th Gen",
+        "ram_capacity": 4,
+        "storage_capacity": 5,
+        "brand": seed_laptop_brand,
+        "screen_size": seed_laptop_screen_size,
+    }
+    post_response = api_client.post(
+        "/api/laptop/",
+        data=payload,
+        format="json",
+        HTTP_ACCEPT="application/json; version=2",
+    )
+    laptop_uuid = post_response.data["uuid"]
+    assert post_response.status_code == 201
+    assert (
+        post_response.data["hardware_id"]["serial_no"]
+        == payload["hardware_id"]["serial_no"]
+    )
+
+    get_response = api_client.get(
+        f"/api/laptop/{laptop_uuid}/",
+        format="json",
+        HTTP_ACCEPT="application/json; version=2",
+    )
+    assert get_response.status_code == 200
+    assert (
+        get_response.data["hardware_id"]["serial_no"]
+        == payload["hardware_id"]["serial_no"]
+    )
+
+
+@pytest.mark.django_db
+def test_update_laptop_v2(
+    api_client,
+    seed_hardware_type,
+    seed_hardware_owner,
+    seed_hardware_condition,
+    seed_employee_location,
+    seed_hardware_building,
+    seed_laptop_brand,
+    seed_laptop_screen_size,
+) -> None:
+    payload = {
+        "hardware_id": {
+            "serial_no": "SRL100",
+            "type": seed_hardware_type,
+            "owner": seed_hardware_owner,
+            "condition": seed_hardware_condition,
+            "location": seed_employee_location,
+            "building": seed_hardware_building,
+        },
+        "processor": "i3 13th Gen",
+        "ram_capacity": 4,
+        "storage_capacity": 5,
+        "brand": seed_laptop_brand,
+        "screen_size": seed_laptop_screen_size,
+    }
+    post_response = api_client.post(
+        "/api/laptop/",
+        data=payload,
+        format="json",
+        HTTP_ACCEPT="application/json; version=2",
+    )
+    laptop_uuid = post_response.data["uuid"]
+    assert post_response.status_code == 201
+    assert (
+        post_response.data["hardware_id"]["serial_no"]
+        == payload["hardware_id"]["serial_no"]
+    )
+
+    patch_payload = {"processor": "i5 12th Gen"}
+    patch_response = api_client.patch(
+        f"/api/laptop/{laptop_uuid}/",
+        data=patch_payload,
+        format="json",
+        HTTP_ACCEPT="application/json; version=2",
+    )
+    assert patch_response.status_code == 200
+    assert patch_response.data["processor"] == patch_payload["processor"]
+
+    get_response = api_client.get(
+        f"/api/laptop/{laptop_uuid}/",
+        format="json",
+        HTTP_ACCEPT="application/json; version=2",
+    )
+    assert get_response.status_code == 200
+    assert get_response.data["processor"] == patch_payload["processor"]
+
+    patch_404_response = api_client.patch(
+        "/api/laptop/asv8-x4asd-v6xz/", data=payload, format="json"
+    )
+    assert patch_404_response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_delete_laptop_v2(
+    api_client,
+    seed_hardware_type,
+    seed_hardware_owner,
+    seed_hardware_condition,
+    seed_employee_location,
+    seed_hardware_building,
+    seed_laptop_brand,
+    seed_laptop_screen_size,
+) -> None:
+    payload = {
+        "hardware_id": {
+            "serial_no": "SRL100",
+            "type": seed_hardware_type,
+            "owner": seed_hardware_owner,
+            "condition": seed_hardware_condition,
+            "location": seed_employee_location,
+            "building": seed_hardware_building,
+        },
+        "processor": "i3 13th Gen",
+        "ram_capacity": 4,
+        "storage_capacity": 5,
+        "brand": seed_laptop_brand,
+        "screen_size": seed_laptop_screen_size,
+    }
+    post_response = api_client.post(
+        "/api/laptop/",
+        data=payload,
+        format="json",
+        HTTP_ACCEPT="application/json; version=2",
+    )
+    laptop_uuid = post_response.data["uuid"]
+    assert post_response.status_code == 201
+    assert (
+        post_response.data["hardware_id"]["serial_no"]
+        == payload["hardware_id"]["serial_no"]
+    )
+
+    delete_response = api_client.delete(
+        f"/api/laptop/{laptop_uuid}/",
+        format="json",
+        HTTP_ACCEPT="application/json; version=2",
+    )
+    assert delete_response.status_code == 204
+
+    delete_404_response = api_client.delete(
+        "/api/hardware/axz1-asd3-34as/", format="json"
+    )
+    assert delete_404_response.status_code == 404
