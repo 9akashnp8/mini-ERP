@@ -236,10 +236,10 @@ class HardwareAssignment(models.Model):
         Disallow changing of Hardware or Employee for existing HardwareAssignment record. To
         change an employee's hardware, return existing assignment and create a new record.
         """
-        if not self._state.adding:
+        if not self._state.adding and getattr(self, "_loaded_values", None):
             if (
                 self.hardware.id != self._loaded_values["hardware_id"]
-                or self.employee.id != self._loaded_values["employee_id"]
+                or self.employee.emp_id != self._loaded_values["employee_id"]
             ):
                 raise ValidationError(
                     "Editing Hardware Not Allowed, Please Create New Assignment"
@@ -251,7 +251,7 @@ class HardwareAssignment(models.Model):
         if not self.assignment_id:
             assignment_id = generate_unique_identifier(self.__class__.__name__, self.id)
             self.assignment_id = assignment_id
-            self.save(*args, **kwargs)
+            self.save()
 
 
 class LaptopOwner(models.Model):
