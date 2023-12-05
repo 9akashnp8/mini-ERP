@@ -1,4 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.response import Response
+from django_filters import rest_framework as filters
 
 from api.serializers.hardware import (
     HardwareListRetrieveSerializer,
@@ -6,13 +8,18 @@ from api.serializers.hardware import (
     HardwareTypeSerializer,
     HardwareOwnerSerializer,
     HardwareConditionSerializer,
+    HardwareAssignmentSerializer,
+    HardwareAssignmentCreateSerializer,
+    HardwareAssignmentUpdateSerializer,
 )
+from api.filters import HardwareAssignmentFilter
 
 from hardware.models import (
     Hardware,
     HardwareType,
     HardwareOwner,
     HardwareCondition,
+    HardwareAssignment,
 )
 
 
@@ -40,3 +47,19 @@ class HardwareOwnerViewSet(ModelViewSet):
 class HardwareConditionViewSet(ModelViewSet):
     serializer_class = HardwareConditionSerializer
     queryset = HardwareCondition.objects.all()
+
+
+class HardwareAssignmentViewSet(ModelViewSet):
+    queryset = HardwareAssignment.objects.all()
+    filter_backends = [filters.DjangoFilterBackend]
+    filterset_class = HardwareAssignmentFilter
+
+    def get_serializer_class(self):
+        if self.action == "create":
+            return HardwareAssignmentCreateSerializer
+        elif self.action in ["update", "partial_update"]:
+            return HardwareAssignmentUpdateSerializer
+        return HardwareAssignmentSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        return Response({"status": "fail", "message": "Not Allowed"}, status=405)

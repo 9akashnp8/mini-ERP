@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from rest_framework import serializers
 
 from hardware.models import (
@@ -8,6 +9,7 @@ from hardware.models import (
     HardwareType,
     HardwareOwner,
     HardwareCondition,
+    HardwareAssignment,
 )
 
 
@@ -47,6 +49,40 @@ class HardwareConditionSerializer(serializers.ModelSerializer):
     class Meta:
         model = HardwareCondition
         fields = "__all__"
+
+
+class HardwareAssignmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HardwareAssignment
+        fields = "__all__"
+
+
+class HardwareAssignmentCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HardwareAssignment
+        fields = ["hardware", "employee", "assignment_date"]
+        extra_kwargs = {
+            "hardware": {"required": True},
+            "employee": {"required": True},
+            "assignment_date": {"required": True},
+        }
+
+    def create(self, validated_data):
+        try:
+            instance = super().create(validated_data)
+        except ValidationError:
+            raise serializers.ValidationError(
+                "Hardware Already Assigned to Employee, Please Return Existing Hardware"
+            )
+        else:
+            return instance
+
+
+class HardwareAssignmentUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HardwareAssignment
+        fields = ["returned_date"]
+        extra_kwargs = {"returned_date": {"required": True}}
 
 
 class LaptopV1ListRetrieveSerializer(serializers.ModelSerializer):
