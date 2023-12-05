@@ -1,9 +1,11 @@
+from collections.abc import Collection
 import os
 from typing import Any
 import uuid
 from datetime import date, datetime
 
 from django.db import models, transaction
+from django.core.exceptions import ValidationError
 from simple_history.models import HistoricalRecords
 
 from common.functions import generate_unique_identifier
@@ -175,6 +177,24 @@ class Hardware(models.Model):
             return self.save()
 
 
+class HardwareAssignmentManager(models.Manager):
+    def create(self, **kwargs: Any) -> Any:
+        """
+        Ensure that any hardware being assigned to employee is first
+        returned if previously assigned.
+        """
+        hardware = kwargs.get("hardware")
+        employee = kwargs.get("employee")
+        assignment_exists = HardwareAssignment.objects.filter(
+            hardware=hardware, employee=employee, returned_date__isnull=True
+        ).exists()
+        if assignment_exists:
+            raise ValidationError(
+                "Hardware is already assigned to employee, please return existing assignment."
+            )
+        return super().create(**kwargs)
+
+
 class HardwareAssignment(models.Model):
     assignment_id = models.CharField(max_length=10, null=True, blank=True)
     hardware = models.ForeignKey(
@@ -194,10 +214,39 @@ class HardwareAssignment(models.Model):
     created_date = models.DateField(auto_now_add=True)
     modified_date = models.DateField(auto_now=True)
 
+    objects = HardwareAssignmentManager()
+
     def __str__(self) -> str:
         return self.assignment_id
 
+    @classmethod
+    def from_db(
+        cls, db: str | None, field_names: Collection[str], values: Collection[Any]
+    ):
+        """
+        Store initialled loaded values from db. Use for comparing field values for update
+        operations.
+        """
+        instance = super().from_db(db, field_names, values)
+        instance._loaded_values = dict(zip(field_names, values))
+        return instance
+
+    def check_unallowed_edit(self) -> None:
+        """
+        Disallow changing of Hardware or Employee for existing HardwareAssignment record. To
+        change an employee's hardware, return existing assignment and create a new record.
+        """
+        if not self._state.adding:
+            if (
+                self.hardware.id != self._loaded_values["hardware_id"]
+                or self.employee.id != self._loaded_values["employee_id"]
+            ):
+                raise ValidationError(
+                    "Editing Hardware Not Allowed, Please Create New Assignment"
+                )
+
     def save(self, *args, **kwargs):
+        self.check_unallowed_edit()
         super().save(*args, **kwargs)
         if not self.assignment_id:
             assignment_id = generate_unique_identifier(self.__class__.__name__, self.id)
