@@ -8,7 +8,7 @@ from employee.models import (
     Location,
     Employee,
 )
-from .hardware import LaptopV1ListRetrieveSerializer
+import api.serializers.hardware as hardware_serializers
 from django.contrib.auth.models import User
 from hardware.models import Laptop
 
@@ -51,7 +51,9 @@ class EmployeeDetailSerializer(BaseEmployeeSerializer):
 
     def get_laptops(self, employee):
         laptops = Laptop.objects.filter(emp_id=employee.emp_id)
-        serializer = LaptopV1ListRetrieveSerializer(laptops, many=True)
+        serializer = hardware_serializers.LaptopV1ListRetrieveSerializer(
+            laptops, many=True
+        )
         return serializer.data
 
 
