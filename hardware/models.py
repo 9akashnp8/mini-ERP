@@ -5,6 +5,7 @@ import uuid
 from datetime import date, datetime
 
 from django.db import models, transaction
+from django.db.models import Q
 from django.core.exceptions import ValidationError
 from simple_history.models import HistoricalRecords
 
@@ -150,6 +151,19 @@ class HardwareCondition(models.Model):
         return self.condition
 
 
+class HardwareQuerySet(models.QuerySet):
+    def get_available_hardware(self, type: HardwareType = None):
+        """
+        Filter Hardware that have no assignement records OR that have been
+        returned i.e., Filter hardware that is available.
+        """
+        query = Q(employees_assigned__isnull=True)
+        query.add(Q(employees_assigned__returned_date__isnull=False), Q.OR)
+        if type:
+            query.add(Q(type=type), Q.AND)
+        return self.filter(query)
+
+
 class Hardware(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, unique=True)
     hardware_id = models.CharField(max_length=255, null=True, blank=True, unique=True)
@@ -165,6 +179,8 @@ class Hardware(models.Model):
     sold_date = models.DateField(null=True, blank=True)
     created_date = models.DateField(auto_now_add=True)
     modified_date = models.DateField(auto_now=True)
+
+    objects = HardwareQuerySet.as_manager()
 
     def __str__(self) -> str:
         return self.hardware_id

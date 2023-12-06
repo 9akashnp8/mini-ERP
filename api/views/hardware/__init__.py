@@ -12,7 +12,7 @@ from api.serializers.hardware import (
     HardwareAssignmentCreateSerializer,
     HardwareAssignmentUpdateSerializer,
 )
-from api.filters import HardwareAssignmentFilter
+from api.filters import HardwareAssignmentFilter, HardwareFilter
 
 from hardware.models import (
     Hardware,
@@ -27,6 +27,8 @@ class HardwareViewSet(ModelViewSet):
     serializer_class = HardwareCreateUpdateDestroySerializer
     queryset = Hardware.objects.all()
     lookup_field = "uuid"
+    filter_backends = [filters.DjangoFilterBackend]
+    filterset_class = HardwareFilter
 
     def get_serializer_class(self):
         if self.action in ["list", "retrieve"]:
