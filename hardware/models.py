@@ -152,16 +152,23 @@ class HardwareCondition(models.Model):
 
 
 class HardwareQuerySet(models.QuerySet):
-    def get_available_hardware(self, type: HardwareType = None):
+    def get_available_hardware(self):
         """
         Filter Hardware that have no assignement records OR that have been
         returned i.e., Filter hardware that is available.
         """
-        query = Q(employees_assigned__isnull=True)
-        query.add(Q(employees_assigned__returned_date__isnull=False), Q.OR)
-        if type:
-            query.add(Q(type=type), Q.AND)
-        return self.filter(query)
+        q1 = Q(employees_assigned__isnull=True)
+        q2 = Q(employees_assigned__returned_date__isnull=False)
+        q3 = ~Q(employees_assigned__returned_date__isnull=True)
+        return self.filter(q1 | q2 & q3).distinct()
+
+    def get_assigned_hardware(self):
+        """
+        Filter Hardware that have been assigned to employee(s)
+        """
+        query = Q(employees_assigned__isnull=False)
+        query.add(Q(employees_assigned__returned_date__isnull=True), Q.AND)
+        return self.filter(query).distinct()
 
 
 class Hardware(models.Model):
