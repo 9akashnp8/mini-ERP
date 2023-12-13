@@ -1,16 +1,19 @@
 from django_filters import rest_framework as filters
 
-from hardware.models import HardwareAssignment, Hardware
+from hardware.models import HardwareAssignment, Hardware, HardwareQuerySet
 
 
 class HardwareFilter(filters.FilterSet):
     is_free = filters.BooleanFilter(method="filter_is_free")
     type = filters.NumberFilter(field_name="type")
 
-    def filter_is_free(self, queryset, field_name, value):
+    def filter_is_free(self, queryset: HardwareQuerySet, field_name: str, value: bool):
         if value is True:
             return queryset.get_available_hardware()
-        return queryset
+        elif value is False:
+            return queryset.get_assigned_hardware()
+        else:
+            return queryset
 
     class Meta:
         model = Hardware
