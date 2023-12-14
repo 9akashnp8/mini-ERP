@@ -60,7 +60,7 @@ class HardwareAssignmentSerializer(serializers.ModelSerializer):
 class HardwareAssignmentCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = HardwareAssignment
-        fields = ["hardware", "employee", "assignment_date"]
+        fields = ["id", "hardware", "employee", "assignment_date"]
         extra_kwargs = {
             "hardware": {"required": True},
             "employee": {"required": True},
