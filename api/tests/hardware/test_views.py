@@ -525,3 +525,97 @@ def test_delete_laptop_v2(
         "/api/hardware/axz1-asd3-34as/", format="json"
     )
     assert delete_404_response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_create_hardware_assignment(api_client, seed_employee, seed_hardware) -> None:
+    payload = {
+        "hardware": seed_hardware,
+        "employee": seed_employee,
+        "assignment_date": "2023-12-12",
+    }
+    post_response = api_client.post(
+        "/api/hardware-assignment/",
+        data=payload,
+        format="json",
+        HTTP_ACCEPT="application/json; version=1",
+    )
+    assignment_id = post_response.data["id"]
+    assert post_response.status_code == 201
+
+    get_response = api_client.get(
+        f"/api/hardware-assignment/{assignment_id}/",
+        format="json",
+        HTTP_ACCEPT="application/json; version=1",
+    )
+    assert get_response.status_code == 200
+    assert get_response.data["hardware"] == payload["hardware"]
+    assert get_response.data["employee"] == payload["employee"]
+
+
+@pytest.mark.django_db
+def test_return_hardware(api_client, seed_employee, seed_hardware) -> None:
+    payload = {
+        "hardware": seed_hardware,
+        "employee": seed_employee,
+        "assignment_date": "2023-12-12",
+    }
+    post_response = api_client.post(
+        "/api/hardware-assignment/",
+        data=payload,
+        format="json",
+        HTTP_ACCEPT="application/json; version=1",
+    )
+    assignment_id = post_response.data["id"]
+    assert post_response.status_code == 201
+
+    return_payload = {"returned_date": "2023-12-31"}
+    return_response = api_client.patch(
+        f"/api/hardware-assignment/{assignment_id}/",
+        data=return_payload,
+        format="json",
+        HTTP_ACCEPT="application/json; version=1",
+    )
+    assert return_response.status_code == 200
+    assert return_response.data["returned_date"] == return_payload["returned_date"]
+
+    get_response = api_client.get(
+        f"/api/hardware-assignment/{assignment_id}/",
+        format="json",
+        HTTP_ACCEPT="application/json; version=1",
+    )
+    assert get_response.status_code == 200
+    assert get_response.data["returned_date"] == return_payload["returned_date"]
+
+
+@pytest.mark.django_db
+def test_delete_hardware_assignment_not_allowed(
+    api_client, seed_employee, seed_hardware
+) -> None:
+    payload = {
+        "hardware": seed_hardware,
+        "employee": seed_employee,
+        "assignment_date": "2023-12-12",
+    }
+    post_response = api_client.post(
+        "/api/hardware-assignment/",
+        data=payload,
+        format="json",
+        HTTP_ACCEPT="application/json; version=1",
+    )
+    assignment_id = post_response.data["id"]
+    assert post_response.status_code == 201
+
+    delete_response = api_client.delete(
+        f"/api/hardware-assignment/{assignment_id}/",
+        format="json",
+        HTTP_ACCEPT="application/json; version=1",
+    )
+    assert delete_response.status_code == 405
+
+    get_response = api_client.get(
+        f"/api/hardware-assignment/{assignment_id}/",
+        format="json",
+        HTTP_ACCEPT="application/json; version=1",
+    )
+    assert get_response.status_code == 200
