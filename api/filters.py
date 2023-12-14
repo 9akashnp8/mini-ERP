@@ -10,10 +10,7 @@ class HardwareFilter(filters.FilterSet):
     def filter_is_free(self, queryset: HardwareQuerySet, field_name: str, value: bool):
         if value is True:
             return queryset.get_available_hardware()
-        elif value is False:
-            return queryset.get_assigned_hardware()
-        else:
-            return queryset
+        return queryset.get_assigned_hardware()
 
     class Meta:
         model = Hardware

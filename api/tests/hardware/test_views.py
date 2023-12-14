@@ -226,6 +226,64 @@ def test_update_hardware(
 
 
 @pytest.mark.django_db
+def test_hardware_availability_filter(
+    api_client,
+    seed_employee,
+    seed_hardware,
+) -> None:
+    seed_hardware
+    get_response = api_client.get(
+        "/api/hardware/?is_free=True",
+        format="json",
+        HTTP_ACCEPT="application/json; version=1",
+    )
+    assert get_response.status_code == 200
+    assert get_response.data["count"] == 1
+    assert get_response.data["results"][0]["serial_no"] == "HW-001"
+
+    assignment_payload = {
+        "hardware": seed_hardware,
+        "employee": seed_employee,
+        "assignment_date": "2023-12-12",
+    }
+    assignment_response = api_client.post(
+        "/api/hardware-assignment/",
+        data=assignment_payload,
+        format="json",
+        HTTP_ACCEPT="application/json; version=1",
+    )
+    assert assignment_response.status_code == 201
+    assert assignment_response.data["hardware"] == assignment_payload["hardware"]
+
+    free_hardware_response = api_client.get(
+        "/api/hardware/?is_free=True",
+        format="json",
+        HTTP_ACCEPT="application/json; version=1",
+    )
+    assert free_hardware_response.status_code == 200
+    assert free_hardware_response.data["count"] == 0
+    assert len(free_hardware_response.data["results"]) == 0
+
+    assigned_hardware_response = api_client.get(
+        "/api/hardware/?is_free=False",
+        format="json",
+        HTTP_ACCEPT="application/json; version=1",
+    )
+    assert assigned_hardware_response.status_code == 200
+    assert assigned_hardware_response.data["count"] == 1
+    assert assigned_hardware_response.data["results"][0]["serial_no"] == "HW-001"
+
+    invalid_filter_response = api_client.get(
+        "/api/hardware/?is_free=invalid",
+        format="json",
+        HTTP_ACCEPT="application/json; version=1",
+    )
+    assert invalid_filter_response.status_code == 200
+    assert invalid_filter_response.data["count"] == 1
+    assert invalid_filter_response.data["results"][0]["serial_no"] == "HW-001"
+
+
+@pytest.mark.django_db
 def test_delete_hardware(
     api_client,
     seed_hardware_type,
@@ -551,6 +609,37 @@ def test_create_hardware_assignment(api_client, seed_employee, seed_hardware) ->
     assert get_response.status_code == 200
     assert get_response.data["hardware"] == payload["hardware"]
     assert get_response.data["employee"] == payload["employee"]
+
+
+@pytest.mark.django_db
+def test_duplicate_hardware_assignment(
+    api_client, seed_employee, seed_hardware
+) -> None:
+    payload = {
+        "hardware": seed_hardware,
+        "employee": seed_employee,
+        "assignment_date": "2023-12-12",
+    }
+    post_response = api_client.post(
+        "/api/hardware-assignment/",
+        data=payload,
+        format="json",
+        HTTP_ACCEPT="application/json; version=1",
+    )
+    assert post_response.status_code == 201
+
+    payload_2 = {
+        "hardware": seed_hardware,
+        "employee": seed_employee,
+        "assignment_date": "2023-12-12",
+    }
+    post_response_2 = api_client.post(
+        "/api/hardware-assignment/",
+        data=payload_2,
+        format="json",
+        HTTP_ACCEPT="application/json; version=1",
+    )
+    assert post_response_2.status_code == 400
 
 
 @pytest.mark.django_db
