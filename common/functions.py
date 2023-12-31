@@ -1,3 +1,4 @@
+from typing import Union
 from simple_history.manager import HistoricalQuerySet
 from simple_history.models import ModelDelta
 
@@ -29,18 +30,18 @@ def extract_delta_details(changes: "list[ModelDelta]") -> "list[dict]":
     for change in changes:
         if len(change.changed_fields) > 0:
             for change_by_id in change.changes:
-                record.update({
-                    "id": change.new_record.history_id,
-                    "history_date": change.new_record.history_date,
-                    "field": change_by_id.field,
-                    "old_value": getattr(change_by_id, 'old', None),
-                    "new_value": change_by_id.new,
-                    "history_user": getattr(
-                        change.new_record.history_user,
-                        'username',
-                        None
-                    )
-                })
+                record.update(
+                    {
+                        "id": change.new_record.history_id,
+                        "history_date": change.new_record.history_date,
+                        "field": change_by_id.field,
+                        "old_value": getattr(change_by_id, "old", None),
+                        "new_value": change_by_id.new,
+                        "history_user": getattr(
+                            change.new_record.history_user, "username", None
+                        ),
+                    }
+                )
                 result.append(record)
                 record = {}
 
@@ -55,3 +56,16 @@ def api_get_history(history: HistoricalQuerySet) -> list[dict]:
     changes = get_history_deltas(history)
     result = extract_delta_details(changes)
     return result
+
+
+def generate_unique_identifier(model_name: str, id: Union[str, int]) -> str:
+    prefix_mapping = {
+        "Employee": "EMP-",
+        "Hardware": "HW-",
+        "Laptop": "LAP-",
+        "LaptopV2": "LAP-",
+        "Mobile": "MOB-",
+        "HardwareAssignment": "HA-",
+    }
+    prefix = prefix_mapping.get(model_name, "")
+    return f"{prefix}{id:04d}"

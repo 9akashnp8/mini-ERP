@@ -6,14 +6,9 @@ from django.contrib.auth.models import User
 
 from common.functions import api_get_history
 from hardware.functions import get_laptops_assigned
-from employee.models import (
-    Employee,
-    Department,
-    Designation,
-    Location
-)
+from employee.models import Employee, Department, Designation, Location
 from employee.filters import EmployeeAPIFilter
-from api.serializers import (
+from api.serializers.employee import (
     BaseEmployeeSerializer,
     EmployeeDetailSerializer,
     EmployeeCreateUpdateSerializer,
@@ -21,9 +16,9 @@ from api.serializers import (
     DesignationCreateSerializer,
     DesignationSerializer,
     LocationSerializer,
-    LaptopSerializer,
-    UserSerializer
 )
+from api.serializers.hardware import LaptopV1ListRetrieveSerializer
+from api.serializers.common import UserSerializer
 from api.custom_pagination import FullResultsSetPagination
 
 
@@ -33,37 +28,31 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     filterset_class = EmployeeAPIFilter
 
     def get_serializer_class(self):
-        if self.action == 'retrieve':
+        if self.action == "retrieve":
             return EmployeeDetailSerializer
-        elif self.action in ['create', 'update', 'partial_update']:
+        elif self.action in ["create", "update", "partial_update"]:
             return EmployeeCreateUpdateSerializer
         return BaseEmployeeSerializer
 
 
 class EmployeeLaptopListView(APIView):
-
     def get(self, request, **kwargs):
         employee_id = kwargs.get("id", "_")
         laptops = get_laptops_assigned(employee_id)
-        result = LaptopSerializer(laptops, many=True)
+        result = LaptopV1ListRetrieveSerializer(laptops, many=True)
         return Response(result.data)
 
 
 class EmployeeHistoryAPIView(APIView):
-
     def get(self, *args, **kwargs):
-        employee_id = kwargs.get('id')
+        employee_id = kwargs.get("id")
         employee = Employee.objects.get(emp_id=employee_id)
         employee_history = employee.history.all()
         history = api_get_history(employee_history)
-        return Response({
-            "employee": employee.emp_name,
-            "history": history
-        })
+        return Response({"employee": employee.emp_name, "history": history})
 
 
 class DepartmentViewSet(viewsets.ModelViewSet):
-
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
     pagination_class = FullResultsSetPagination
@@ -77,13 +66,13 @@ class DesignationViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         # Capture department from query parameters
         queryset = Designation.objects.all()
-        department = self.request.query_params.get('dept_id')
+        department = self.request.query_params.get("dept_id")
         if department:
             queryset = queryset.filter(dept_id=department)
         return queryset
 
     def get_serializer_class(self):
-        if self.action in ['create', 'update', 'partial_update']:
+        if self.action in ["create", "update", "partial_update"]:
             return DesignationCreateSerializer
         return self.serializer_class
 
@@ -100,7 +89,6 @@ class UserCreateView(ListCreateAPIView):
     def create(self, request, *args, **kwargs):
         body = request.data
         user = User.objects.create_user(**body)
-        return Response({
-            "status": "success",
-            "data": f"{user.username} successfully created"
-        })
+        return Response(
+            {"status": "success", "data": f"{user.username} successfully created"}
+        )
