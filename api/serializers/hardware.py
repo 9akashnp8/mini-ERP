@@ -81,9 +81,11 @@ class HardwareAssignmentDetailSerializer(serializers.ModelSerializer):
 
 
 class HardwareAssignmentCreateSerializer(serializers.ModelSerializer):
+    hardware = serializers.UUIDField()
+
     class Meta:
         model = HardwareAssignment
-        fields = ["id", "hardware", "employee", "assignment_date"]
+        fields = ["hardware", "employee", "assignment_date"]
         extra_kwargs = {
             "hardware": {"required": True},
             "employee": {"required": True},
@@ -99,6 +101,15 @@ class HardwareAssignmentCreateSerializer(serializers.ModelSerializer):
             )
         else:
             return instance
+
+    def validate_hardware(self, value):
+        """Get hardware object from uuid"""
+        try:
+            hardware = Hardware.objects.get(uuid=value)
+        except Hardware.DoesNotExist:
+            raise serializers.ValidationError("Invalid Hardware UUID")
+        else:
+            return hardware
 
 
 class HardwareAssignmentUpdateSerializer(serializers.ModelSerializer):
