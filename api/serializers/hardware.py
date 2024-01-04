@@ -11,6 +11,7 @@ from hardware.models import (
     HardwareCondition,
     HardwareAssignment,
 )
+from employee.models import Employee
 
 
 class HardwareListRetrieveSerializer(serializers.ModelSerializer):
@@ -55,6 +56,28 @@ class HardwareAssignmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = HardwareAssignment
         fields = "__all__"
+
+
+class HardwareAssignmentDetailSerializer(serializers.ModelSerializer):
+    hardware = serializers.SerializerMethodField()
+    employee = serializers.SerializerMethodField()
+
+    class Meta:
+        model = HardwareAssignment
+        fields = "__all__"
+
+    def get_hardware(self, obj):
+        hardware = Hardware.objects.select_related("type").get(id=obj.hardware.id)
+        return {
+            "uuid": hardware.uuid,
+            "hardware_id": hardware.hardware_id,
+            "serial_no": hardware.serial_no,
+            "type": {"id": hardware.type.id, "name": hardware.type.name},
+        }
+
+    def get_employee(self, obj):
+        employee = Employee.objects.get(emp_id=obj.employee.emp_id)
+        return {"emp_id": employee.emp_id, "lk_emp_id": employee.lk_emp_id}
 
 
 class HardwareAssignmentCreateSerializer(serializers.ModelSerializer):

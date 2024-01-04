@@ -9,6 +9,7 @@ from api.serializers.hardware import (
     HardwareOwnerSerializer,
     HardwareConditionSerializer,
     HardwareAssignmentSerializer,
+    HardwareAssignmentDetailSerializer,
     HardwareAssignmentCreateSerializer,
     HardwareAssignmentUpdateSerializer,
 )
@@ -56,11 +57,21 @@ class HardwareAssignmentViewSet(ModelViewSet):
     filter_backends = [filters.DjangoFilterBackend]
     filterset_class = HardwareAssignmentFilter
 
+    def get_queryset(self):
+        employee_id = self.request.GET.get("employee", None)
+        if employee_id:
+            return self.queryset.filter(
+                employee_id=employee_id, returned_date__isnull=True
+            )
+        return super().get_queryset()
+
     def get_serializer_class(self):
         if self.action == "create":
             return HardwareAssignmentCreateSerializer
         elif self.action in ["update", "partial_update"]:
             return HardwareAssignmentUpdateSerializer
+        elif self.action in ["list", "retrieve"]:
+            return HardwareAssignmentDetailSerializer
         return HardwareAssignmentSerializer
 
     def destroy(self, request, *args, **kwargs):
